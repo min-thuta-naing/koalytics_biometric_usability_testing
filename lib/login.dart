@@ -1,5 +1,6 @@
-
 import 'package:flutter/material.dart';
+import 'welcome.dart';
+import 'participants/loginforparticipants.dart'; 
 
 class SignInPage2 extends StatelessWidget {
   const SignInPage2({Key? key}) : super(key: key);
@@ -9,6 +10,17 @@ class SignInPage2 extends StatelessWidget {
     final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const Welcome()),
+              );
+            },
+          ),
+        ),
         body: Center(
             child: isSmallScreen
                 ? Column(
@@ -51,7 +63,10 @@ class _Logo extends StatelessWidget {
             textAlign: TextAlign.center,
             style: isSmallScreen
                 ? Theme.of(context).textTheme.titleLarge
-                : Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.black),
+                : Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.black),
           ),
         )
       ],
@@ -170,6 +185,50 @@ class __FormContentState extends State<_FormContent> {
                 },
               ),
             ),
+            _gap(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4)),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    'Login as Participant',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginAsParticipant()),
+                  );
+                },
+              ),
+            ),
+            _gap(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4)),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    'Login as Researcher',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                onPressed: () {
+                  /// Handle login as researcher
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -178,4 +237,3 @@ class __FormContentState extends State<_FormContent> {
 
   Widget _gap() => const SizedBox(height: 16);
 }
-
