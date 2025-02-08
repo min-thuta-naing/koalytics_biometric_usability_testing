@@ -114,8 +114,7 @@ class PreSignUp extends StatelessWidget {
         );
       },
       style: ElevatedButton.styleFrom(
-        primary: color,
-        onPrimary: Colors.black,
+        foregroundColor: Colors.black, backgroundColor: color,
         shadowColor: Color.fromARGB(255, 57, 114, 74),        
         elevation: 2,
         shape: RoundedRectangleBorder(
