@@ -156,8 +156,8 @@ class _SignUpPageResearcher extends State<SignUpPageResearcher> {
                    }
                  },
                  style: ElevatedButton.styleFrom(
-                   primary: Color.fromARGB(255, 117, 232, 151),
-                   onPrimary: Colors.black,
+                   backgroundColor: Color.fromARGB(255, 117, 232, 151),
+                   foregroundColor: Colors.black,
                    shadowColor: Color.fromARGB(255, 57, 114, 74),
                    elevation: 2,
                    shape: RoundedRectangleBorder(

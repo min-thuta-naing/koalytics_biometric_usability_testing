@@ -149,8 +149,8 @@ class _SignUpPageParticipant extends State<SignUpPageParticipant> {
                    }
                  },
                  style: ElevatedButton.styleFrom(
-                   primary: Color.fromARGB(255, 117, 184, 232),
-                   onPrimary: Colors.black,
+                   backgroundColor: Color.fromARGB(255, 117, 184, 232),
+                   foregroundColor: Colors.black,
                    shadowColor: Color.fromARGB(255, 57, 114, 74),
                    elevation: 2,
                    shape: RoundedRectangleBorder(
