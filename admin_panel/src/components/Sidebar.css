@@ -1,0 +1,131 @@
+/* Sidebar Container */
+.sidebar {
+  position: fixed;
+  width: 230px;
+  height: 100vh;
+  background-color: #086788; /* Sidebar background color */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 71px;
+  /* border-radius: 10px; Rounded corners */
+  overflow: hidden; /* Ensures content stays inside rounded corners */
+  /* margin: 10px; */
+  top: 0; /* Aligns the sidebar to the top of the viewport */
+  left: 0;
+  z-index: 1000; 
+}
+
+/* Website Title */
+.sidebar-title {
+  font-size: 24px;
+  /* font-weight: bold; */
+  font-family: sans-serif;
+  color: rgb(0, 0, 0);
+  margin-bottom: 50px; /* Push menu items lower */
+}
+
+
+/* Sidebar Menu */
+.sidebar-menu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar Items */
+.sidebar-item {
+  text-decoration: none;
+  color: rgb(43, 43, 43); /* Default text color (light mode) */
+  font-size: 15px;
+  padding: 15px 20px;
+  width: 100%;
+  text-align: start;
+  transition: background 0.3s;
+  display: flex; /* Align text & icon */
+  align-items: center;
+  /* justify-content: space-between; */
+  gap: 10px; /* Space between icon and text */
+  box-sizing: border-box; 
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.sidebar-item:hover {
+  background-color: #303f9a; /* Darker color on hover */
+  color: white; /* Text color when hovered */
+}
+
+/* Sidebar Icons */
+.sidebar-icon {
+  font-size: 20px; /* Adjust icon size */
+}
+
+/* Dropdown Button */
+.sidebar-dropdown {
+  width: 100%;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  background: #5577cc;
+  margin-left: 20px;
+  border-left: 3px solid #4455aa;
+}
+
+/* Dropdown Items */
+.dropdown-item {
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+  padding: 10px 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dropdown-item:hover {
+  background-color: #4455aa;
+}
+
+/* Dropdown Icon */
+.dropdown-icon {
+  font-size: 12px;
+}
+
+/* Sidebar Light Mode */
+.sidebar.light {
+  background-color: #9bb1ff;
+  color: #000;
+}
+
+.sidebar.light .sidebar-item {
+  color: rgb(43, 43, 43); /* Light mode text color */
+}
+
+.sidebar.light .sidebar-item:hover {
+  background-color: #6574cd;
+  color: white;
+}
+
+/* Sidebar Dark Mode */
+.sidebar.dark {
+  background-color: #444;
+  color: #fff;
+}
+
+.sidebar.dark .sidebar-item {
+  color: #fff; /* Dark mode text color */
+}
+
+.sidebar.dark .sidebar-item:hover {
+  background-color: #444; /* Hover background color for dark mode */
+  color: #fff; /* Hover text color for dark mode */
+}
+
+.sidebar.dark .sidebar-icon {
+  color: #fff; /* Icon color in dark mode */
+}

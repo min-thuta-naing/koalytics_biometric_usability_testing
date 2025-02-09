@@ -7,6 +7,38 @@
   pointer-events: none;
 }
 
+/* Default Light Mode */
+.app.light {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+.app.dark {
+  background-color: #333;
+  color: #fff;
+}
+
+/* Content area */
+.main-content {
+  margin-top: 70px; /* Add top margin to create space for the fixed topbar */
+  margin-left: 230px; /* Push the content to the right to make space for the sidebar */
+  padding: 20px; /* Optional: Add padding for spacing */
+}
+
+/* Global Light Mode Styles */
+body.light {
+  background-color: #fff;
+  color: #000;
+}
+
+/* Global Dark Mode Styles */
+body.dark {
+  background-color: #121212;
+  color: #fff;
+}
+
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
