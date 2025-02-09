@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:koalytics_biometric_usability_testing/custom_nav_bar.dart';
 import 'welcome.dart';
 
 void main() {
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Welcome(),
+      home: const CustomNavBar(),
     );
   }
 }

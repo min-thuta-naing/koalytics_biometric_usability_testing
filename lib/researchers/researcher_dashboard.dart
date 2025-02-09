@@ -1,0 +1,588 @@
+// import 'package:flutter/material.dart';
+// import '../sus_quest.dart';
+// import '../biometric_test.dart';  // Ensure this import is present
+
+
+// class ResearcherDashboard extends StatelessWidget {
+//   const ResearcherDashboard({super.key});
+
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+
+//       //app bar
+//       appBar: AppBar(
+//         title: const Text(
+//           'Main Dashboard',
+//             style: TextStyle(
+//               fontSize: 25,
+//               fontFamily: "Tommy",
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//         //backgroundColor:Color.fromARGB(255, 231, 243, 209),
+//       ),
+      
+
+//       body: Padding(
+//         padding: EdgeInsets.all(18),
+//         //color: Color.fromARGB(255, 231, 243, 209), 
+//         child: Center(
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.end,
+//             children: [
+
+
+
+//               Stack(
+//                 children: [
+//                   Container(
+//                     padding: EdgeInsets.all(15), // Padding inside the box
+//                     decoration: BoxDecoration(
+//                       color: Color.fromRGBO(180, 240, 212, 1),                       
+//                       borderRadius: BorderRadius.circular(20), // Optional: Rounds the corners of the box
+//                       border: Border.all(
+//                         color: const Color.fromARGB(255, 90, 90, 90), // Border color
+//                         width: 2, // Border width
+//                       ),
+//                     ),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           'SUS (System Usability Scale)',
+//                           style: TextStyle(
+//                             fontSize: 18,
+//                             fontFamily: "Tommy",
+//                             fontWeight: FontWeight.bold,
+//                             color: Colors.black, // Text color
+//                           ),
+//                         ),
+//                         SizedBox(height: 10),
+//                         Text(
+//                           'The SUS (System Usability Scale) questionnaire is a 10-item survey used to assess the overall usability of a system, using a Likert scale from 1 to 5 (strongly disagree to strongly agree).',
+//                           textAlign: TextAlign.justify,
+//                           style: TextStyle(
+//                             fontSize: 15,
+//                             fontFamily: "Tommy",
+//                             fontWeight: FontWeight.bold,
+//                             color: Colors.black, // Text color
+//                           ),
+//                         ),
+//                         const SizedBox(height: 60),
+//                       ],
+//                     ),
+//                   ),
+//                   Positioned(
+//                     right: 10, // Distance from the right edge
+//                     bottom: 10, // Distance from the bottom edge
+//                     child: Container(
+//                       decoration: BoxDecoration(
+//                         border: Border.all(
+//                           color: const Color.fromARGB(255, 90, 90, 90), // Border color
+//                           width: 2, // Border width
+//                         ),
+//                         borderRadius: BorderRadius.circular(50), // Optional: Rounded corners for the border
+//                       ),
+//                       child: IconButton(
+//                         onPressed: () {
+//                           Navigator.push(
+//                             context,
+//                             MaterialPageRoute(builder: (context) => const SusQuest()),
+//                           );
+//                         },
+//                         icon: Icon(
+//                           Icons.add, // Plus icon
+//                           size: 30, // Set the icon size
+//                           color: Colors.white, // Set the icon color
+//                         ),
+//                         padding: EdgeInsets.all(10), // Padding around the icon
+//                         splashColor: Color.fromARGB(255, 0, 0, 0), // Splash color on press
+//                         highlightColor: Color.fromARGB(255, 0, 0, 0), // Highlight color on press
+//                         style: IconButton.styleFrom(
+//                           backgroundColor:const Color.fromARGB(255, 90, 90, 90), // Set the button's background color
+//                         ),
+//                       ),
+//                     )
+
+//                   ),
+//                 ],
+//               ),
+
+//               const SizedBox(height: 30),
+
+//               Stack(
+//                 children: [
+//                   Container(
+//                     padding: EdgeInsets.all(15), // Padding inside the box
+//                     decoration: BoxDecoration(
+//                       color: Color.fromRGBO(255, 217, 229, 1), // Box background color
+//                       borderRadius: BorderRadius.circular(20), 
+//                       border: Border.all(
+//                         color: const Color.fromARGB(255, 90, 90, 90), // Border color
+//                         width: 2, // Border width
+//                       ),
+//                     ),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           'Biometric Usability Testing',
+//                           style: TextStyle(
+//                             fontSize: 18,
+//                             fontFamily: "Tommy",
+//                             fontWeight: FontWeight.bold,
+//                             color: Colors.black, // Text color
+//                           ),
+//                         ),
+//                         SizedBox(height: 10),
+//                         Text(
+//                           'The usability test can be performed using biometric tools such as facial expression, respiratory rate and heart rate. The researchers can perform the test on websites and applications.',
+//                           textAlign: TextAlign.justify,
+//                           style: TextStyle(
+//                             fontSize: 15,
+//                             fontFamily: "Tommy",
+//                             fontWeight: FontWeight.bold,
+//                             color: Colors.black, // Text color
+//                           ),
+//                         ),
+//                         const SizedBox(height: 60),
+//                       ],
+//                     ),
+//                   ),
+//                   Positioned(
+//                     right: 10, // Distance from the right edge
+//                     bottom: 10, // Distance from the bottom edge
+//                     child: Container(
+//                       decoration: BoxDecoration(
+//                         border: Border.all(
+//                           color: const Color.fromARGB(255, 90, 90, 90), // Border color
+//                           width: 2, // Border width
+//                         ),
+//                         borderRadius: BorderRadius.circular(50), // Optional: Rounded corners for the border
+//                       ),
+//                       child: IconButton(
+//                         onPressed: () {
+//                           showDialog(
+//                             context: context,
+//                             builder: (BuildContext context) {
+//                               return const BiometricTestPopup(); // Open popup
+//                             },
+//                           );
+//                         },
+//                         icon: Icon(
+//                           Icons.add, // Plus icon
+//                           size: 30, // Set the icon size
+//                           color: Colors.white, // Set the icon color
+//                         ),
+//                         padding: EdgeInsets.all(10), // Padding around the icon
+//                         splashColor: Color.fromARGB(255, 43, 96, 59), // Splash color on press
+//                         highlightColor: Color.fromARGB(255, 57, 114, 74), // Highlight color on press
+//                         style: IconButton.styleFrom(
+//                           backgroundColor: const Color.fromARGB(255, 90, 90, 90), // Set the button's background color
+//                         ),
+//                       ),
+//                     )
+
+//                   ),
+//                 ],
+//               ),
+
+
+//               // Container(
+//               //   padding: EdgeInsets.all(15), // Padding inside the box
+//               //   decoration: BoxDecoration(
+//               //     color: Color.fromARGB(255, 117, 232, 151), // Box background color
+//               //     borderRadius: BorderRadius.circular(20), // Optional: Rounds the corners of the box
+//               //   ),
+//               //   child: Column(
+//               //     crossAxisAlignment: CrossAxisAlignment.start,
+//               //     children: [
+//               //       Text(
+//               //         'SUS (System Usability Scale)',
+//               //         style: TextStyle(
+//               //           fontSize: 18,
+//               //           fontFamily: "Tommy",
+//               //           fontWeight: FontWeight.bold,
+//               //           color: Colors.black, // Text color
+//               //         ),
+//               //       ),
+//               //       SizedBox(height: 10),
+//               //       Text(
+//               //         'The SUS (System Usability Scale) questionnaire is a 10-item survey used to assess the overall usability of a system, using a Likert scale from 1 to 5 (strongly disagree to strongly agree).',
+//               //         textAlign: TextAlign.justify,
+//               //         style: TextStyle(
+//               //           fontSize: 15,
+//               //           fontFamily: "Tommy",
+//               //           fontWeight: FontWeight.bold,
+//               //           color: Colors.black, // Text color
+//               //         ),
+//               //       ),
+
+//               //     ],
+//               //   ),
+//               // ),
+
+//               // const SizedBox(height: 5),
+
+//               // ElevatedButton(
+//               //   onPressed: () {
+//               //     Navigator.push(
+//               //       context,
+//               //       MaterialPageRoute(builder: (context) => const SusQuest()),
+//               //     );
+//               //   },
+//               //   style: ElevatedButton.styleFrom(
+//               //     backgroundColor: Color.fromARGB(255, 117, 232, 151),
+//               //     foregroundColor: Colors.black,
+//               //     shadowColor: Color.fromARGB(255, 57, 114, 74),
+//               //     elevation: 2,
+//               //     shape: RoundedRectangleBorder(
+//               //       borderRadius: BorderRadius.circular(20),
+//               //     ),
+//               //     minimumSize: Size(200, 50),
+//               //   ),
+//               //   child: Row(
+//               //     mainAxisSize: MainAxisSize.min, // Ensures the button width fits the content
+//               //     children: [
+//               //       Text(
+//               //         'Create SUS',
+//               //         style: TextStyle(
+//               //           fontSize: 15,
+//               //           fontFamily: "Tommy",
+//               //           fontWeight: FontWeight.bold,
+//               //         ),
+//               //       ),
+//               //       SizedBox(width: 10), 
+//               //       Icon(Icons.add_box, size: 20), // Plus icon
+                    
+//               //     ],
+//               //   ),
+//               // ),
+
+//               // IconButton(
+//               //   onPressed: () {
+//               //     Navigator.push(
+//               //       context,
+//               //       MaterialPageRoute(builder: (context) => const SusQuest()),
+//               //     );
+//               //   },
+//               //   icon: Icon(
+//               //     Icons.add, // Plus icon
+//               //     size: 30, // Set the icon size
+//               //     color: const Color.fromARGB(255, 0, 0, 0), // Set the icon color
+//               //   ),
+//               //   padding: EdgeInsets.all(10), // Padding around the icon
+//               //   style: IconButton.styleFrom(
+//               //       backgroundColor: Colors.blue, // Set the button's background color
+//               //     ),                
+//               //   splashColor: Color.fromARGB(255, 43, 96, 59), // Splash color on press
+//               //   highlightColor: Color.fromARGB(255, 57, 114, 74), // Highlight color on press
+//               // ),
+
+              
+//               const SizedBox(height: 20),
+//             ],
+            
+
+//           ),
+//         )
+
+//       )
+
+//     );
+//   }
+// }
+
+import 'package:flutter/material.dart';
+import 'package:koalytics_biometric_usability_testing/bio_app.dart';
+import 'package:koalytics_biometric_usability_testing/bio_web.dart';
+import '../sus_quest.dart';
+import '../biometric_test.dart';
+
+class ResearcherDashboard extends StatefulWidget {
+  const ResearcherDashboard({super.key});
+
+  @override
+  _ResearcherDashboardState createState() => _ResearcherDashboardState();
+}
+
+class _ResearcherDashboardState extends State<ResearcherDashboard> {
+  bool _isExpanded = false; // Controls sliding effect
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      //app bar 
+      appBar: AppBar(
+        title: const Text(
+          'Main Dashboard',
+          style: TextStyle(
+            fontSize: 25,
+            fontFamily: "Tommy",
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+
+      //body part 
+      body: SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(18),
+
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+
+              // SUS Questionnaire Box
+              Stack(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(180, 240, 212, 1),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 90, 90, 90),
+                        width: 2,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'SUS (System Usability Scale)',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: "Tommy",
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'The SUS (System Usability Scale) questionnaire is a 10-item survey used to assess the overall usability of a system, using a Likert scale from 1 to 5 (strongly disagree to strongly agree).',
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: "Tommy",
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 60),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    right: 10,
+                    bottom: 10,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: const Color.fromARGB(255, 90, 90, 90),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SusQuest()),
+                          );
+                        },
+                        icon: Icon(
+                          Icons.add,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.all(10),
+                        splashColor: Color.fromARGB(255, 0, 0, 0),
+                        highlightColor: Color.fromARGB(255, 0, 0, 0),
+                        style: IconButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 90, 90, 90),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 30),
+
+              // Biometric Usability Testing Box with Slide-down Effect
+              Stack(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(255, 217, 229, 1),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 90, 90, 90),
+                        width: 2,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Biometric Usability Testing',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: "Tommy",
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'The usability test can be performed using biometric tools such as facial expression, respiratory rate, and heart rate. The researchers can perform the test on websites and applications.',
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: "Tommy",
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 60),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    right: 10,
+                    bottom: 10,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: const Color.fromARGB(255, 90, 90, 90),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isExpanded = !_isExpanded; // Toggle visibility
+                          });
+                        },
+                        icon: Icon(
+                          _isExpanded ? Icons.remove : Icons.add, // Toggle icon
+                          size: 30,
+                          color: Color.fromRGBO(255, 217, 229, 1),
+                        ),
+                        padding: EdgeInsets.all(10),
+                        splashColor: Color.fromARGB(255, 0, 0, 0),
+                        highlightColor: Color.fromARGB(255, 0, 0, 0),
+                        style: IconButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 90, 90, 90),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+
+              // Sliding Down Box
+              AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                height: _isExpanded ? 160 : 0, // Adjust height to fit buttons
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Color.fromARGB(255, 90, 90, 90),
+                    width: 2,
+                  ),
+                ),
+                child: _isExpanded
+                    ? SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'This section provides additional details for Biometric Usability Testing. Choose an option below:',
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontFamily: "Tommy",
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          // Buttons
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const BiometricApp()), // For App
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Color.fromARGB(255, 180, 240, 212), // Soft green
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'For App',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const BiometricWeb()), // For Web
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Color.fromARGB(255, 255, 217, 229), // Soft pink
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'For Web',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                    : null,
+              ),
+
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+      ),
+    );
+  }
+}
+
