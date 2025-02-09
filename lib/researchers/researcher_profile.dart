@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:koalytics_biometric_usability_testing/welcome.dart';
+import 'package:koalytics_biometric_usability_testing/authentication/welcome.dart';
 
 class ResearcherProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 231, 243, 209), // Background color of the screen
+      //backgroundColor: Color.fromARGB(255, 255, 255, 255), 
+      
+      //app bar 
       appBar: AppBar(
         title: Text(
           'Researcher Profile',
@@ -15,12 +17,14 @@ class ResearcherProfileScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color.fromARGB(255, 231, 243, 209), 
+        //backgroundColor: Color.fromARGB(255, 231, 243, 209), 
       ),
+
+      //body part
       body: Padding (
         //padding: const EdgeInsets.all(16.0),
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: SingleChildScrollView( // Wrapping the content in a scrollable view
+        child: SingleChildScrollView( 
           child: ResearcherProfileContent(),
         ),
       ),
@@ -43,10 +47,10 @@ class ResearcherProfileContent extends StatelessWidget {
 
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        
+        SizedBox(height: 16.0),
         Center(
           child: CircleAvatar(
-            radius: 50.0,
+            radius: 100.0,
             backgroundImage: NetworkImage(researcherPhotoUrl),
           ),
         ),

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:koalytics_biometric_usability_testing/authentication/login.dart';
 import 'package:koalytics_biometric_usability_testing/researchers/researcher_info_form.dart'; // Updated to navigate directly
+import '../researchers/researcher_dashboard.dart';
 
-
-class SignUpPageResearcher extends StatefulWidget {
-  const SignUpPageResearcher({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
 
   @override
-  _SignUpPageResearcher createState() => _SignUpPageResearcher();
-  }
+  _SignUpPage createState() => _SignUpPage();
+}
 
 
-  class _SignUpPageResearcher extends State<SignUpPageResearcher> {
+  class _SignUpPage extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -23,15 +24,16 @@ class SignUpPageResearcher extends StatefulWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
-          'Sign Up as Researcher',
+          'Sign Up',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 20,
             fontFamily: "Tommy",
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color.fromARGB(255, 117, 232, 151), // Customize app bar color
+        //backgroundColor: Color.fromARGB(255, 117, 232, 151), // Customize app bar color
       ),
       body: SingleChildScrollView( 
         child: Padding(
@@ -56,10 +58,12 @@ class SignUpPageResearcher extends StatefulWidget {
                 // Name Field
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Full Name',
-                    border: OutlineInputBorder(),
-                    labelStyle: TextStyle(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    labelStyle: const TextStyle(
                       fontFamily: 'Tommy',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -78,10 +82,12 @@ class SignUpPageResearcher extends StatefulWidget {
                 // Email Field
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Email',
-                    border: OutlineInputBorder(),
-                    labelStyle: TextStyle(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    labelStyle: const TextStyle(
                       fontFamily: 'Tommy',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -103,10 +109,12 @@ class SignUpPageResearcher extends StatefulWidget {
                 // Password Field
                 TextFormField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Password',
-                    border: OutlineInputBorder(),
-                    labelStyle: TextStyle(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    labelStyle: const TextStyle(
                       fontFamily: 'Tommy',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -128,10 +136,12 @@ class SignUpPageResearcher extends StatefulWidget {
                 // Confirm Password Field
                 TextFormField(
                   controller: _confirmPasswordController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Confirm Password',
-                    border: OutlineInputBorder(),
-                    labelStyle: TextStyle(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20), // Border radius added here
+                    ),
+                    labelStyle: const TextStyle(
                       fontFamily: 'Tommy',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -145,6 +155,7 @@ class SignUpPageResearcher extends StatefulWidget {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 20),
 
 
@@ -156,12 +167,12 @@ class SignUpPageResearcher extends StatefulWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 117, 232, 151),
-                    foregroundColor: Colors.black,
-                    shadowColor: Color.fromARGB(255, 57, 114, 74),
+                    backgroundColor: Color.fromARGB(255, 90, 121, 201),
+                    foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+                    //shadowColor: Color.fromARGB(255, 57, 114, 74),
                     elevation: 2,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     minimumSize: Size(200, 50),
                   ),
@@ -174,6 +185,21 @@ class SignUpPageResearcher extends StatefulWidget {
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 10), // Space between buttons
+                TextButton(
+                  onPressed: () {
+                    // Navigate to the login page
+                    _navigateToLoginPage();
+                  },
+                  child: Text(
+                    'Already have an account? Login',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color.fromARGB(255, 90, 121, 201),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -183,12 +209,37 @@ class SignUpPageResearcher extends StatefulWidget {
   }
 
 
+  void _navigateToLoginPage(){
+    Navigator.push(
+      context, 
+      PageRouteBuilder(
+         transitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (context, animation, secondaryAnimation) => const SignInPage2(), // Now directly linked
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
   void _navigateToResearcherDashboard() {
     Navigator.push(
       context,
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 300),
-        pageBuilder: (context, animation, secondaryAnimation) => const ResearcherInfoForm(), // Now directly linked
+        pageBuilder: (context, animation, secondaryAnimation) => const ResearcherDashboard(), // Now directly linked
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
