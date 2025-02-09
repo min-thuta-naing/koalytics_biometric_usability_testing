@@ -1,5 +1,21 @@
 import 'package:flutter/material.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        fontFamily: "Tommy", // Set the global font here
+      ),
+      home: ProjectHistoryScreen(),
+    );
+  }
+}
+
 class ProjectHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -13,7 +29,6 @@ class ProjectHistoryScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -59,11 +74,36 @@ class ProjectHistoryList extends StatelessWidget {
       itemBuilder: (context, index) {
         final project = projects[index];
         return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          color: Color.fromARGB(255, 235, 238, 250),
           margin: EdgeInsets.symmetric(vertical: 8.0),
           child: ListTile(
-            title: Text(project.projectName),
-            subtitle: Text(project.description),
-            trailing: Text('${project.projectDurationInDays()} days'),
+            title: Text(
+              project.projectName,
+              style: TextStyle(
+                fontSize: 18,
+                fontFamily: "Tommy",
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              project.description,
+              style: TextStyle(
+                fontSize: 15,
+                fontFamily: "Tommy",
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            trailing: Text(
+              '${project.projectDurationInDays()} days',
+              style: TextStyle(
+                fontSize: 15,
+                fontFamily: "Tommy",
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             onTap: () {
               showDialog(
                 context: context,
@@ -92,7 +132,6 @@ class ProjectHistory {
     required this.milestones,
   });
 
-  // Calculate project duration in days
   int projectDurationInDays() {
     return endDate.difference(startDate).inDays;
   }
@@ -106,17 +145,52 @@ class ProjectDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(project.projectName),
+      title: Text(
+        project.projectName,
+        style: TextStyle(
+          fontSize: 18,
+          fontFamily: "Tommy",
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Description: ${project.description}'),
+          Text(
+            'Description: ${project.description}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              fontFamily: "Tommy",
+            ),
+          ),
           SizedBox(height: 8.0),
-          Text('Duration: ${project.projectDurationInDays()} days'),
+          Text(
+            'Duration: ${project.projectDurationInDays()} days',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              fontFamily: "Tommy",
+            ),
+          ),
           SizedBox(height: 8.0),
-          Text('Milestones:'),
-          for (var milestone in project.milestones) Text('- $milestone'),
+          Text(
+            'Milestones:',
+            style: TextStyle(
+              fontSize: 16,
+              fontFamily: "Tommy",
+            ),
+          ),
+          for (var milestone in project.milestones)
+            Text(
+              '- $milestone',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                fontFamily: "Tommy",
+              ),
+            ),
         ],
       ),
       actions: [
@@ -124,7 +198,13 @@ class ProjectDetailDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Close'),
+          child: Text(
+            'Close',
+            style: TextStyle(
+              fontFamily: "Tommy",
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ],
     );
