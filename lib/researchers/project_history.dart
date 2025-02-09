@@ -5,7 +5,15 @@ class ProjectHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Project History'),
+        title: Text(
+          'Project History',
+          style: TextStyle(
+            fontSize: 25,
+            fontFamily: "Tommy",
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

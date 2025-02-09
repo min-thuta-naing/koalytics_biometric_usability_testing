@@ -7,7 +7,14 @@ class AboutAppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('About the App'),
+        title: Text(
+          'About the App',
+          style: TextStyle(
+            fontSize: 25,
+            fontFamily: "Tommy",
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -23,14 +30,7 @@ class AboutAppContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'About This App',
-          style: TextStyle(
-            fontSize: 24.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 16.0),
+        
         Text(
           'This app is designed to help users track and manage project history effectively. It includes features like project details, milestones, and project durations, which are displayed in an easy-to-read list format.',
           style: TextStyle(fontSize: 16.0),

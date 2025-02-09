@@ -7,7 +7,14 @@ class ResearcherProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 231, 243, 209), // Background color of the screen
       appBar: AppBar(
-        title: Text('Researcher Profile'),
+        title: Text(
+          'Researcher Profile',
+          style: TextStyle(
+            fontSize: 25,
+            fontFamily: "Tommy",
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Color.fromARGB(255, 231, 243, 209), 
       ),
       body: Padding (

@@ -26,7 +26,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 88, 172, 112),
+      backgroundColor:Color.fromARGB(255, 90, 121, 201),
       body: _widgetOptions.elementAt(_currentIndex),
       bottomNavigationBar: SalomonBottomBar(
         currentIndex: _currentIndex,
@@ -34,22 +34,42 @@ class _CustomNavBarState extends State<CustomNavBar> {
         items: [
           SalomonBottomBarItem(
             icon: Icon(Icons.dashboard),
-            title: Text("Main Dashboard"),
+            title: Text(
+              "Main Dashboard",
+              style: TextStyle(
+                fontFamily: "Tommy",
+              )
+            ),
             selectedColor: const Color.fromARGB(255, 255, 255, 255),
           ),
           SalomonBottomBarItem(
             icon: Icon(Icons.work_history),
-            title: Text("Project History"),
+            title: Text(
+              "Project History",
+              style: TextStyle(
+                fontFamily: "Tommy",
+              )
+            ),
             selectedColor: const Color.fromARGB(255, 255, 255, 255),
           ),
           SalomonBottomBarItem(
             icon: Icon(Icons.info),
-            title: Text("About App"),
+            title: Text(
+              "About App",
+              style: TextStyle(
+                fontFamily: "Tommy",
+              )
+            ),
             selectedColor: const Color.fromARGB(255, 255, 255, 255),
           ),
           SalomonBottomBarItem(
             icon: Icon(Icons.person_2),
-            title: Text("Profile"),
+            title: Text(
+              "Profile",
+              style: TextStyle(
+                fontFamily: "Tommy",
+              )
+            ),
             selectedColor: const Color.fromARGB(255, 255, 255, 255),
           ),
         ],
