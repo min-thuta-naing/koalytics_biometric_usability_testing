@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'researcher.dart';
+import 'researchers/researcher_dashboard.dart';
 import 'login.dart';
 import 'pre_signup.dart';
 
@@ -39,7 +39,7 @@ class Welcome extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ResearcherLanding()),
+                        builder: (context) => const ResearcherDashboard()),
                   );
                 },
                 child: const Text('researcher dashhboard (temporary button)'),
@@ -160,7 +160,7 @@ class Welcome extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ResearcherLanding()), // Change this to your Researcher Signup Page
+                        builder: (context) => const ResearcherDashboard()), // Change this to your Researcher Signup Page
                   );
                 },
                 child: const Text('Sign up as a Researcher'),

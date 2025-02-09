@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'researcher.dart';
+import 'researchers/researcher_dashboard.dart';
 
 class HomeResearcher extends StatelessWidget {
   const HomeResearcher({super.key});
@@ -21,7 +21,7 @@ class HomeResearcher extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ResearcherLanding()),
+                  MaterialPageRoute(builder: (context) => const ResearcherDashboard()),
                 );
               },
               child: const Text('Go to Researcher Dashboard'),
