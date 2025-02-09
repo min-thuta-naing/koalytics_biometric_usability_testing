@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'researchers/signupforresearchers.dart';
+import 'authentication/sign_up.dart';
 import 'participants/signupforparticipants.dart';
 
 class PreSignUp extends StatelessWidget {
@@ -17,7 +17,7 @@ class PreSignUp extends StatelessWidget {
           children: [
 
             //button for researcher 
-            _buildButton(context, 'Sign Up as Researcher', Color.fromARGB(255, 117, 232, 151), const SignUpPageResearcher()),
+            _buildButton(context, 'Sign Up as Researcher', Color.fromARGB(255, 117, 232, 151), const SignUpPage()),
             //spacing
             const SizedBox(height: 20),
             // //image for researchers

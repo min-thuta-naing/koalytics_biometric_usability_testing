@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'researchers/researcher_dashboard.dart';
+import '../researchers/researcher_dashboard.dart';
 import 'login.dart';
-import 'pre_signup.dart';
+import '../pre_signup.dart';
+import 'sign_up.dart'; 
+
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -10,7 +12,7 @@ class Welcome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Color.fromARGB(255, 209, 243, 217), // Background color
+        color: Color.fromARGB(255, 235, 238, 250),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -32,19 +34,6 @@ class Welcome extends StatelessWidget {
               //space between
               const SizedBox(height: 20),
                
-              //temporary button for allison's work 
-              ElevatedButton(
-                onPressed: () {
-                  //_showSignupDialog(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ResearcherDashboard()),
-                  );
-                },
-                child: const Text('researcher dashhboard (temporary button)'),
-              ),
-
               //space between 
               const SizedBox(height: 150),
 
@@ -73,11 +62,12 @@ class Welcome extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, backgroundColor: Color.fromARGB(255, 117, 232, 151),
-                  shadowColor: Color.fromARGB(255, 57, 114, 74),
+                  foregroundColor: const Color.fromARGB(255, 255, 255, 255), 
+                  backgroundColor: Color.fromARGB(255, 90, 121, 201),
+                  // shadowColor: Color.fromARGB(255, 57, 114, 74),
                   elevation: 2,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   minimumSize: Size(200, 50),
                 ),
@@ -101,7 +91,7 @@ class Welcome extends StatelessWidget {
                     context,
                     PageRouteBuilder(
                       transitionDuration: Duration(milliseconds: 500), // Animation speed
-                      pageBuilder: (context, animation, secondaryAnimation) => const PreSignUp(),
+                      pageBuilder: (context, animation, secondaryAnimation) => const SignUpPage(),
                       transitionsBuilder: (context, animation, secondaryAnimation, child) {
                         const begin = Offset(1.0, 0.0); // Start from right
                         const end = Offset.zero; // End at normal position
@@ -119,11 +109,11 @@ class Welcome extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, backgroundColor: Color.fromARGB(255, 117, 232, 151),
-                  shadowColor: Color.fromARGB(255, 57, 114, 74),
+                  foregroundColor: const Color.fromARGB(255, 255, 255, 255), 
+                  backgroundColor: Color.fromARGB(255, 90, 121, 201),
                   elevation: 2,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   minimumSize: Size(200, 50),
                 ),

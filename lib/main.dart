@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:koalytics_biometric_usability_testing/custom_nav_bar.dart';
-import 'welcome.dart';
+import 'authentication/welcome.dart';
 
 void main() {
   runApp(const MyApp());
