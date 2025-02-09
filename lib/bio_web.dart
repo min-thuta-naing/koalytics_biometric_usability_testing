@@ -61,7 +61,7 @@ class _BiometricWebState extends State<BiometricWeb> {
    return Scaffold(
      appBar: AppBar(
        title: const Text('Biometric Webpage'),
-       backgroundColor: Colors.blue,
+       backgroundColor: const Color.fromARGB(255, 90, 121, 201),
      ),
      body: Padding(
        padding: const EdgeInsets.all(16.0),
@@ -70,45 +70,86 @@ class _BiometricWebState extends State<BiometricWeb> {
          children: [
            // Display the auto-generated Test ID
            Text(
-             'Test ID: $_testID',
-             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-           ),
-           const SizedBox(height: 20),
+              'Test ID: $_testID',
+              style: const TextStyle(
+                fontSize: 20,
+                fontFamily: "Tommy",
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
           
            // App Name Field
            TextField(
-             controller: _appNameController,
-             decoration: const InputDecoration(
-               labelText: 'Website Name',
-               border: OutlineInputBorder(),
-             ),
-           ),
-           const SizedBox(height: 10),
+              controller: _appNameController,
+              decoration: InputDecoration(
+                labelText: 'Website Name',
+                labelStyle: const TextStyle(
+                  fontSize: 16,
+                  fontFamily: "Tommy",
+                  fontWeight: FontWeight.bold,
+                ),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 235, 238, 250),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
           
            // App Link Field
            TextField(
-             controller: _appLinkController,
-             decoration: const InputDecoration(
-               labelText: 'App Link',
-               border: OutlineInputBorder(),
-             ),
-           ),
-           const SizedBox(height: 10),
+              controller: _appLinkController,
+              decoration: InputDecoration(
+                labelText: 'App Link',
+                labelStyle: const TextStyle(
+                  fontSize: 16,
+                  fontFamily: "Tommy",
+                  fontWeight: FontWeight.bold,
+                ),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 235, 238, 250),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
           
            // Project Description Field
            TextField(
-             controller: _descriptionController,
-             decoration: const InputDecoration(
-               labelText: 'Project Description',
-               border: OutlineInputBorder(),
-             ),
-           ),
-           const SizedBox(height: 10),
+              controller: _descriptionController,
+              decoration: InputDecoration(
+                labelText: 'Project Description',
+                labelStyle: const TextStyle(
+                  fontSize: 16,
+                  fontFamily: "Tommy",
+                  fontWeight: FontWeight.bold,
+                ),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 235, 238, 250),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
           
            // Start Date Picker
            Row(
              children: [
-               const Text('Start Date: '),
+               const Text(
+                  'Start Date:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: "Tommy",
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                const SizedBox(width: 10),
                Text(
                  _startDate == null
@@ -119,16 +160,38 @@ class _BiometricWebState extends State<BiometricWeb> {
                const SizedBox(width: 10),
                ElevatedButton(
                  onPressed: () => _selectDate(context, true),
-                 child: const Text('Pick Start Date'),
-               ),
-             ],
-           ),
+                 style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 235, 238, 250), // Change background color
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                 child: const Text(
+                    'Pick Start Date',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: "Tommy",
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
            const SizedBox(height: 10),
           
            // End Date Picker
            Row(
              children: [
-               const Text('End Date: '),
+               const Text(
+                  'End Date:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: "Tommy",
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                const SizedBox(width: 10),
                Text(
                  _endDate == null
@@ -139,10 +202,25 @@ class _BiometricWebState extends State<BiometricWeb> {
                const SizedBox(width: 10),
                ElevatedButton(
                  onPressed: () => _selectDate(context, false),
-                 child: const Text('Pick End Date'),
-               ),
-             ],
-           ),
+                 style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 235, 238, 250), // Change background color
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                 child: const Text(
+                    'Pick End Date',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: "Tommy",
+                      fontWeight: FontWeight.bold,
+                      color:  Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
            const SizedBox(height: 20),
 
 
@@ -192,14 +270,29 @@ class _BiometricWebState extends State<BiometricWeb> {
                    _testID++;
                  });
                },
-               child: const Text('Submit'),
-             ),
-           ),
-         ],
-       ),
-     ),
-   );
- }
+               style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 90, 121, 201),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Text(
+                  'Submit',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: "Tommy",
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 
