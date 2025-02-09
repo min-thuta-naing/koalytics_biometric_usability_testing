@@ -1,28 +1,27 @@
 // src/pages/HomePage.js
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
+import { Button, AppBar, Toolbar, Typography } from '@mui/material';
 
 const HomePage = () => {
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>Welcome to the Admin Panel</h1>
-      <p style={styles.description}>
-        This is the dashboard for managing the biometric usability testing app. From here, you can manage users, track projects, and more!
-      </p>
-      <div style={styles.buttons}>
-        <Link to="/users">
-          <Button variant="contained" color="primary" style={styles.button}>
-            Manage Users
-          </Button>
-        </Link>
-        <Link to="/projects">
-          <Button variant="contained" color="secondary" style={styles.button}>
-            Manage Projects
-          </Button>
-        </Link>
-      </div>
+    <div>
+        {/* App Bar */}
+        <AppBar position="static">
+            <Toolbar>
+            <Typography variant="h6" style={styles.title}>
+                Koalytics
+            </Typography>
+            </Toolbar>
+        </AppBar>
+
+        {/* Content */}
+        <div style={styles.container}>
+            <h1 style={styles.heading}>Welcome to the Admin Panel</h1>
+            <p style={styles.description}>
+            This is the dashboard for managing the biometric usability testing app. From here, you can manage users, track projects, and more!
+            </p>
+        </div>
     </div>
   );
 };
@@ -47,6 +46,9 @@ const styles = {
   },
   button: {
     width: '200px',
+  },
+  title: {
+    flexGrow: 1,
   },
 };
 
