@@ -36,8 +36,19 @@ class _SusPageState extends State<SusPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SUS Evaluation'),
-        backgroundColor: const Color.fromARGB(255, 90, 121, 201),
+        title: const Text(
+          'SUS Form', 
+          style: TextStyle(
+            fontFamily: "Tommy",
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Color.fromARGB(255, 90, 121, 201),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // White back arrow
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
