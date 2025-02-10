@@ -5,9 +5,6 @@ class ResearcherProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Color.fromARGB(255, 255, 255, 255), 
-      
-      //app bar 
       appBar: AppBar(
         title: Text(
           'Researcher Profile',
@@ -17,14 +14,11 @@ class ResearcherProfileScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        //backgroundColor: Color.fromARGB(255, 231, 243, 209), 
+        backgroundColor: Color.fromARGB(255, 90, 121, 201),
       ),
-
-      //body part
-      body: Padding (
-        //padding: const EdgeInsets.all(16.0),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: SingleChildScrollView( 
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+        child: SingleChildScrollView(
           child: ResearcherProfileContent(),
         ),
       ),
@@ -39,112 +33,134 @@ class ResearcherProfileContent extends StatelessWidget {
   final String researcherUniversity = 'Mae Fah Luang University';
   final String researcherResearchAreas = '• Biometric Usability Testing\n• User Experience Research\n• Data Science';
   final String researcherPublications = '• Research Paper 1: Title\n• Research Paper 2: Title\n• Research Paper 3: Title';
-  final String researcherPhotoUrl = 'https://example.com/profile.jpg'; // URL of the researcher photo
+  final String researcherPhotoUrl = 'https://example.com/profile.jpg'; // Update this with a valid image URL
 
   @override
   Widget build(BuildContext context) {
     return Column(
-
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 16.0),
+        // Profile Picture
         Center(
           child: CircleAvatar(
-            radius: 100.0,
+            radius: 80.0,
             backgroundImage: NetworkImage(researcherPhotoUrl),
           ),
         ),
         SizedBox(height: 16.0),
-        Text(
-          researcherName,
-          style: TextStyle(
-            fontSize: 28.0,
-            fontWeight: FontWeight.bold,
+
+        // Name & University
+        Center(
+          child: Column(
+            children: [
+              Text(
+                researcherName,
+                style: TextStyle(
+                  fontSize: 28.0,
+                  fontFamily: "Tommy",
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 5.0),
+              Text(
+                researcherUniversity,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontFamily: "Tommy",
+                  color: Colors.grey,
+                ),
+              ),
+            ],
           ),
         ),
-        SizedBox(height: 8.0),
-        Text(
-          researcherUniversity,
-          style: TextStyle(fontSize: 18.0, color: Colors.grey),
-        ),
-        SizedBox(height: 16.0),
-        Text(
-          'Bio:',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 8.0),
-        Text(
-          researcherBio,
-          style: TextStyle(fontSize: 16.0),
-        ),
-        SizedBox(height: 16.0),
-        Text(
-          'Contact Information:',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 8.0),
-        Text(
-          researcherContact,
-          style: TextStyle(fontSize: 16.0),
-        ),
-        SizedBox(height: 16.0),
-        Text(
-          'Research Areas:',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 8.0),
-        Text(
-          researcherResearchAreas,
-          style: TextStyle(fontSize: 16.0),
-        ),
-        SizedBox(height: 16.0),
-        Text(
-          'Publications:',
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 8.0),
-        Text(
-          researcherPublications,
-          style: TextStyle(fontSize: 16.0),
-        ),
-        SizedBox(height: 25),
+        SizedBox(height: 20.0),
 
+        // Information Cards
+        _buildInfoCard('Bio', researcherBio),
+        _buildInfoCard('Contact Information', researcherContact),
+        _buildInfoCard('Research Areas', researcherResearchAreas),
+        _buildInfoCard('Publications', researcherPublications),
 
-        ElevatedButton(
-          onPressed: () {
-            _navigateToWelcomePage(context);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 117, 232, 151),
-            foregroundColor: Colors.black,
-            shadowColor: Color.fromARGB(255, 57, 114, 74),
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+        SizedBox(height: 30.0),
+
+        // Log Out Button
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              _navigateToWelcomePage(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color.fromARGB(255, 90, 121, 201),
+              foregroundColor: Colors.white,
+              shadowColor: Color.fromARGB(255, 57, 114, 74),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              minimumSize: Size(150, 50),
             ),
-            minimumSize: Size(100, 50),
-          ),
-          child: const Text(
-            'Log Out',
-            style: TextStyle(
-              fontSize: 18,
-              fontFamily: "Tommy",
-              fontWeight: FontWeight.bold,
+            child: const Text(
+              'Log Out',
+              style: TextStyle(
+                fontSize: 18,
+                fontFamily: "Tommy",
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
-        SizedBox(height: 25),
-
       ],
     );
   }
+
+  // Reusable Info Card Widget
+  Widget _buildInfoCard(String title, String content) {
+  return Container(
+    width: double.infinity, // Expands to full width
+    margin: EdgeInsets.symmetric(vertical: 10.0),
+    child: Card(
+      color: Colors.white,
+      shadowColor: Color.fromARGB(255, 90, 121, 201),
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontFamily: "Tommy",
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 90, 121, 201),
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              content,
+              style: TextStyle(
+                fontSize: 16.0,
+                fontFamily: "Tommy",
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 
   void _navigateToWelcomePage(BuildContext context) {
     Navigator.push(
       context,
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 300),
-        pageBuilder: (context, animation, secondaryAnimation) => const Welcome(), // Now directly linked
+        pageBuilder: (context, animation, secondaryAnimation) => const Welcome(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
