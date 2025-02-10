@@ -11,6 +11,7 @@ import AdminList from './components/menu-items/AdminList';
 import RolePermission from './components/menu-items/RolePermission';
 import OpenAdminAcc from './components/menu-items/OpenAdminAcc';
 import UserList from './components/menu-items/UserList';
+import OtherAnalysis from './components/menu-items/OtherAnalysis';
 
 const App = () => {
   const [theme, setTheme] = useState('light'); // Default theme is light
@@ -35,6 +36,7 @@ const App = () => {
               <Route path="/role-permission" element={<RolePermission />} />
               <Route path="/open-admin-acc" element={<OpenAdminAcc />} />
               <Route path="/user-list" element={<UserList />} />
+              <Route path="/other-analysis" element={<OtherAnalysis />} />
 
 
             </Routes>

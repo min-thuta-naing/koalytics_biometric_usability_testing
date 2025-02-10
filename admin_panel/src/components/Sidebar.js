@@ -56,10 +56,10 @@ const Sidebar = ({ theme }) => {
                     {isDashboardOpen && (
                         <div className="dropdown-menu">
                             <Link to="/analysis" className="dropdown-item">
-                                <HiChartPie className="sidebar-icon" /> Analysis
+                                <HiChartPie className="sidebar-icon" /> User Analysis
                             </Link>
-                            <Link to="/others" className="dropdown-item">
-                                <FaEllipsisH className="sidebar-icon" /> Others
+                            <Link to="/other-analysis" className="dropdown-item">
+                                <FaEllipsisH className="sidebar-icon" /> Other Analysis
                             </Link>
                         </div>
                     )}
