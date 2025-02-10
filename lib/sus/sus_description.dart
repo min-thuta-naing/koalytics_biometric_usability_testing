@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:koalytics_biometric_usability_testing/sus/sus_form.dart';
 import 'sus_quest.dart'; // Import the SUS questionnaire page
 
 class SusDescription extends StatelessWidget {
@@ -65,7 +66,7 @@ class SusDescription extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SusQuest()),
+                    MaterialPageRoute(builder: (context) => const SusPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
