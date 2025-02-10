@@ -63,7 +63,7 @@ class _BiometricAppState extends State<BiometricApp> {
             TextField(
               controller: _appNameController,
               decoration: InputDecoration(
-                labelText: 'App/Website Name',
+                labelText: 'App Name',
                 labelStyle: const TextStyle(
                   fontSize: 16,
                   fontFamily: "Tommy",

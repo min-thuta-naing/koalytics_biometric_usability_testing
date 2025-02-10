@@ -103,7 +103,7 @@ class _BiometricWebState extends State<BiometricWeb> {
            TextField(
               controller: _appLinkController,
               decoration: InputDecoration(
-                labelText: 'App Link',
+                labelText: 'Website Link',
                 labelStyle: const TextStyle(
                   fontSize: 16,
                   fontFamily: "Tommy",
