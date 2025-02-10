@@ -60,9 +60,20 @@ class _BiometricWebState extends State<BiometricWeb> {
  Widget build(BuildContext context) {
    return Scaffold(
      appBar: AppBar(
-       title: const Text('Biometric Webpage'),
-       backgroundColor: const Color.fromARGB(255, 90, 121, 201),
-     ),
+        title: const Text(
+          'for Web', 
+          style: TextStyle(
+            fontFamily: "Tommy",
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Color.fromARGB(255, 90, 121, 201),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // White back arrow
+        ),
+      ),
      body: Padding(
        padding: const EdgeInsets.all(16.0),
        child: Column(
