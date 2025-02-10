@@ -243,8 +243,6 @@ class _ResearcherInfoForm extends State<ResearcherInfoForm> {
                 ),
                 const SizedBox(height: 20),
 
-
-
                 // Sign Up Button with Sliding Transition
                 ElevatedButton(
                   onPressed: () {
