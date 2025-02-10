@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:koalytics_biometric_usability_testing/bio_app.dart';
 import 'package:koalytics_biometric_usability_testing/bio_web.dart';
-import '../sus_quest.dart';
+import '../sus/sus_quest.dart';
 import '../biometric_test.dart';
+import '../sus/sus_description.dart';
 
 class ResearcherDashboard extends StatefulWidget {
   const ResearcherDashboard({super.key});
@@ -100,7 +101,7 @@ class _ResearcherDashboardState extends State<ResearcherDashboard> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const SusQuest()),
+                                MaterialPageRoute(builder: (context) => const SusDescription()),
                               );
                             },
                             icon: Icon(
