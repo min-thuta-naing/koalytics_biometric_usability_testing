@@ -1,31 +1,20 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
-import Dashboard from "./pages/Dashboard";
-import Settings from "./pages/Settings";
-import Profile from "./pages/Profile";
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import SignUpForm from "./pages/SignupPage";
+// import Login from "./pages/LoginPage";
+// import Welcome from "./pages/WelcomePage";
 
 function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
   return (
     <Router>
-      <div className="flex">
-        <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-        <div
-          className={`flex-1 mt-16 transition-all duration-500 ${isSidebarOpen ? "ml-60" : "ml-16"}`}
-        >
-          <Topbar />
-          <div className="p-4">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/profile" element={<Profile />} />
-            </Routes>
-          </div>
-        </div>
-      </div>
+      <Routes>
+        {/* Public Pages */}
+        <Route path="/sign-up" element={<SignUpForm />} />
+        {/* <Route path="/login" element={<Login />} />
+        <Route path="/welcome" element={<Welcome />} /> */}
+
+        {/* Redirect any other route to sign-up */}
+        <Route path="*" element={<Navigate to="/sign-up" />} />
+      </Routes>
     </Router>
   );
 }
