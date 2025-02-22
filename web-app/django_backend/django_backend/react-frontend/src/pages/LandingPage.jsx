@@ -104,7 +104,7 @@ const LandingPage = () => {
                     </div>
 
                     <div className="w-1/2 flex justify-end">
-                        <img src="/images/photo1.png" alt="Logo" className="h-auto w-auto" />
+                        <img src="/images/111.png" alt="Logo" className="h-auto w-auto" />
                     </div>
                 </div>
 
