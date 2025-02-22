@@ -89,7 +89,7 @@ export default function SignUpLayout() {
 
         {/* Sign Up Button */}
         <div className="col-span-2 flex justify-center mt-8">
-          <button className="bg-[#8080ff] hover:bg-[#6666ff] text-white px-10 py-3 rounded-xl font-bold text-l">
+          <button className="bg-violet-400 text-black text-lg px-5 py-2 rounded-lg hover:bg-violet-500 border border-gray-400 rounded-full">
             Sign Up
           </button>
         </div>
