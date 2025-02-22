@@ -47,7 +47,7 @@ const ResearcherSidebar = () => {
             <Menu size={18} />
           </button>
 
-          <nav className="space-y-2 flex-grow mt-14">
+          <nav className="space-y-2 flex-grow mt-20">
             <button
               onClick={() => setActivePage("home")}
               className={`flex items-center p-2 w-full rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out ${activePage === "home" ? "bg-gray-300" : ""}`}
