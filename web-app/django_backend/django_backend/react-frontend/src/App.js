@@ -13,7 +13,8 @@ import Question2 from "./pages/Question2";
 import Question3 from "./pages/Question3";
 import Question4 from "./pages/Question4";
 import Question5 from "./pages/Question5";
-import LoginPage from "./pages/LoginPage";
+
+// import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
 
 function App() {
@@ -34,7 +35,6 @@ function App() {
         <Route path="/question3" element={<Question3/>}/>
         <Route path="/question4" element={<Question4/>}/>
         <Route path="/question5" element={<Question5/>}/>
-        <Route path="/loginpage" element={<LoginPage />} />
       </Routes>
     </Router>
   );
