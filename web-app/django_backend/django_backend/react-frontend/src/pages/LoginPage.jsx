@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Logging in with:", { email, password });
-  };
 
+    // Redirect to HomePage after successful login
+    navigate("/homepage"); // Navigates to /homepage
+  };
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-blue-50 p-8 rounded-lg shadow-lg w-full max-w-md text-center">
