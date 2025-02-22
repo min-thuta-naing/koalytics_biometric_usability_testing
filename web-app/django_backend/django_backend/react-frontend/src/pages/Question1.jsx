@@ -31,7 +31,10 @@ export default function HobbyQuestion() {
     <div className="min-h-screen w-full flex flex-col items-center bg-[#EEF2FF] p-4">
       {/* Progress Bar and Navigation */}
       <div className="w-full max-w-3xl flex items-center justify-between mt-8 mb-8">
-        <button className="text-[#4A90E2] font-semibold hover:underline">
+      <button
+          className="text-[#4A90E2] font-semibold hover:underline"
+          onClick={() => navigate("/signup")} // Navigate back to SignUp page
+        >
           ← Back
         </button>
         <div className="flex-grow h-3 mx-4 bg-gray-300 rounded-full overflow-hidden">
