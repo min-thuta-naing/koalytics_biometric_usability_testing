@@ -20,8 +20,17 @@ from django.urls import path, re_path
 from django.views.generic import TemplateView
 from . import views 
 
+# for sign up
+from .views import signup
+
+#for log in 
+from .views import login
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index, name='index'),
+    path('api/signup/', signup, name='signup'),
+    path('api/login/', login, name='login'),
     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
 ]
