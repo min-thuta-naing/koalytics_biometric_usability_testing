@@ -15,11 +15,13 @@ const ResearcherPage = () => {
           <Menu size={24} />
         </button>
 
-        {/* Profile Section */}
-        <div className="flex items-center space-x-2 mb-6">
-          <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
-          {!isCollapsed && <span className="font-semibold">Researcher</span>}
-        </div>
+        {/* Profile Section - Hidden when Collapsed */}
+        {!isCollapsed && (
+          <div className="flex flex-col items-center space-y-2 mb-6">
+            <div className="w-32 h-32 bg-gray-300 rounded-full"></div>
+            <span className="font-semibold text-lg text-center">Researcher</span>
+          </div>
+        )}
 
         {/* Menu Items */}
         <nav className="space-y-2">
