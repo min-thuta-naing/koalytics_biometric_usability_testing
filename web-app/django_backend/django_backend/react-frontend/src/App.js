@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import ResearcherPage from "./pages/ResearcherPage";
 import MyAccount from "./pages/MyAccount";
 import AboutUs from "./pages/AboutUs";
+import AdminPage from "./pages/AdminPage";
 import Settings from "./pages/Settings";
 import Question1 from "./pages/Question1";
 import Question2 from "./pages/Question2";
@@ -26,6 +27,7 @@ function App() {
         <Route path="/homepage" element={<HomePage/>}/>
         <Route path="/my-account" element={<MyAccount/>}/>
         <Route path="/settings" element={<Settings/>}/>
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="/about-us" element={<AboutUs/>}/>
         <Route path="/researcher-dashboard" element={<ResearcherPage/>}/>
         <Route path="/question1" element={<Question1/>}/>
