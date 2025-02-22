@@ -41,6 +41,12 @@ export default function IndustryQuestion() {
     );
   };
 
+  // Add the navigation function to navigate to the homepage
+  const handleConfirm = () => {
+    navigate("/homepage"); // Navigate directly without alert
+  };
+  
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center bg-[#EEF2FF] p-4">
       {/* Progress Bar and Navigation */}
@@ -88,7 +94,7 @@ export default function IndustryQuestion() {
         <div className="flex justify-center mt-8">
           <button
             className="bg-[#4A90E2] hover:bg-[#357ABD] text-white py-3 px-6 rounded-xl font-semibold text-lg transition duration-300"
-            onClick={() => alert(`Selected Industry: ${selectedIndustry.join(", ") || "None"}`)}
+            onClick={handleConfirm} // Call the handleConfirm function here
           >
             Confirm
           </button>
