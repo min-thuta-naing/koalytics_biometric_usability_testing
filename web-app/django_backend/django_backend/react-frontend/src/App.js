@@ -13,8 +13,6 @@ import Question3 from "./pages/Question3";
 import Question4 from "./pages/Question4";
 import Question5 from "./pages/Question5";
 import LoginPage from "./pages/LoginPage";
-import ResearcherProjects from "./pages/Researcher/ResearcherProjects";
-import ResearcherHome from "./pages/Researcher/ResearcherHome";
 import NewProjectPage from "./pages/Researcher/NewProjectPage";
 
 // import Login from "./pages/LoginPage";
@@ -34,8 +32,6 @@ function App() {
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/new-project" element={<NewProjectPage />} />
         <Route path="/researcher-dashboard" element={<ResearcherSidebar />} />
-        <Route path="/researcher-home" element={<ResearcherHome />} />
-        <Route path="/researcher-project" element={<ResearcherProjects />} />
         <Route path="/question1" element={<Question1 />} />
         <Route path="/question2" element={<Question2 />} />
         <Route path="/question3" element={<Question3 />} />
