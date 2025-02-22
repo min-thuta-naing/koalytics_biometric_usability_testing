@@ -15,6 +15,31 @@
   }
 }
 
+/* index.css or App.css */
+
+/* Gradient Animation */
+@keyframes gradient-move {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-move {
+  background-size: 400% 400%;
+  animation: gradient-move 6s ease infinite;
+}
+
+/* Fade-in Animation */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 2s ease-in-out;
+}
+
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
