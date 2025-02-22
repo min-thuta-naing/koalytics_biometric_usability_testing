@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { ArrowLeftRight } from "lucide-react";
+
 
 const HomePage = () => {
     const [showPopup, setShowPopup] = useState(false);
@@ -32,7 +33,7 @@ const HomePage = () => {
             </header>
 
             <main className="flex-1 overflow-y-auto ">
-
+                
             </main>
 
             {/* Floating Switch Icon */}
@@ -41,7 +42,7 @@ const HomePage = () => {
                     className="h-14 w-14 rounded-full bg-violet-400 text-white flex items-center justify-center shadow-lg hover:bg-violet-500"
                     onClick={() => setShowSwitchPopup(!showSwitchPopup)}
                 >
-                    <RotateCcw size={28} />
+                    <ArrowLeftRight size={28} />
                 </button>
 
                 {showSwitchPopup && (
