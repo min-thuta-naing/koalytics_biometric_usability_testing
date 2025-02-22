@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import SignUp from "./pages/SignupPage";
 import LandingPage from "./pages/LandingPage";
+import HomePage from "./pages/HomePage";
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
 
@@ -11,6 +12,7 @@ function App() {
         {/* Public Pages */}
         <Route path="*" element={<LandingPage/>} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/homepage" element={<HomePage/>}/>
       </Routes>
     </Router>
   );
