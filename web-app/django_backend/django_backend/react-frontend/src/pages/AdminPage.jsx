@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, User as UserIcon, UserMinus, Lock, Trash2 } from "lucide-react";
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
-// Registering chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-// Dummy data representing the users signed up (Increased number of users with only "Researcher" and "Participant" roles)
 const userData = [
   { id: 1, name: "John Doe", email: "john@example.com", role: "Researcher", birthday: "1990-05-15", gender: "Male", maritalStatus: "Single", country: "USA", zipCode: "10001" },
   { id: 2, name: "Jane Smith", email: "jane@example.com", role: "Participant", birthday: "1992-07-22", gender: "Female", maritalStatus: "Married", country: "UK", zipCode: "20002" },
@@ -39,32 +32,11 @@ const AdminPage = () => {
 
   const totalUsers = users.length; // Calculate total users dynamically
 
-  // Dummy data for monthly user fluctuation (Example: Jan - Dec)
-  const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    datasets: [
-      {
-        label: "Monthly User Fluctuation",
-        data: [3, 5, 8, 4, 7, 6, 9, 12, 10, 11, 15, 18], // Example data
-        backgroundColor: "rgba(148, 84, 255, 0.5)",
-        borderColor: "rgba(148, 84, 255, 1)",
-        borderWidth: 2, // Adjusted for line thickness
-        fill: false, // Do not fill the area under the line
-      },
-    ],
-  };
-
   return (
     <div className="h-screen flex flex-col">
       {/* Top Bar */}
       <div className="bg-white shadow-md px-4 py-5 flex items-center justify-between">
         <div className="flex items-center space-x-4 ml-auto">
-          {/* Notification Icon */}
-          <button className="relative">
-            <Bell size={24} />
-            <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">3</span>
-          </button>
-
           {/* Profile */}
           <div className="flex items-center space-x-2">
             <img
@@ -77,75 +49,60 @@ const AdminPage = () => {
         </div>
       </div>
 
-        {/* Content Section */}
-<div className="flex-1 p-6 flex space-x-6">
-  {/* Total Users Box and Status of Existing Projects - Stacked and Aligned with the Chart */}
-  <div className="flex flex-col space-y-6 w-1/3 h-full">
-    {/* Total Users Box - Smaller Rectangle with Violet Accents */}
-    <div className="bg-gradient-to-b from-violet-100 via-white to-transparent p-4 border-2 border-violet-500 shadow-lg flex flex-col items-center justify-center h-full">
-      <div className="text-xl font-semibold text-violet-500 mb-2">Total Users</div>
-      <div className="text-3xl font-bold">{totalUsers}</div>
-    </div>
+      {/* Content Section */}
+      <div className="flex-1 p-6 flex space-x-6">
+        {/* Total Users Box and Status of Existing Projects - Stacked */}
+        <div className="flex flex-col space-y-6 w-1/3 h-full">
+          {/* Total Users Box */}
+          <div className="bg-gradient-to-b from-violet-100 via-white to-transparent p-4 border-2 border-violet-500 shadow-lg flex flex-col items-center justify-center h-full">
+            <div className="text-xl font-semibold text-violet-500 mb-2">Total Users</div>
+            <div className="text-3xl font-bold">{totalUsers}</div>
+          </div>
 
-    {/* Status of Existing Projects Box - Rectangle with Violet Accents */}
-    <div className="bg-gradient-to-b from-violet-100 via-white to-transparent p-4 border-2 border-violet-500 shadow-lg flex flex-col items-center justify-center h-full">
-      <div className="text-xl font-semibold text-violet-500 mb-2">Status of Existing Projects</div>
-      <div className="text-lg">In Progress: 5</div>
-      <div className="text-lg">Ended: 7</div>
-    </div>
-  </div>
+          {/* Status of Existing Projects Box */}
+          <div className="bg-gradient-to-b from-violet-100 via-white to-transparent p-4 border-2 border-violet-500 shadow-lg flex flex-col items-center justify-center h-full">
+            <div className="text-xl font-semibold text-violet-500 mb-2">Status of Existing Projects</div>
+            <div className="text-lg">In Progress: 5</div>
+            <div className="text-lg">Ended: 7</div>
+          </div>
+        </div>
 
-  {/* Line Graph for Monthly User Fluctuation - Rectangle with Violet Accents */}
-  <div className="bg-white p-4 border-2 border-violet-200 shadow-lg w-2/3 h-full">
-    <h3 className="text-xl font-semibold text-violet-500 mb-4">Monthly User Fluctuation</h3>
-    <Line data={data} options={{ responsive: true, plugins: { legend: { display: false } } }} />
-  </div>
-</div>
-
-
-      {/* User Table */}
-      <div className="p-6">
-        <h1 className="text-2xl font-semibold mb-4">User Information</h1>
-        <table className="min-w-full table-auto border-collapse">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border px-4 py-2 text-left">Actions</th>
-              <th className="border px-4 py-2 text-left">Name</th>
-              <th className="border px-4 py-2 text-left">Email</th>
-              <th className="border px-4 py-2 text-left">Role</th>
-              <th className="border px-4 py-2 text-left">Birthday</th>
-              <th className="border px-4 py-2 text-left">Gender</th>
-              <th className="border px-4 py-2 text-left">Marital Status</th>
-              <th className="border px-4 py-2 text-left">Country</th>
-              <th className="border px-4 py-2 text-left">Zip Code</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-100">
-                <td className="border px-4 py-2 flex justify-start space-x-4">
-                  <button className="text-red-500">
-                    <UserMinus size={20} title="Ban User" />
-                  </button>
-                  <button className="text-yellow-500">
-                    <Lock size={20} title="Suspend User" />
-                  </button>
-                  <button className="text-gray-500">
-                    <Trash2 size={20} title="Remove User" />
-                  </button>
-                </td>
-                <td className="border px-4 py-2">{user.name}</td>
-                <td className="border px-4 py-2">{user.email}</td>
-                <td className="border px-4 py-2">{user.role}</td>
-                <td className="border px-4 py-2">{user.birthday}</td>
-                <td className="border px-4 py-2">{user.gender}</td>
-                <td className="border px-4 py-2">{user.maritalStatus}</td>
-                <td className="border px-4 py-2">{user.country}</td>
-                <td className="border px-4 py-2">{user.zipCode}</td>
+        {/* User Table */}
+        <div className="p-6 w-2/3">
+          <h1 className="text-2xl font-semibold mb-4">User Information</h1>
+          <table className="min-w-full table-auto border-collapse">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border px-4 py-2 text-left">Actions</th>
+                <th className="border px-4 py-2 text-left">Name</th>
+                <th className="border px-4 py-2 text-left">Email</th>
+                <th className="border px-4 py-2 text-left">Role</th>
+                <th className="border px-4 py-2 text-left">Birthday</th>
+                <th className="border px-4 py-2 text-left">Gender</th>
+                <th className="border px-4 py-2 text-left">Marital Status</th>
+                <th className="border px-4 py-2 text-left">Country</th>
+                <th className="border px-4 py-2 text-left">Zip Code</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id} className="hover:bg-gray-100">
+                  <td className="border px-4 py-2 flex justify-start space-x-4">
+                    {/* Action Buttons */}
+                  </td>
+                  <td className="border px-4 py-2">{user.name}</td>
+                  <td className="border px-4 py-2">{user.email}</td>
+                  <td className="border px-4 py-2">{user.role}</td>
+                  <td className="border px-4 py-2">{user.birthday}</td>
+                  <td className="border px-4 py-2">{user.gender}</td>
+                  <td className="border px-4 py-2">{user.maritalStatus}</td>
+                  <td className="border px-4 py-2">{user.country}</td>
+                  <td className="border px-4 py-2">{user.zipCode}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
