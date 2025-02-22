@@ -48,16 +48,16 @@ const LandingPage = () => {
         <div className="min-h-screen flex flex-col">
             <header className="bg-white py-3 px-6 sticky top-0 z-10 flex justify-between items-center border-b border-gray-300">
                 <div className="flex items-center gap-3">
-                    <img src="/images/logo.png" alt="Logo" className="h-7 w-auto" />
+                    <img src="/static/images/logo.png" alt="Logo" className="h-7 w-auto" />
                     <h1 className="font-funnel font-bold text-3xl text-black">Koalytics</h1>
                 </div>
                 <div className="flex gap-4">
                     {/* Login button now navigates to the login page */}
                     <Link to="/loginpage">
-    <button className="bg-transparent text-black text-sm px-4 py-2 rounded-lg border border-gray-400 rounded-full">
-        Log In
-    </button>
-</Link>
+                    <button className="bg-transparent text-black text-sm px-4 py-2 rounded-lg border border-gray-400 rounded-full">
+                        Log In
+                    </button>
+                </Link>
 
                     <Link to="/signup">
                         <button className="bg-violet-400 text-black text-sm px-4 py-2 rounded-lg hover:bg-violet-500 border border-gray-400 rounded-full">
@@ -82,7 +82,7 @@ const LandingPage = () => {
                     </div>
 
                     <div className="w-1/2 flex justify-end">
-                        <img src="/images/photo1.png" alt="Logo" className="h-auto w-auto" />
+                        <img src="/static/images/photo1.png" alt="Logo" className="h-auto w-auto" />
                     </div>
                 </div>
 
@@ -90,7 +90,7 @@ const LandingPage = () => {
                     <div className="h-10"></div>
                     <div className="flex flex-row items-center py-3 px-6 gap-10">
                         <div className="w-1/6 flex justify-center">
-                            <img src="/images/1openquote.png" alt="quote" className="h-auto w-20" />
+                            <img src="/static/images/1openquote.png" alt="quote" className="h-auto w-20" />
                         </div>
                         <div className="w-4/6 px-8">
                             <h1 className="text-2xl text-center ">
@@ -101,16 +101,16 @@ const LandingPage = () => {
                             </h1>
                         </div>
                         <div className="w-1/6 flex justify-center">
-                            <img src="/images/1closequote.png" alt="quote" className="h-auto w-20" />
+                            <img src="/static/images/1closequote.png" alt="quote" className="h-auto w-20" />
                         </div>
                     </div>
                     <div className="h-10"></div>
                     <div className="flex flex-row justify-center items-center py-3 px-6 gap-10">
-                        <img src="/images/person1.png" alt="quote" className="h-auto w-20" />
-                        <img src="/images/person2.png" alt="quote" className="h-auto w-20" />
-                        <img src="/images/person3.png" alt="quote" className="h-auto w-20" />
-                        <img src="/images/person4.png" alt="quote" className="h-auto w-20" />
-                        <img src="/images/person5.png" alt="quote" className="h-auto w-20" />
+                        <img src="/static/images/person1.png" alt="quote" className="h-auto w-20" />
+                        <img src="/static/images/person2.png" alt="quote" className="h-auto w-20" />
+                        <img src="/static/images/person3.png" alt="quote" className="h-auto w-20" />
+                        <img src="/static/images/person4.png" alt="quote" className="h-auto w-20" />
+                        <img src="/static/images/person5.png" alt="quote" className="h-auto w-20" />
                     </div>
                 </div>
             </main>
