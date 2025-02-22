@@ -37,9 +37,10 @@ const HomePage = () => {
                                 onClick={() => setShowPopup(!showPopup)}
                             />
                             {showPopup && (
-                                <div className="absolute right-0 mt-12 w-48 bg-white shadow-lg rounded-lg py-2">
+                                <div className="absolute right-0 mt-16 w-48 bg-white shadow-lg rounded-lg py-2 border border-gray-400 ">
                                     <Link to="/my-account" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Account</Link>
                                     <Link to="/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</Link>
+                                    <Link to="/about-us" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">About us</Link>
                                     <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Sign Out</button>
                                 </div>
                             )}

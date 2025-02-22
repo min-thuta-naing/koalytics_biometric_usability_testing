@@ -1,6 +1,10 @@
 const Settings = () => {
-    return <div className="p-4"><h2 className="text-xl">Settings Page</h2></div>;
-  };
+    return (
+      <div>
+        <h1> thi si setting</h1>
+      </div>
+    )
+};
   
   export default Settings;
   
