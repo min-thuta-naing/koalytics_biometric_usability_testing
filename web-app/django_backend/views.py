@@ -130,6 +130,19 @@ def create_project(request, user_id):
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 
+# for viewing each project 
+def get_project(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        return JsonResponse({
+            "id": project.id,
+            "name": project.name,
+            "description": project.description
+        })
+    except Project.DoesNotExist:
+        return JsonResponse({"error": "Project not found"}, status=404)
+
+
 # Get user by ID to display in MyAccount page
 @csrf_exempt
 def get_user(request, user_id):

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import NewProjectPage from "./NewProjectPage";
+import CreateProjects from "./CreateProjects";
 
-const ResearcherProjects = () => {
+const Projects = () => {
     const [userId, setUserId] = useState(null);
     const [showProjectForm, setShowProjectForm] = useState(false);
     const [projects, setProjects] = useState([]);
@@ -50,7 +50,7 @@ const ResearcherProjects = () => {
             </div>
 
             <div className="px-12 mt-8">
-                <h1 className="font-semibold text-3xl">Projects</h1>
+                <h1 className="font-semibold text-xl gap-2">Projects</h1>
                 <p>Here are your current projects...</p>
                 <div className="grid grid-cols-3 gap-6 mt-6">
                     {projects.map((project) => (
@@ -76,7 +76,7 @@ const ResearcherProjects = () => {
                         >
                             ✕
                         </button>
-                        <NewProjectPage 
+                        <CreateProjects 
                             onCancel={() => setShowProjectForm(false)} 
                             userId={userId} 
                             onProjectCreated={handleProjectCreated}
@@ -88,4 +88,4 @@ const ResearcherProjects = () => {
     );
 };
 
-export default ResearcherProjects;
+export default Projects;
