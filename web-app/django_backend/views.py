@@ -8,7 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 from .models import User, Hobby, Project
 from .serializers import UserSerializer, ProjectSerializer
-
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_protect
 
 def index(request):
     return render (request, 'index.html')
@@ -42,7 +43,6 @@ def signup(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
 
 # for saving hobbies 
 @csrf_exempt
@@ -97,6 +97,7 @@ def login(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
 #for creating projects 
 @csrf_exempt
 def create_project(request, user_id):
@@ -109,13 +110,27 @@ def create_project(request, user_id):
             data = json.loads(request.body.decode('utf-8'))
             project_name = data.get('name')
             project_description = data.get('description')
+            organization = data.get('organization')
+            max_participants = data.get('max_participants')  
+            start_date = data.get('start_date')              
+            end_date = data.get('end_date')                  
+            side_notes = data.get('side_notes')             
 
             # Validate required fields
             if not project_name or not project_description:
                 return JsonResponse({'error': 'Project name and description are required.'}, status=400)
 
             # Create project and associate with user
-            project = Project.objects.create(name=project_name, description=project_description)
+            # project = Project.objects.create(name=project_name, description=project_description)
+            project = Project.objects.create(
+                name=project_name,
+                description=project_description,
+                organization=organization,
+                max_participants=max_participants,
+                start_date=start_date,
+                end_date=end_date,
+                side_notes=side_notes
+            )
             user.projects.add(project)
 
             return JsonResponse({'message': 'Project created successfully!', 'project_id': project.id}, status=201)
@@ -129,6 +144,29 @@ def create_project(request, user_id):
 
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
+# editing the project info 
+@csrf_exempt
+def update_project(request, project_id):
+    if request.method == "PATCH":
+        try:
+            project = get_object_or_404(Project, id=project_id)
+            data = json.loads(request.body.decode('utf-8'))
+
+            # Update only provided fields
+            project.organization = data.get("organization", project.organization)
+            project.max_participants = data.get("max_participants", project.max_participants)
+            project.start_date = data.get("start_date", project.start_date)
+            project.end_date = data.get("end_date", project.end_date)
+            project.side_notes = data.get("side_notes", project.side_notes)
+
+            project.save()
+            return JsonResponse({"message": "Project updated successfully"}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
 
 # for viewing each project 
 def get_project(request, project_id):
@@ -137,10 +175,25 @@ def get_project(request, project_id):
         return JsonResponse({
             "id": project.id,
             "name": project.name,
-            "description": project.description
+            "description": project.description,
+            "organization": project.organization,
+            "max_participants": project.max_participants,
+            "start_date": project.start_date,
+            "end_date": project.end_date,
+            "side_notes": project.side_notes,
         })
     except Project.DoesNotExist:
         return JsonResponse({"error": "Project not found"}, status=404)
+    
+
+@csrf_exempt
+def delete_project(request, project_id):
+    if request.method == "DELETE":
+        project = get_object_or_404(Project, id=project_id)
+        project.delete()
+        return JsonResponse({"message": "Project deleted successfully"}, status=200)
+    
+    return JsonResponse({"error": "Method not allowed"}, status=405)
 
 
 # Get user by ID to display in MyAccount page
@@ -158,12 +211,14 @@ def get_user(request, user_id):
             "country": user.country,
             "zip_code": user.zip_code,
             "hobbies": list(user.hobbies.values("id", "name")),  # ✅ Add hobbies here
-            "projects": list(user.projects.values("id", "name", "description")),
+            "projects": list(user.projects.values(
+                "id", "name", "description", "organization", 
+                "max_participants", "start_date", "end_date", "side_notes"
+            )),
         }
         return JsonResponse(user_data, status=200)
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found"}, status=404)
-
 
 
 # Fetch All Users for Admin Dashboard

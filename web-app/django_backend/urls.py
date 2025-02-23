@@ -32,7 +32,10 @@ from .views import get_user
 from .views import get_all_users
 
 from .views import create_project
+from .views import update_project
+
 from .views import get_project
+from .views import delete_project
 
 
 urlpatterns = [
@@ -41,8 +44,9 @@ urlpatterns = [
     path('api/signup/', signup, name='signup'),
     path('api/save-hobbies/<int:user_id>/', save_hobbies, name='save-hobbies'),
     path('create_project/<int:user_id>/', create_project, name='create_project'),  # ✅ Add new route
+    path("api/update_project/<int:project_id>/", update_project, name="update_project"),
     path('api/project/<int:project_id>/', get_project, name='get_project'),
-
+    path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"),
 
     path('api/login/', login, name='login'),
     path('api/user/<int:user_id>/', get_user, name='get_user'),
