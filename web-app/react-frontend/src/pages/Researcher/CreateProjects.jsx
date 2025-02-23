@@ -4,6 +4,12 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
 
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
+    const [organization, setOrganization] = useState("");
+    const [maxParticipants, setMaxParticipants] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [sideNotes, setSideNotes] = useState("");
+
     const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
@@ -24,6 +30,12 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                 body: JSON.stringify({
                     name: projectName,
                     description: projectDescription,
+                    organization: organization,
+                    max_participants: maxParticipants ? parseInt(maxParticipants) : null,
+                    start_date: startDate,
+                    end_date: endDate,
+                    side_notes: sideNotes,
+
                 }),
             });
 
@@ -57,8 +69,56 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                     value={projectDescription}
                     onChange={(e) => setProjectDescription(e.target.value)}
                     className="border border-gray-300 p-3 rounded-lg"
+                    rows="3"
                     required
                 />
+                <select
+                    placeholder ="Organization"
+                    value={organization}
+                    onChange={(e) => setOrganization(e.target.value)}
+                    className="border border-gray-300 p-3 rounded-lg"
+                    required
+                >
+                    <option value="company">Company</option>
+                    <option value="school">School</option>
+                    <option value="college">College</option>
+                    <option value="institution">Institution</option>
+                    <option value="university">University</option>
+                    <option value="freelance">Freelance</option>
+                </select>
+                <input
+                    type="number"
+                    placeholder="Maximun Participant Number"
+                    value={maxParticipants}
+                    onChange={(e) => setMaxParticipants(e.target.value)}
+                    className="border border-gray-300 p-3 rounded-lg"
+                    required
+                />
+                <input
+                    type="date"
+                    placeholder="Project Start Date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="border border-gray-300 p-3 rounded-lg"
+                    required
+                />
+                <input
+                    type="date"
+                    placeholder="Project End Date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="border border-gray-300 p-3 rounded-lg"
+                    required
+                />
+                <textarea
+                    placeholder="Sidenotes"
+                    value={sideNotes}
+                    onChange={(e) => setSideNotes(e.target.value)}
+                    className="border border-gray-300 p-3 rounded-lg"
+                    rows="3"
+                    required
+                />
+
                 <div className="flex justify-end gap-4">
                     <button
                         type="button"
