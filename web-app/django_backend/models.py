@@ -16,12 +16,23 @@ class User(models.Model):
     # Many-to-Many relationship with Hobby table
     hobbies = models.ManyToManyField('Hobby', related_name="users", blank=True)
 
+    #Many-to-Many relationship with Project table 
+    projects = models.ManyToManyField('Project', related_name="users", blank=True)
+
     def __str__(self):
         return self.email
 
 # for hobbies
 class Hobby(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+    
+# for projects 
+class Project(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name

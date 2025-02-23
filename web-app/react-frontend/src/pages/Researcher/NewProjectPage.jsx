@@ -1,8 +1,43 @@
-const NewProjectPage = ({ onCancel }) => {
-    const handleSubmit = (e) => {
+import { useState } from "react";
+
+const NewProjectPage = ({ onCancel, userId, onProjectCreated }) => {
+
+    const [projectName, setProjectName] = useState("");
+    const [projectDescription, setProjectDescription] = useState("");
+    const [error, setError] = useState("");
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        alert("Project Created!");
-        onCancel();
+        setError("");
+
+        if (!userId) {
+            setError("User not found. Please log in.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/create_project/${userId}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: projectName,
+                    description: projectDescription,
+                }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error("Failed to create project.");
+            }
+
+            alert("Project Created!");
+            onProjectCreated();
+            onCancel();
+        } catch (err) {
+            setError(err.message);
+        }
     };
 
     return (
@@ -12,11 +47,15 @@ const NewProjectPage = ({ onCancel }) => {
                 <input
                     type="text"
                     placeholder="Project Name"
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
                     className="border border-gray-300 p-3 rounded-lg"
                     required
                 />
                 <textarea
                     placeholder="Project Description"
+                    value={projectDescription}
+                    onChange={(e) => setProjectDescription(e.target.value)}
                     className="border border-gray-300 p-3 rounded-lg"
                     required
                 />

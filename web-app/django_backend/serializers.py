@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import User, Hobby 
+from .models import User, Hobby, Project
 
 class HobbySerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,6 +18,25 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
+    
+class ProjectSerializer (serializers.ModelSerializer):
+    
+    class Meta: 
+        model = Project
+        fields = ['id', 'name', 'description']
+
+
+
+
+
+
+
+
+
+
+
+
+
     # def create(self, validated_data):
     #     hobbies_data = validated_data.pop('hobbies', [])
     #     validated_data['password'] = make_password(validated_data['password'])
