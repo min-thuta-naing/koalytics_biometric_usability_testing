@@ -7,7 +7,6 @@ const MyAccount = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // const userId = localStorage.getItem("user_id");
         const storedUser = localStorage.getItem("user");
         const userId = storedUser ? JSON.parse(storedUser).id : null;
 
@@ -49,6 +48,17 @@ const MyAccount = () => {
       <p>Marital Status: {userData.marital_status}</p>
       <p>Country: {userData.country}</p>
       <p>Zip Code: {userData.zip_code}</p>
+
+      <h2>Hobbies:</h2>
+      {userData.hobbies && userData.hobbies.length > 0 ? (
+        <ul>
+          {userData.hobbies.map((hobby, index) => (
+            <li key={index}>{hobby.name}</li> 
+          ))}
+        </ul>
+      ) : (
+        <p>No hobbies available.</p>
+      )}
     </div>
   );
 };
