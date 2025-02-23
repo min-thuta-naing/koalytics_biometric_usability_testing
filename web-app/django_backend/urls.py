@@ -26,11 +26,17 @@ from .views import signup
 #for log in 
 from .views import login
 
+# for admin dashboard table 
+from .views import get_all_users
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index, name='index'),
     path('api/signup/', signup, name='signup'),
     path('api/login/', login, name='login'),
+    path('api/user/<int:user_id>/', views.get_user, name='get_user'),
+    path('api/admin/users/', get_all_users, name='get_all_users'),
+
     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
 ]

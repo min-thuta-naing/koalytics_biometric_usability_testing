@@ -24,7 +24,10 @@ const LoginPage = () => {
 
       if (response.ok) {
         console.log("Login successful:", data);
-        navigate("/homepage"); // Redirect to dashboard or home page
+        // ✅ Save user data to localStorage
+        localStorage.setItem("user", JSON.stringify(data));
+        //localStorage.setItem("user_id", data.user_id);
+        navigate("/homepage"); 
       } else {
         setError(data.error || "Login failed. Please try again.");
       }
