@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Menu, House, FolderOpenDot, LogOut } from "lucide-react";
-import ResearcherHome from "./ResearcherHome";
-import ResearcherProjects from "./ResearcherProjects";
+import { Menu, Info, FolderOpenDot, LogOut, CircleUserRound } from "lucide-react";
+import ResearcherGuideline from "./ResearcherGuideline";
+import Projects from "./Projects";
 import {Link, useNavigate} from "react-router-dom"; 
-import NewProjectPage from "./NewProjectPage";
+import NewProjectPage from "./CreateProjects";
 
 const ResearcherSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -62,14 +62,16 @@ const ResearcherSidebar = () => {
 
   const renderContent = () => {
     switch (activePage) {
-      case "home":
-        return <ResearcherHome />;
+      // case "home":
+      //   return <ResearcherHome />;
       case "projects":
-        return <ResearcherProjects onNewProject={() => setActivePage("new-project")} />;
+        return <Projects onNewProject={() => setActivePage("new-project")} />;
+      case "guideline":
+        return <ResearcherGuideline />
       case "new-project":
         return <NewProjectPage onCancel={() => setActivePage("projects")} />;
       default:
-        return <ResearcherHome />;
+        return <Projects />;
     }
   };
 
@@ -89,13 +91,7 @@ const ResearcherSidebar = () => {
           </button>
 
           <nav className="space-y-2 flex-grow mt-20">
-            <button
-              onClick={() => setActivePage("home")}
-              className={`flex items-center p-2 w-full rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out ${activePage === "home" ? "bg-gray-300" : ""}`}
-            >
-              <House size={20} />
-              {showText && <span className="ml-3 text-sm">Home</span>}
-            </button>
+            
 
             <button
               onClick={() => setActivePage("projects")}
@@ -104,11 +100,25 @@ const ResearcherSidebar = () => {
               <FolderOpenDot size={20} />
               {showText && <span className="ml-3 text-sm">Projects</span>}
             </button>
+            
+            <button
+              onClick={() => setActivePage("guideline")}
+              className={`flex items-center p-2 w-full rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out ${activePage === "guideline" ? "bg-gray-300" : ""}`}
+            >
+              <Info size={20} />
+              {showText && <span className="ml-3 text-sm">Guideline</span>}
+            </button>
+
+
           </nav>
 
           <div className="flex flex-col items-left mt-auto">
             <div className="w-10 h-10 mb-4 bg-gray-300 rounded-full transition-all duration-300 ease-in-out"></div>
             <p>{user ? `Hey ${user.first_name}` : "loading ..."}</p>
+            <div onClick={'/my-account'} className="flex items-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out">
+              <CircleUserRound size={20} />
+              {showText && <span className="ml-3 text-sm">My Account</span>}
+            </div>
             <div onClick={() => setShowLogoutPopup(true)} className="flex items-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out">
               <LogOut size={20} />
               {showText && <span className="ml-3 text-sm">Log Out</span>}

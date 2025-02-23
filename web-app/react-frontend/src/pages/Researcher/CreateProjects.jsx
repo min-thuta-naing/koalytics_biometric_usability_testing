@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const NewProjectPage = ({ onCancel, userId, onProjectCreated }) => {
+const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
 
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -79,4 +79,4 @@ const NewProjectPage = ({ onCancel, userId, onProjectCreated }) => {
     );
 };
 
-export default NewProjectPage;
+export default CreateProjects;

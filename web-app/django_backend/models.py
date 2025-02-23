@@ -31,8 +31,15 @@ class Hobby(models.Model):
     
 # for projects 
 class Project(models.Model):
+    #user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
     name = models.CharField(max_length=200)
-    description = models.CharField(max_length=200)
+    description = models.TextField()
+    organization = models.CharField(max_length=255, blank=True, null=True)
+    max_participants = models.IntegerField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    side_notes = models.TextField(blank=True, null=True)
+
 
     def __str__(self):
         return self.name

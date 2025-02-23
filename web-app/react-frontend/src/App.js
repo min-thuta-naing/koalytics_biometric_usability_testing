@@ -13,8 +13,9 @@ import Question3 from "./pages/Question3";
 import Question4 from "./pages/Question4";
 import Question5 from "./pages/Question5";
 import LoginPage from "./pages/LoginPage";
-import NewProjectPage from "./pages/Researcher/NewProjectPage";
+import NewProjectPage from "./pages/Researcher/CreateProjects";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AddProjectDetail from "./pages/Researcher/AddProjectDetail";
 
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
@@ -33,6 +34,7 @@ function App() {
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/admin-dashboard" element={<AdminDashboard/>}/>
         <Route path="/new-project" element={<NewProjectPage />} />
+        <Route path="/project/:projectId" element={<AddProjectDetail />} />
         <Route path="/researcher-dashboard" element={<ResearcherSidebar />} />
         <Route path="/question1" element={<Question1 />} />
         <Route path="/question2" element={<Question2 />} />
