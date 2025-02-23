@@ -30,14 +30,33 @@ export default function SignUpLayout() {
       return;
     }
 
+
     try {
+      const csrftoken = document.cookie.split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+
       const response = await fetch("/api/signup/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json", 
+          "X-CSRFToken": csrftoken,
+        },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('user_id', data.user_id);
+
+        // Fetch user details
+        const userResponse = await fetch(`/api/user/${data.user_id}/`);
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          localStorage.setItem('user', JSON.stringify(userData));
+        }
+
+
         alert("User registered successfully!");
         navigate("/question1");
       } else {

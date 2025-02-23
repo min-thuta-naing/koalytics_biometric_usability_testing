@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 export default function HobbyQuestion() {
   const [selectedHobbies, setSelectedHobbies] = useState([]);
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
 
   const currentQuestion = 1;
   const totalQuestions = 5;
@@ -27,13 +27,40 @@ export default function HobbyQuestion() {
     );
   };
 
+  const handleConfirm = async () => {
+    try {
+      const userId = localStorage.getItem('user_id');
+      if (!userId) {
+        alert('User ID not found. Please sign up again.');
+        navigate("/signup");
+        return;
+      }
+
+      const response = await fetch(`/api/save-hobbies/${userId}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hobbies: selectedHobbies }),
+      });
+
+      if (response.ok) {
+        alert('Hobbies saved successfully!');
+        navigate("/homepage");
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+      console.error('Save Hobbies Error:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center bg-[#EEF2FF] p-4">
-      {/* Progress Bar and Navigation */}
       <div className="w-full max-w-3xl flex items-center justify-between mt-8 mb-8">
-      <button
+        <button
           className="text-[#4A90E2] font-semibold hover:underline"
-          onClick={() => navigate("/signup")} // Navigate back to SignUp page
+          onClick={() => navigate("/signup")}
         >
           ← Back
         </button>
@@ -46,13 +73,11 @@ export default function HobbyQuestion() {
         <span className="text-gray-600">{`${currentQuestion}/${totalQuestions}`}</span>
       </div>
 
-      {/* Question Box */}
       <div className="w-full max-w-3xl h-[70vh] p-10 bg-white shadow-md rounded-md flex flex-col justify-center items-center mt-8">
         <p className="text-2xl font-semibold text-gray-700 mb-6 text-center">
           What is your favorite hobby?
         </p>
 
-        {/* Hobby Selection */}
         <div className="flex flex-wrap gap-6 justify-center mb-8">
           {hobbies.map((hobby) => (
             <button
@@ -70,11 +95,10 @@ export default function HobbyQuestion() {
           ))}
         </div>
 
-        {/* Confirm Button */}
         <div className="flex justify-center mt-8">
           <button
             className="bg-[#4A90E2] hover:bg-[#357ABD] text-white py-3 px-6 rounded-xl font-semibold text-lg transition duration-300"
-            onClick={() => navigate("/question2")} // Navigate to Question 2
+            onClick={handleConfirm}
           >
             Confirm
           </button>

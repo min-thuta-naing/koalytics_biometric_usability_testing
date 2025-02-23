@@ -21,10 +21,12 @@ from django.views.generic import TemplateView
 from . import views 
 
 # for sign up
-from .views import signup
+from .views import signup, save_hobbies
 
 #for log in 
 from .views import login
+
+from .views import get_user
 
 # for admin dashboard table 
 from .views import get_all_users
@@ -34,8 +36,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index, name='index'),
     path('api/signup/', signup, name='signup'),
+    path('api/save-hobbies/<int:user_id>/', save_hobbies, name='save-hobbies'),
     path('api/login/', login, name='login'),
-    path('api/user/<int:user_id>/', views.get_user, name='get_user'),
+    path('api/user/<int:user_id>/', get_user, name='get_user'),
     path('api/admin/users/', get_all_users, name='get_all_users'),
 
     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),

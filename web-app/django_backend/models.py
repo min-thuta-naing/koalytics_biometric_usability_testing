@@ -1,7 +1,7 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password
 
-
-#for sign up 
+# for sign up 
 class User(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -13,5 +13,15 @@ class User(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)  # Store hashed password
 
+    # Many-to-Many relationship with Hobby table
+    hobbies = models.ManyToManyField('Hobby', related_name="users", blank=True)
+
     def __str__(self):
         return self.email
+
+# for hobbies
+class Hobby(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name

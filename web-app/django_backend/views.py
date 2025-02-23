@@ -6,7 +6,9 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import User
+from .models import User, Hobby
+from .serializers import UserSerializer
+
 
 def index(request):
     return render (request, 'index.html')
@@ -18,7 +20,7 @@ def signup(request):
         try:
             data = json.loads(request.body.decode('utf-8'))
 
-            User.objects.create(
+            user = User.objects.create(
                 first_name=data['first_name'],
                 last_name=data['last_name'],
                 birthday=data['birthday'],
@@ -29,10 +31,40 @@ def signup(request):
                 email=data['email'],
                 password=make_password(data['password'])  # Hash the password
             )
-            return JsonResponse({'message': 'User registered successfully!'}, status=201)
+
+            # Add hobbies (from frontend list)
+            # hobby_names = data.get('hobbies', ['Sports and Fitness', 'Music and Performing Arts', 'Reading and Writing', 'Outdoor Activities', 'Technology and Gaming', 'Cooking and Baking', 'Travel and Adventure', 'Other Interests'])  
+            # for hobby_name in hobby_names:
+            #     hobby, _ = Hobby.objects.get_or_create(name=hobby_name)
+            #     user.hobbies.add(hobby)
+    
+            return JsonResponse({'message': 'User registered successfully!', 'user_id': user.id}, status=201)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+# for saving hobbies 
+@csrf_exempt
+def save_hobbies(request, user_id):
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body.decode('utf-8'))
+            hobby_names = data.get('hobbies', [])
+
+            for name in hobby_names:
+                hobby, created = Hobby.objects.get_or_create(name=name)
+                user.hobbies.add(hobby)
+
+            return JsonResponse({'message': 'Hobbies saved successfully!'})
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
 
 # User Login
 @csrf_exempt
@@ -82,6 +114,7 @@ def get_user(request, user_id):
             "marital_status": user.marital_status,
             "country": user.country,
             "zip_code": user.zip_code,
+            "hobbies": list(user.hobbies.values("id", "name")),  # ✅ Add hobbies here
         }
         return JsonResponse(user_data, status=200)
     except User.DoesNotExist:
