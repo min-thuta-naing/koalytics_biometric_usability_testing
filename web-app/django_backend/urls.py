@@ -31,12 +31,16 @@ from .views import get_user
 # for admin dashboard table 
 from .views import get_all_users
 
+from .views import create_project
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index, name='index'),
     path('api/signup/', signup, name='signup'),
     path('api/save-hobbies/<int:user_id>/', save_hobbies, name='save-hobbies'),
+    path('create_project/<int:user_id>/', create_project, name='create_project'),  # ✅ Add new route
+
     path('api/login/', login, name='login'),
     path('api/user/<int:user_id>/', get_user, name='get_user'),
     path('api/admin/users/', get_all_users, name='get_all_users'),

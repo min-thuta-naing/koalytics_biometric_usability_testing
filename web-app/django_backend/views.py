@@ -6,8 +6,8 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import User, Hobby
-from .serializers import UserSerializer
+from .models import User, Hobby, Project
+from .serializers import UserSerializer, ProjectSerializer
 
 
 def index(request):
@@ -64,8 +64,6 @@ def save_hobbies(request, user_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
-
 # User Login
 @csrf_exempt
 def login(request):
@@ -99,6 +97,38 @@ def login(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+#for creating projects 
+@csrf_exempt
+def create_project(request, user_id):
+    if request.method == 'POST':
+        try:
+            # Ensure user exists
+            user = User.objects.get(id=user_id)
+
+            # Parse request body
+            data = json.loads(request.body.decode('utf-8'))
+            project_name = data.get('name')
+            project_description = data.get('description')
+
+            # Validate required fields
+            if not project_name or not project_description:
+                return JsonResponse({'error': 'Project name and description are required.'}, status=400)
+
+            # Create project and associate with user
+            project = Project.objects.create(name=project_name, description=project_description)
+            user.projects.add(project)
+
+            return JsonResponse({'message': 'Project created successfully!', 'project_id': project.id}, status=201)
+
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
 
 # Get user by ID to display in MyAccount page
 @csrf_exempt
@@ -115,6 +145,7 @@ def get_user(request, user_id):
             "country": user.country,
             "zip_code": user.zip_code,
             "hobbies": list(user.hobbies.values("id", "name")),  # ✅ Add hobbies here
+            "projects": list(user.projects.values("id", "name", "description")),
         }
         return JsonResponse(user_data, status=200)
     except User.DoesNotExist:
