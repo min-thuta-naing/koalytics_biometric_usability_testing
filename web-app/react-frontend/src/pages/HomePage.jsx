@@ -1,18 +1,34 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { ArrowLeftRight } from "lucide-react";
 
 const HomePage = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [showSwitchPopup, setShowSwitchPopup] = useState(false);
     const [isSwitching, setIsSwitching] = useState(false);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        } else {
+            navigate("/homepage"); // Redirect if no user data
+        }
+    }, [navigate]);
+
+    //log out function
+    const handleSignOut = () => {
+        localStorage.removeItem("user"); // Clear user session
+        navigate("/loginpage"); // Redirect to login page
+    };
 
     const handleSwitch = () => {
         setIsSwitching(true);
         setTimeout(() => {
             navigate("/researcher-dashboard");
-        }, 4000); // 2 seconds delay
+        }, 4000); // 4 seconds delay
     };
 
     return (
@@ -25,12 +41,13 @@ const HomePage = () => {
                 <>
                     <header className="bg-white py-3 px-6 sticky top-0 z-10 flex justify-between items-center border-b border-gray-300">
                         <div className="flex items-center gap-3">
-                            <img src="/images/logo.png" alt="Logo" className="h-7 w-auto" />
+                            <img src="/static/images/logo.png" alt="Logo" className="h-7 w-auto" />
                             <h1 className="font-funnel font-bold text-3xl text-black">Koalytics</h1>
                         </div>
 
                         <div className="flex gap-4 relative">
-                            <img
+                        <p>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
+                        <img
                                 src="/images/profile.jpg"
                                 alt="Profile"
                                 className="h-10 w-10 rounded-full border-2 border-gray-300 object-cover cursor-pointer"
@@ -41,7 +58,7 @@ const HomePage = () => {
                                     <Link to="/my-account" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Account</Link>
                                     <Link to="/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</Link>
                                     <Link to="/about-us" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">About us</Link>
-                                    <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Sign Out</button>
+                                    <button onClick={handleSignOut} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Sign Out</button>
                                 </div>
                             )}
                         </div>
@@ -61,7 +78,7 @@ const HomePage = () => {
                         </button>
 
                         {showSwitchPopup && (
-                            <div className="absolute bottom-20 right-0 w-64 p-4 bg-white shadow-xl rounded-lg">
+                            <div className="absolute bottom-20 right-0 w-64 p-4 bg-white shadow-lg rounded-lg border border-gray-400">
                                 <p className="text-gray-700 mb-4">Switch to Researcher Mode <br/>to create and manage biometric usability tests.</p>
                                 <button
                                     onClick={handleSwitch}

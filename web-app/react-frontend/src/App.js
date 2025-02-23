@@ -14,6 +14,7 @@ import Question4 from "./pages/Question4";
 import Question5 from "./pages/Question5";
 import LoginPage from "./pages/LoginPage";
 import NewProjectPage from "./pages/Researcher/NewProjectPage";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
@@ -30,6 +31,7 @@ function App() {
         <Route path="/my-account" element={<MyAccount />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard/>}/>
         <Route path="/new-project" element={<NewProjectPage />} />
         <Route path="/researcher-dashboard" element={<ResearcherSidebar />} />
         <Route path="/question1" element={<Question1 />} />

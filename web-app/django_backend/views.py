@@ -52,9 +52,53 @@ def login(request):
             if not check_password(password, user.password):  # ✅ Fixed check_password
                 return JsonResponse({'error': 'Invalid email or password'}, status=400)
 
-            return JsonResponse({'message': 'Login successful', 'user_id': user.id}, status=200)
+            # return JsonResponse({'message': 'Login successful', 'user_id': user.id}, status=200)
+            # Return user details
+            return JsonResponse({
+                'message': 'Login successful',
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            }, status=200)
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
 
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+# Get user by ID to display in MyAccount page
+@csrf_exempt
+def get_user(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        user_data = {
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "birthday": user.birthday,
+            "gender": user.gender,
+            "marital_status": user.marital_status,
+            "country": user.country,
+            "zip_code": user.zip_code,
+        }
+        return JsonResponse(user_data, status=200)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+
+
+
+# Fetch All Users for Admin Dashboard
+@csrf_exempt
+def get_all_users(request):
+    if request.method == 'GET':
+        try:
+            users = User.objects.all().values(
+                'id', 'first_name', 'last_name', 'email', 'birthday', 
+                'gender', 'marital_status', 'country', 'zip_code'
+            )
+            return JsonResponse(list(users), safe=False, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
