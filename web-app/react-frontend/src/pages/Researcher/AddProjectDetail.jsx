@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Pencil } from 'lucide-react';
 
 const AddProjectDetail = () => {
     const { projectId } = useParams(); // Get projectId from URL
@@ -7,6 +8,8 @@ const AddProjectDetail = () => {
 
     const [project, setProject] = useState(null);
 
+    const [projectName, setProjectName] = useState("");
+    const [projectDescription, setProjectDescription] = useState("");
     const [organization, setOrganization] = useState("");
     const [maxParticipants, setMaxParticipants] = useState("");
     const [startDate, setStartDate] = useState("");
@@ -14,6 +17,7 @@ const AddProjectDetail = () => {
     const [sideNotes, setSideNotes] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [showEditModal, setShowEditModal] = useState(false);
 
     // Fetch project details on component mount
     useEffect(() => {
@@ -23,6 +27,8 @@ const AddProjectDetail = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setProject(data);
+                    setProjectName(data.name || "");
+                    setProjectDescription(data.description || "");
                     setOrganization(data.organization || "");
                     setMaxParticipants(data.max_participants || "");
                     setStartDate(data.start_date || "");
@@ -62,6 +68,8 @@ const AddProjectDetail = () => {
                     "X-CSRFToken": getCSRFToken(),
                 },
                 body: JSON.stringify({
+                    name: projectName,
+                    description: projectDescription,
                     organization: organization,
                     max_participants: maxParticipants ? parseInt(maxParticipants) : null,
                     start_date: startDate,
@@ -77,7 +85,8 @@ const AddProjectDetail = () => {
             }
 
             setSuccess("Project details updated successfully!");
-            setTimeout(() => navigate("/dashboard"), 2000); // Redirect after success
+            setShowEditModal(false);
+            setTimeout(() => window.location.reload(), 2000); // Redirect after editing successful
         } catch (err) {
             console.error("Error updating project:", err);
             setError(err.message || "Error updating project.");
@@ -100,107 +109,119 @@ const AddProjectDetail = () => {
                 </h1>
             </div>
 
-            {/* Project Information */}
-            <div className="py-8 px-12">
-                <h3>Welcome to the project information detail page.</h3>
-            </div>
 
-            <div className="grid grid-cols-3 gap-4 p-8">
-                {/* Project Details Form */}
-                <div className="bg-violet-100 p-4 rounded-lg">
-                    <h2 className="text-xl font-semibold mb-4">Project Details Form</h2>
-
-                    {error && <p className="text-red-500 mb-4">{error}</p>}
-                    {success && <p className="text-green-500 mb-4">{success}</p>}
-
-                    <form onSubmit={handleSubmit}>
-                        <label className="block mb-2 font-medium" htmlFor="organization">
-                            Organization
-                        </label>
-                        <select
-                            id="organization"
-                            value={organization}
-                            onChange={(e) => setOrganization(e.target.value)}
-                            className="w-full p-2 mb-4 rounded border"
-                        >
-                            <option value="company">Company</option>
-                            <option value="school">School</option>
-                            <option value="college">College</option>
-                            <option value="institution">Institution</option>
-                            <option value="university">University</option>
-                            <option value="freelance">Freelance</option>
-                        </select>
-
-                        <label className="block mb-2 font-medium" htmlFor="maxParticipants">
-                            Max Number of Participants
-                        </label>
-                        <input
-                            type="number"
-                            id="maxParticipants"
-                            value={maxParticipants}
-                            onChange={(e) => setMaxParticipants(e.target.value)}
-                            className="w-full p-2 mb-4 rounded border"
-                            placeholder="Enter maximum participants"
-                        />
-
-                        <label className="block mb-2 font-medium" htmlFor="startDate">
-                            Start Date
-                        </label>
-                        <input
-                            type="date"
-                            id="startDate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            className="w-full p-2 mb-4 rounded border"
-                        />
-
-                        <label className="block mb-2 font-medium" htmlFor="endDate">
-                            End Date
-                        </label>
-                        <input
-                            type="date"
-                            id="endDate"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            className="w-full p-2 mb-4 rounded border"
-                        />
-
-                        <label className="block mb-2 font-medium" htmlFor="sideNotes">
-                            Side Notes
-                        </label>
-                        <textarea
-                            id="sideNotes"
-                            value={sideNotes}
-                            onChange={(e) => setSideNotes(e.target.value)}
-                            className="w-full p-2 mb-4 rounded border"
-                            rows="3"
-                            placeholder="Add additional notes..."
-                        ></textarea>
-
-                        <button
-                            type="submit"
-                            className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 transition"
-                        >
-                            Submit
-                        </button>
-                    </form>
-                </div>
-
-                {/* Project Overview */}
-                <div className="bg-violet-100 p-4 rounded-lg">
+            <div className=" bg-violet-100 p-4 rounded-lg" > 
+                <div className="flex justify-between items-center mb-4"> 
                     <h2 className="text-xl font-semibold mb-4">Project Information</h2>
-                    <p><strong>Project Name:</strong> {project.name}</p>
-                    <p><strong>Project Description:</strong> {project.description}</p>
-                    <p><strong>Organization:</strong> {project.organization}</p>
-                    <p><strong>Maximum Participant:</strong> {project.max_participants}</p>
-                    <p><strong>Project Start Date:</strong> {project.start_date}</p>
-                    <p><strong>Project End Date:</strong> {project.end_date}</p>
-                    <p><strong>Side Note:</strong> {project.side_notes}</p>
+                    <button
+                        className="bg-teal-600 text-white p-2 rounded-full hover:bg-teal-700"
+                        onClick={() => setShowEditModal(true)}
+                    >
+                        <Pencil />
+                    </button>
                 </div>
-
-                {/* Placeholder for Future Content */}
-                <div className="bg-violet-100 p-4 rounded-lg">Column 3</div>
+                <p><strong>Project Name:</strong> {project.name}</p>
+                <p><strong>Project Description:</strong> {project.description}</p>
+                <p><strong>Organization:</strong> {project.organization}</p>
+                <p><strong>Maximum Participant:</strong> {project.max_participants}</p>
+                <p><strong>Project Start Date:</strong> {project.start_date}</p>
+                <p><strong>Project End Date:</strong> {project.end_date}</p>
+                <p><strong>Side Note:</strong> {project.side_notes}</p>
             </div>
+
+            {/* Edit Project Modal */}
+            {showEditModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full relative">
+                        <button
+                            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+                            onClick={() => setShowEditModal(false)}
+                        >
+                            ✕
+                        </button>
+                        <h2 className="text-xl font-semibold mb-6">Edit Project Details</h2>
+
+                        {error && <p className="text-red-500 mb-4">{error}</p>}
+                        {success && <p className="text-green-500 mb-4">{success}</p>}
+
+                        <form onSubmit={handleSubmit}>
+                            <label>Project Name:</label>
+                            <input
+                                type="text"
+                                value={projectName}
+                                onChange={(e) => setProjectName(e.target.value)}
+                                className="w-full p-2 mb-4 rounded border"
+                            />
+
+                            <label>Project Description:</label>
+                            <textarea
+                                value={projectDescription}
+                                onChange={(e) => setProjectDescription(e.target.value)}
+                                className="w-full p-2 mb-4 rounded border"
+                                rows="2"
+                            />
+
+                            <label>Organization:</label>
+                            <select
+                                value={organization}
+                                onChange={(e) => setOrganization(e.target.value)}
+                                className="w-full p-2 mb-4 rounded border"
+                            >
+                                <option value="company">Company</option>
+                                <option value="school">School</option>
+                                <option value="college">College</option>
+                                <option value="institution">Institution</option>
+                                <option value="university">University</option>
+                                <option value="freelance">Freelance</option>
+                            </select>
+
+                            <label>Max Participants:</label>
+                            <input
+                                type="number"
+                                value={maxParticipants}
+                                onChange={(e) => setMaxParticipants(e.target.value)}
+                                className="w-full p-2 mb-4 rounded border"
+                            />
+
+                            <label>Start Date:</label>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="w-full p-2 mb-4 rounded border"
+                            />
+
+                            <label>End Date:</label>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="w-full p-2 mb-4 rounded border"
+                            />
+
+                            <label>Side Notes:</label>
+                            <textarea
+                                value={sideNotes}
+                                onChange={(e) => setSideNotes(e.target.value)}
+                                className="w-full p-2 mb-4 rounded border"
+                                rows="2"
+                            />
+
+                            <button
+                                type="submit"
+                                className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700"
+                            >
+                                Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            
+
+
+
         </div>
     );
 };
