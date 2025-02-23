@@ -38,7 +38,7 @@ const MyAccount = () => {
     }
 
     return (
-        <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '20px auto', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
+        <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '20px auto', padding: '20px', backgroundColor: '#EEF2FF', borderRadius: '8px' }}>
             <h2 style={{ textAlign: 'left', marginBottom: '20px' }}>My Profile</h2>
 
             {/* Profile Section (with Edit) */}
