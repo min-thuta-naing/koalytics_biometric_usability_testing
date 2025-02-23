@@ -153,6 +153,8 @@ def update_project(request, project_id):
             data = json.loads(request.body.decode('utf-8'))
 
             # Update only provided fields
+            project.name = data.get("name", project.name)
+            project.description = data.get("description", project.description)
             project.organization = data.get("organization", project.organization)
             project.max_participants = data.get("max_participants", project.max_participants)
             project.start_date = data.get("start_date", project.start_date)
