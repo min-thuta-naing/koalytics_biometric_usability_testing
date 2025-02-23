@@ -8,7 +8,9 @@ const HomePage = () => {
     const [isSwitching, setIsSwitching] = useState(false);
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const [showLogoutPopup, setShowLogoutPopup] = useState(false);
 
+    // log in user info 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -17,13 +19,35 @@ const HomePage = () => {
             navigate("/homepage"); // Redirect if no user data
         }
     }, [navigate]);
-
-    //log out function
     const handleSignOut = () => {
         localStorage.removeItem("user"); // Clear user session
         navigate("/loginpage"); // Redirect to login page
     };
+    const LogoutConfirmation = ({ onConfirm, onCancel }) => (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
+            <p className="text-gray-700 mb-6">Are you sure you want to log out?</p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={onCancel}
+                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={onConfirm}
+                className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+    );
 
+
+    //switch to researcher mode 
     const handleSwitch = () => {
         setIsSwitching(true);
         setTimeout(() => {
@@ -34,7 +58,7 @@ const HomePage = () => {
     return (
         <div className="min-h-screen flex flex-col">
             {isSwitching ? (
-                <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-400 via-violet-400 to-pink-400 animate-gradient-move">
+                <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-red-600 via-green-400 to-blue-600 animate-gradient-move">
                     <h1 className="text-4xl font-bold text-white animate-fade-in">Switching to Researcher Mode...</h1>
                 </div>
             ) : (
@@ -58,7 +82,13 @@ const HomePage = () => {
                                     <Link to="/my-account" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Account</Link>
                                     <Link to="/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</Link>
                                     <Link to="/about-us" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">About us</Link>
-                                    <button onClick={handleSignOut} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Sign Out</button>
+                                    <button onClick={() => setShowLogoutPopup(true)} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Sign Out</button>
+                                    {showLogoutPopup && (
+                                        <LogoutConfirmation
+                                            onConfirm={handleSignOut}
+                                            onCancel={() => setShowLogoutPopup(false)}
+                                        />
+                                    )}
                                 </div>
                             )}
                         </div>
