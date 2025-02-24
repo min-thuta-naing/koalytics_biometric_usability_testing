@@ -36,6 +36,9 @@ from .views import update_project
 
 from .views import get_project
 from .views import delete_project
+from .views import delete_user
+
+from .views import get_forms, create_form, update_form, delete_form
 
 
 urlpatterns = [
@@ -48,10 +51,15 @@ urlpatterns = [
     path('api/project/<int:project_id>/', get_project, name='get_project'),
     path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"),
 
+    path('api/project/<int:project_id>/forms/', get_forms, name='get_forms'),
+    path('api/project/<int:project_id>/create_form/', create_form, name='create_form'),
+    path('api/update_form/<int:form_id>/', update_form, name='update_form'),
+    path('api/delete_form/<int:form_id>/', delete_form, name='delete_form'),
+
     path('api/login/', login, name='login'),
     path('api/user/<int:user_id>/', get_user, name='get_user'),
     path('api/admin/users/', get_all_users, name='get_all_users'),
-
+    path('api/delete_user/<int:user_id>/', delete_user, name='delete_user'),
 
     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
 ]

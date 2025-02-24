@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Trash2 } from "lucide-react"; // Import delete icon
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -21,6 +22,28 @@ const AdminDashboard = () => {
     fetchUsers();
   }, []);
 
+  // Delete user function
+  const handleDelete = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      const response = await fetch(`/api/delete_user/${userId}/`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete user");
+      }
+
+      // Update user list after deletion
+      setUsers(users.filter((user) => user.id !== userId));
+      alert("User deleted successfully");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("Error deleting user");
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-[#EEF2FF]"> {/* Changed the overall background color */}
       {/* Sidebar */}
@@ -37,8 +60,7 @@ const AdminDashboard = () => {
 
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead style={{ backgroundColor: "#a78bfa" }} className="text-white">
-
+            <thead style={{ backgroundColor: "#a78bfa" }} className="text-white">
               <tr>
                 <th className="py-3 px-4 text-left">ID</th>
                 <th className="py-3 px-4 text-left">First Name</th>
@@ -49,6 +71,7 @@ const AdminDashboard = () => {
                 <th className="py-3 px-4 text-left">Marital Status</th>
                 <th className="py-3 px-4 text-left">Country</th>
                 <th className="py-3 px-4 text-left">Zip Code</th>
+                <th className="py-3 px-4 text-left">Actions</th>
               </tr>
             </thead>
 
@@ -65,11 +88,16 @@ const AdminDashboard = () => {
                     <td className="py-2 px-4">{user.marital_status}</td>
                     <td className="py-2 px-4">{user.country}</td>
                     <td className="py-2 px-4">{user.zip_code}</td>
+                    <td className="py-2 px-4">
+                      <button onClick={() => handleDelete(user.id)} className="text-red-500 hover:text-red-700">
+                        <Trash2 size={20} />
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="9" className="py-4 text-center">
+                  <td colSpan="10" className="py-4 text-center">
                     No users found.
                   </td>
                 </tr>

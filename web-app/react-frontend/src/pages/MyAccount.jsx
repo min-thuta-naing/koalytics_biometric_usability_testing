@@ -5,28 +5,18 @@ const MyAccount = () => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const storedUser = localStorage.getItem("user");
-                const userId = storedUser ? JSON.parse(storedUser).id : null;
+        try {
+            const storedUser = localStorage.getItem("user");
+            if (!storedUser) throw new Error("User not found. Please log in.");
 
-                if (!userId) throw new Error("User ID not found. Please log in.");
+            const user = JSON.parse(storedUser);
+            if (!user?.id) throw new Error("User ID missing. Please log in.");
 
-                console.log("Fetching user with ID:", userId);
-
-                const response = await fetch(`/api/user/${userId}/`);
-                const data = await response.json();
-
-                if (!response.ok) throw new Error(data.error || "Failed to fetch user.");
-
-                setUserData(data);
-            } catch (error) {
-                console.error("Error loading user data:", error);
-                setError(error.message);
-            }
-        };
-
-        fetchUserData();
+            setUserData(user);
+        } catch (error) {
+            console.error("Error loading user data:", error);
+            setError(error.message);
+        }
     }, []);
 
     if (error) {

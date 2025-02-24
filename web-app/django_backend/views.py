@@ -6,7 +6,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import User, Hobby, Project
+from .models import User, Hobby, Project, Form
 from .serializers import UserSerializer, ProjectSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -33,13 +33,21 @@ def signup(request):
                 password=make_password(data['password'])  # Hash the password
             )
 
-            # Add hobbies (from frontend list)
-            # hobby_names = data.get('hobbies', ['Sports and Fitness', 'Music and Performing Arts', 'Reading and Writing', 'Outdoor Activities', 'Technology and Gaming', 'Cooking and Baking', 'Travel and Adventure', 'Other Interests'])  
-            # for hobby_name in hobby_names:
-            #     hobby, _ = Hobby.objects.get_or_create(name=hobby_name)
-            #     user.hobbies.add(hobby)
-    
-            return JsonResponse({'message': 'User registered successfully!', 'user_id': user.id}, status=201)
+           
+            # return JsonResponse({'message': 'User registered successfully!', 'user_id': user.id}, status=201)
+            return JsonResponse({
+                'message': 'User registered successfully!',
+                'user_id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'birthday': user.birthday,
+                'gender': user.gender,
+                'marital_status': user.marital_status,
+                'country': user.country,
+                'zip_code': user.zip_code,
+                'hobbies': list(user.hobbies.values_list('name', flat=True))  # Empty initially
+            }, status=201)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -56,6 +64,12 @@ def save_hobbies(request, user_id):
             for name in hobby_names:
                 hobby, created = Hobby.objects.get_or_create(name=name)
                 user.hobbies.add(hobby)
+
+            # Include updated hobby list
+            # return JsonResponse({
+            #     'message': 'Hobbies saved successfully!',
+            #     'hobbies': list(user.hobbies.values_list('name', flat=True))
+            # })
 
             return JsonResponse({'message': 'Hobbies saved successfully!'})
         except User.DoesNotExist:
@@ -187,7 +201,7 @@ def get_project(request, project_id):
     except Project.DoesNotExist:
         return JsonResponse({"error": "Project not found"}, status=404)
     
-
+# for deleting the projects 
 @csrf_exempt
 def delete_project(request, project_id):
     if request.method == "DELETE":
@@ -196,6 +210,63 @@ def delete_project(request, project_id):
         return JsonResponse({"message": "Project deleted successfully"}, status=200)
     
     return JsonResponse({"error": "Method not allowed"}, status=405)
+
+
+# for creating forms 
+@csrf_exempt
+def create_form(request, project_id):
+    if request.method == 'POST':
+        try:
+            project = Project.objects.get(id=project_id)
+            data = json.loads(request.body.decode('utf-8'))
+            form = Form.objects.create(project=project, title=data['title'])
+            return JsonResponse({'message': 'Form created successfully!', 'form_id': form.id}, status=201)
+        except Project.DoesNotExist:
+            return JsonResponse({'error': 'Project not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+
+#for retrieving forms 
+def get_forms(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        forms = list(project.forms.values('id', 'title'))
+        return JsonResponse({'forms': forms}, status=200)
+    except Project.DoesNotExist:
+        return JsonResponse({'error': 'Project not found.'}, status=404)
+    
+
+#for updating form 
+@csrf_exempt
+def update_form(request, form_id):
+    if request.method == 'PATCH':
+        try:
+            form = Form.objects.get(id=form_id)
+            data = json.loads(request.body.decode('utf-8'))
+            form.title = data.get('title', form.title)  # Update only if provided
+            form.save()
+            return JsonResponse({'message': 'Form updated successfully'}, status=200)
+        except Form.DoesNotExist:
+            return JsonResponse({'error': 'Form not found'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+    
+
+# for deleting form 
+@csrf_exempt
+def delete_form(request, form_id):
+    if request.method == 'DELETE':
+        form = get_object_or_404(Form, id=form_id)
+        form.delete()
+        return JsonResponse({'message': 'Form deleted successfully'}, status=200)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+
 
 
 # Get user by ID to display in MyAccount page
@@ -236,3 +307,26 @@ def get_all_users(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# deleting the users together with hobbies and projects 
+@csrf_exempt
+def delete_user(request, user_id):
+    if request.method == "DELETE":
+        try:
+            user = get_object_or_404(User, id=user_id)
+
+            # Delete associated hobbies (Many-to-Many relationship)
+            user.hobbies.clear()
+
+            # Delete associated projects (Many-to-Many relationship)
+            user.projects.all().delete()
+
+            # Delete the user
+            user.delete()
+
+            return JsonResponse({"message": "User deleted successfully"}, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Method not allowed"}, status=405)
