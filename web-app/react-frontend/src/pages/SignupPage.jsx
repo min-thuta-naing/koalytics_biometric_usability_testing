@@ -29,8 +29,6 @@ export default function SignUpLayout() {
       alert("Passwords do not match!");
       return;
     }
-
-
     try {
       const csrftoken = document.cookie.split('; ')
         .find(row => row.startsWith('csrftoken='))
@@ -55,6 +53,8 @@ export default function SignUpLayout() {
           const userData = await userResponse.json();
           localStorage.setItem('user', JSON.stringify(userData));
         }
+
+        //localStorage.setItem('user', JSON.stringify(data));
 
 
         alert("User registered successfully!");

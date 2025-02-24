@@ -30,6 +30,7 @@ export default function HobbyQuestion() {
   const handleConfirm = async () => {
     try {
       const userId = localStorage.getItem('user_id');
+      
       if (!userId) {
         alert('User ID not found. Please sign up again.');
         navigate("/signup");

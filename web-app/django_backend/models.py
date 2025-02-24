@@ -43,3 +43,11 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Form(models.Model): 
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="forms")  # One-to-Many
+    title = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.title
