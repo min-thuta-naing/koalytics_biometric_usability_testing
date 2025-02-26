@@ -20,10 +20,13 @@ class User(models.Model):
     employmentStatuses = models.ManyToManyField('EmploymentStatus', related_name="users", blank=True)
 
     # Many-to-Many relationship with profession table
-    profession = models.ManyToManyField('Profession', related_name="users", blank=True)
+    profession = models.OneToManyField('Profession', related_name="users", blank=True)
 
-    # Many-to-Many relationship with position table
-    profession = models.ManyToManyField('Profession', related_name="users", blank=True)
+    # One-to-Many relationship with position table
+    position = models.OneToManyField('Position', related_name="users", blank=True)
+
+    # One-to-Many relationship with industry table
+    industry = models.OneToManyField('Industry', related_name="users", blank=True)
 
     #Many-to-Many relationship with Project table 
     projects = models.ManyToManyField('Project', related_name="users", blank=True)
@@ -51,6 +54,21 @@ class Profession (models.Model):
 
     def __str__(self):
         return self.profession
+    
+# for position
+class Position (models.Model):
+    position = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.position
+    
+# for industry
+class Industry (models.Model):
+    industry = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.industry
+    
     
 # for projects 
 class Project(models.Model):

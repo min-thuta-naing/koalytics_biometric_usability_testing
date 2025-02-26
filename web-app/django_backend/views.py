@@ -6,7 +6,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import User, Hobby, Project, Form, EmploymentStatus, Profession
+from .models import User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry
 from .serializers import UserSerializer, ProjectSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -113,6 +113,46 @@ def save_profession (request, user_id):
                 user.profession.add(profession)
 
             return JsonResponse({'message': 'Profession saved successfully!'})
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# for saving position
+@csrf_exempt
+def save_position (request, user_id):
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body.decode('utf-8'))
+            position = data.get('position', [])
+
+            for position in position:
+                position, created = Position.objects.get_or_create(position=position)
+                user.position.add(position)
+
+            return JsonResponse({'message': 'Position saved successfully!'})
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# for saving Industry
+@csrf_exempt
+def save_industry (request, user_id):
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body.decode('utf-8'))
+            industry = data.get('industry', [])
+
+            for industry in industry:
+                industry, created = Industry.objects.get_or_create(industry=industry)
+                user.position.add(industry)
+
+            return JsonResponse({'message': 'Industry saved successfully!'})
         except User.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
         except Exception as e:
