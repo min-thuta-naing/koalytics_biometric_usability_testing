@@ -46,7 +46,7 @@ export default function PositionQuestion() {
       const response = await fetch(`/api/save_/${userId}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ profession: selectedPosition }),
+        body: JSON.stringify({ position: selectedPosition }),
       });
 
       if (response.ok) {
@@ -93,7 +93,7 @@ export default function PositionQuestion() {
             <button
               key={position.text}
               className={`inline-flex items-center gap-2 border-2 rounded-full font-semibold transition duration-300 px-6 py-3 ${
-                selectedPosition.includes(profession.text)
+                selectedPosition.includes(position.text)
                   ? "bg-[#4A90E2] text-white"
                   : "border-[#4A90E2] text-[#4A90E2] hover:bg-[#f0f0f0]"
               }`}
