@@ -6,7 +6,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import User, Hobby, Project, Form
+from .models import User, Hobby, Project, Form, EmploymentStatus
 from .serializers import UserSerializer, ProjectSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -72,6 +72,27 @@ def save_hobbies(request, user_id):
             # })
 
             return JsonResponse({'message': 'Hobbies saved successfully!'})
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+# for saving employment status 
+@csrf_exempt
+def save_employment_status (request, user_id):
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body.decode('utf-8'))
+            employment_status = data.get('employmentStatuses', [])
+
+            for employmentStatuses in employment_status:
+                employmentStatus, created = EmploymentStatus.objects.get_or_create(employmentStatuses=employmentStatuses)
+                user.employmentStatuses.add(employmentStatus)
+
+            return JsonResponse({'message': 'Employment status saved successfully!'})
         except User.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
         except Exception as e:
@@ -283,7 +304,8 @@ def get_user(request, user_id):
             "marital_status": user.marital_status,
             "country": user.country,
             "zip_code": user.zip_code,
-            "hobbies": list(user.hobbies.values("id", "name")),  # ✅ Add hobbies here
+            "hobbies": list(user.hobbies.values("id", "name")), 
+            "employmentStatuses" : list(user.employmentStatuses.values("id", "employmentStatuses")),
             "projects": list(user.projects.values(
                 "id", "name", "description", "organization", 
                 "max_participants", "start_date", "end_date", "side_notes"
