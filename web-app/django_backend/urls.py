@@ -21,7 +21,7 @@ from django.views.generic import TemplateView
 from . import views 
 
 # for sign up
-from .views import signup, save_hobbies, save_employment_status
+from .views import signup, save_hobbies, save_employment_status, save_profession
 
 #for log in 
 from .views import login
@@ -49,6 +49,7 @@ urlpatterns = [
     path('api/signup/', signup, name='signup'),
     path('api/save-hobbies/<int:user_id>/', save_hobbies, name='save-hobbies'),
     path('api/save_employment_status/<int:user_id>/', save_employment_status, name='save-employment-status'),
+    path('api/save_profession/<int:user_id>/', save_profession, name='save_profession'),
     
     path('create_project/<int:user_id>/', create_project, name='create_project'),  # ✅ Add new route
     path("api/update_project/<int:project_id>/", update_project, name="update_project"),
