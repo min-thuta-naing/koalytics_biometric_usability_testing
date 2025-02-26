@@ -326,6 +326,7 @@ def get_user(request, user_id):
             "zip_code": user.zip_code,
             "hobbies": list(user.hobbies.values("id", "name")), 
             "employmentStatuses" : list(user.employmentStatuses.values("id", "employmentStatuses")),
+            "profession" : list(user.profession.values("id", "profession")),
             "projects": list(user.projects.values(
                 "id", "name", "description", "organization", 
                 "max_participants", "start_date", "end_date", "side_notes"
