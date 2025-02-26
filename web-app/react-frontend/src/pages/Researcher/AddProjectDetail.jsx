@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Pencil, SquarePlus } from 'lucide-react';
-// import CreateSurveyForms from './CreateForms'; 
+import CreateSurveyForms from './CreateForms'; 
 
 const AddProjectDetail = () => {
     const { projectId } = useParams(); // Get projectId from URL
     const navigate = useNavigate();
-    const [projects, setProjects] = useState([]);
-
 
     const [project, setProject] = useState(null);
 
@@ -22,8 +20,27 @@ const AddProjectDetail = () => {
     const [success, setSuccess] = useState("");
     const [showEditModal, setShowEditModal] = useState(false);
     const [showAddCriteriaModal, setShowAddCriteriaModal] = useState(false);
+    const [showSurveyFormModal, setShowSurveyFormModal] = useState(false);
 
-    const [showSUSForm, setShowSUSForm] = useState(false);
+    const [forms, setForms] = useState([]);
+
+    // Fetch forms when the component mounts
+    useEffect(() => {
+        const fetchForms = async () => {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/forms/`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setForms(data.forms);
+                } else {
+                    console.error("Failed to fetch forms");
+                }
+            } catch (error) {
+                console.error("Error fetching forms:", error);
+            }
+        };
+        fetchForms();
+    }, [projectId]);
 
 
     // Fetch project details on component mount
@@ -102,23 +119,7 @@ const AddProjectDetail = () => {
 
     if (!project) return <p>Loading project details...</p>;
 
-    // retrieveing user data from db  
-    const fetchForms = async (userId) => {
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`);
-            if (response.ok) {
-                const data = await response.json();
-                setProjects(data.projects);
-            }
-        } catch (error) {
-            console.error("Error fetching projects:", error);
-        }
-    };
-    // const handleFormCreated = () => {
-    //     fetchForms(userId);
-    //     setShowSUSForm(false);
-    // };
-
+    
     return (
         <div>
             {/* Project Cover Image */}
@@ -283,30 +284,32 @@ const AddProjectDetail = () => {
                             <p>You can create forms using questions.</p>
                         </div>
                         <button
-                            onClick={() => setShowSUSForm(true)}
                             className="bg-violet-400 text-black text-sm px-4 py-2 w-40 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
+                            onClick={() => setShowSurveyFormModal(true)}
+
                         >
                             Create Survey Form
                         </button>
                     </div>
-                    {/* Popup Modal */}
-                    {showSUSForm && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                            <div className="bg-white p-8 rounded-lg shadow-xl max-w-2xl w-full relative">
-                                <button
-                                    onClick={() => setShowSUSForm(false)}
-                                    className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
-                                >
-                                    ✕
-                                </button>
-                                {/* <CreateSurveyForms
-                                    onCancel={() => setShowSUSForm(false)} 
-                                    userId={userId} 
-                                    onFormCreated={handleFormCreated}
-                                /> */}
-                            </div>
-                        </div>
-                    )}
+                    <div>
+    <p>Here are your current forms:</p>
+    {forms.length === 0 ? (
+        <p>No forms available.</p>
+    ) : (
+        <div className="flex flex-wrap gap-4 mt-4">
+            {forms.map((form) => (
+                <div 
+                    key={form.id} 
+                    className="p-4 border rounded-lg shadow-md bg-white w-64"
+                >
+                    <h3 className="text-lg font-semibold">{form.title}</h3>
+                </div>
+            ))}
+        </div>
+    )}
+</div>
+
+
                 </div>
                 <div>
                     {/* <div className="flex justify-between items-center py-3 px-12 border-b border-gray-300">
@@ -323,7 +326,12 @@ const AddProjectDetail = () => {
                     </div> */}
                 </div>
             </div> 
-
+            {showSurveyFormModal && (
+                <CreateSurveyForms 
+                    onClose={() => setShowSurveyFormModal(false)} 
+                    projectId={projectId} 
+                />
+            )}
         </div>
     );
 };
