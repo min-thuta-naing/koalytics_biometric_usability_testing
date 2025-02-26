@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-export default function ProfessionQuestion() {
-  const [selectedProfession, setSelectedProfession] = useState([]);
+export default function PositionQuestion() {
+  const [selectedPosition, setSelectedPosition] = useState([]);
   const navigate = useNavigate(); // Initialize navigate function
 
   const currentQuestion = 4;
   const totalQuestions = 5;
 
-  const professions = [
+  const positions = [
     { emoji: "🏢", text: "Leadership/Executive" },
     { emoji: "👔", text: "Management/Team Lead" },
     { emoji: "💻", text: "Technical/Creative" },
@@ -25,12 +25,41 @@ export default function ProfessionQuestion() {
     { emoji: "❓", text: "Others" },
   ];
 
-  const handleProfessionSelect = (professionText) => {
-    setSelectedProfession((prevProfession) =>
-      prevProfession.includes(professionText)
-        ? prevProfession.filter((item) => item !== professionText)
-        : [...prevProfession, professionText]
+  const handlePositionsSelect = (positionText) => {
+    setSelectedPosition((prevPosition) =>
+      prevPosition.includes(positionText)
+        ? prevPosition.filter((item) => item !== positionText)
+        : [...prevPosition, positionText]
     );
+  };
+
+  const handleConfirm = async () => {
+    try {
+      const userId = localStorage.getItem('user_id');
+      
+      if (!userId) {
+        alert('User ID not found. Please sign up again.');
+        navigate("/signup");
+        return;
+      }
+
+      const response = await fetch(`/api/save_/${userId}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profession: selectedPosition }),
+      });
+
+      if (response.ok) {
+        alert('Position saved successfully!');
+        navigate("/question5");
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+      console.error('Save Position Error:', error);
+    }
   };
 
   return (
@@ -60,18 +89,18 @@ export default function ProfessionQuestion() {
 
         {/* Profession Selection */}
         <div className="flex flex-wrap gap-6 justify-center mb-8 max-h-80 overflow-y-auto">
-          {professions.map((profession) => (
+          {positions.map((position) => (
             <button
-              key={profession.text}
+              key={position.text}
               className={`inline-flex items-center gap-2 border-2 rounded-full font-semibold transition duration-300 px-6 py-3 ${
-                selectedProfession.includes(profession.text)
+                selectedPosition.includes(profession.text)
                   ? "bg-[#4A90E2] text-white"
                   : "border-[#4A90E2] text-[#4A90E2] hover:bg-[#f0f0f0]"
               }`}
-              onClick={() => handleProfessionSelect(profession.text)}
+              onClick={() => handlePositionSelect(position.text)}
             >
-              <span className="text-2xl">{profession.emoji}</span>
-              <span className="text-lg">{profession.text}</span>
+              <span className="text-2xl">{position.emoji}</span>
+              <span className="text-lg">{position.text}</span>
             </button>
           ))}
         </div>
@@ -80,7 +109,7 @@ export default function ProfessionQuestion() {
         <div className="flex justify-center mt-8">
           <button
             className="bg-[#4A90E2] hover:bg-[#357ABD] text-white py-3 px-6 rounded-xl font-semibold text-lg transition duration-300"
-            onClick={() => navigate("/question5")}
+            onClick={handleConfirm}
           >
             Confirm
           </button>
