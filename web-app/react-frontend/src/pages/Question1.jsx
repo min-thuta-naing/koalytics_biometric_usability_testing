@@ -45,7 +45,7 @@ export default function HobbyQuestion() {
 
       if (response.ok) {
         alert('Hobbies saved successfully!');
-        navigate("/homepage");
+        navigate("/question2");
       } else {
         const data = await response.json();
         alert(`Error: ${data.error}`);

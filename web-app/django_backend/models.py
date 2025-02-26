@@ -16,6 +16,9 @@ class User(models.Model):
     # Many-to-Many relationship with Hobby table
     hobbies = models.ManyToManyField('Hobby', related_name="users", blank=True)
 
+    # Many-to-Many relationship with employment status table
+    employmentStatuses = models.ManyToManyField('EmploymentStatus', related_name="users", blank=True)
+
     #Many-to-Many relationship with Project table 
     projects = models.ManyToManyField('Project', related_name="users", blank=True)
 
@@ -28,6 +31,13 @@ class Hobby(models.Model):
 
     def __str__(self):
         return self.name
+
+# for employement status 
+class EmploymentStatus (models.Model):
+    employmentStatuses = models.CharField(max_length=200, unique=True)
+
+    def __str__(self):
+        return self.employmentStatuses
     
 # for projects 
 class Project(models.Model):

@@ -25,13 +25,44 @@ export default function EmploymentStatusQuestion() {
     );
   };
 
+  const handleConfirm = async () => {
+    try {
+      const userId = localStorage.getItem('user_id');
+      
+      if (!userId) {
+        alert('User ID not found. Please sign up again.');
+        navigate("/signup");
+        return;
+      }
+
+      const response = await fetch(`/api/save_employment_status/${userId}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ employmentStatuses: selectedStatus }),
+      });
+
+      if (response.ok) {
+        alert('Employment status saved successfully!');
+        navigate("/question3");
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+      console.error('Save Employment Status Error:', error);
+    }
+  };
+
+
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center bg-[#EEF2FF] p-4">
       {/* Progress Bar and Navigation */}
       <div className="w-full max-w-3xl flex items-center justify-between mt-8 mb-8">
         <button
           className="text-[#4A90E2] font-semibold hover:underline"
-          onClick={() => navigate("/question1")} // Navigate back to Question 1
+          onClick={() => navigate("/question2")} // Navigate back to Question 2 when click the back key 
         >
           ← Back
         </button>
@@ -72,7 +103,7 @@ export default function EmploymentStatusQuestion() {
         <div className="flex justify-center mt-8">
           <button
             className="bg-[#4A90E2] hover:bg-[#357ABD] text-white py-3 px-6 rounded-xl font-semibold text-lg transition duration-300"
-            onClick={() => navigate("/question3")}
+            onClick={handleConfirm}
           >
             Confirm
           </button>
