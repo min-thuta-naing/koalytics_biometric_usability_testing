@@ -40,12 +40,35 @@ export default function IndustryQuestion() {
         : [...prevIndustry, industryText]
     );
   };
-
-  // Add the navigation function to navigate to the homepage
-  const handleConfirm = () => {
-    navigate("/homepage"); // Navigate directly without alert
-  };
   
+  const handleConfirm = async () => {
+    try {
+      const userId = localStorage.getItem('user_id');
+      
+      if (!userId) {
+        alert('User ID not found. Please sign up again.');
+        navigate("/signup");
+        return;
+      }
+
+      const response = await fetch(`/api/save_industry/${userId}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ position: selectedIndustry }),
+      });
+
+      if (response.ok) {
+        alert('Industry saved successfully!');
+        navigate("/homepage");
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+      console.error('Save Industry Error:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center bg-[#EEF2FF] p-4">

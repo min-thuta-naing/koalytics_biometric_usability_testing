@@ -43,7 +43,7 @@ export default function PositionQuestion() {
         return;
       }
 
-      const response = await fetch(`/api/save_/${userId}/`, {
+      const response = await fetch(`/api/save_position/${userId}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ position: selectedPosition }),
