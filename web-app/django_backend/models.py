@@ -20,13 +20,13 @@ class User(models.Model):
     employmentStatuses = models.ManyToManyField('EmploymentStatus', related_name="users", blank=True)
 
     # Many-to-Many relationship with profession table
-    profession = models.OneToManyField('Profession', related_name="users", blank=True)
+    profession = models.ManyToManyField('Profession', related_name="users", blank=True)
 
     # One-to-Many relationship with position table
-    position = models.OneToManyField('Position', related_name="users", blank=True)
+    position = models.ManyToManyField('Position', related_name="users", blank=True)
 
     # One-to-Many relationship with industry table
-    industry = models.OneToManyField('Industry', related_name="users", blank=True)
+    industry = models.ManyToManyField('Industry', related_name="users", blank=True)
 
     #Many-to-Many relationship with Project table 
     projects = models.ManyToManyField('Project', related_name="users", blank=True)
