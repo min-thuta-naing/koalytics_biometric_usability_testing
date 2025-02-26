@@ -22,6 +22,9 @@ class User(models.Model):
     # Many-to-Many relationship with profession table
     profession = models.ManyToManyField('Profession', related_name="users", blank=True)
 
+    # Many-to-Many relationship with position table
+    profession = models.ManyToManyField('Profession', related_name="users", blank=True)
+
     #Many-to-Many relationship with Project table 
     projects = models.ManyToManyField('Project', related_name="users", blank=True)
 
