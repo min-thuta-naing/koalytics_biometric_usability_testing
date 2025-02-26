@@ -6,7 +6,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import User, Hobby, Project, Form, EmploymentStatus
+from .models import User, Hobby, Project, Form, EmploymentStatus, Profession
 from .serializers import UserSerializer, ProjectSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -109,7 +109,7 @@ def save_profession (request, user_id):
             profession = data.get('profession', [])
 
             for profession in profession:
-                profession, created = profession.objects.get_or_create(profession=profession)
+                profession, created = Profession.objects.get_or_create(profession=profession)
                 user.profession.add(profession)
 
             return JsonResponse({'message': 'Profession saved successfully!'})

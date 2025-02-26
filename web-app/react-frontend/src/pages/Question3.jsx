@@ -42,7 +42,7 @@ export default function ProfessionQuestion() {
         return;
       }
 
-      const response = await fetch(`/api/save_profission/${userId}/`, {
+      const response = await fetch(`/api/save_profession/${userId}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profession: selectedProfession }),
@@ -50,7 +50,7 @@ export default function ProfessionQuestion() {
 
       if (response.ok) {
         alert('Profession saved successfully!');
-        navigate("/question3");
+        navigate("/question4");
       } else {
         const data = await response.json();
         alert(`Error: ${data.error}`);
