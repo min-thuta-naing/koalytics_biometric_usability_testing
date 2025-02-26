@@ -34,7 +34,6 @@ const images = [
 ];
 
 const LandingPage = () => {
-    const morseCode = useTypingEffect("- --- .- .-.. -.-- - .. -.-. ...", 100);
     const headline1 = useTypingEffect("Revolutionizing ", 200);
     const headline2 = useTypingEffect("Usability Testing ", 200);
     const headline3 = useTypingEffect("with Biometrics", 200);
@@ -70,7 +69,6 @@ const LandingPage = () => {
             <main className="flex-1 overflow-y-auto">
                 <div className="flex flex-row items-center py-3 px-12 gap-10">
                     <div className="w-1/2">
-                        <h2 className="font-funnel text-4xl">{morseCode}</h2>
                         <h1 className="font-funnel font-bold text-6xl mt-2">{headline1}</h1>
                         <h1 className="font-funnel font-bold text-6xl mt-2">{headline2}</h1>
                         <h1 className="font-funnel font-bold text-6xl mt-2">{headline3}</h1>
