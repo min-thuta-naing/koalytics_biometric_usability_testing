@@ -32,6 +32,35 @@ export default function ProfessionQuestion() {
     );
   };
 
+  const handleConfirm = async () => {
+    try {
+      const userId = localStorage.getItem('user_id');
+      
+      if (!userId) {
+        alert('User ID not found. Please sign up again.');
+        navigate("/signup");
+        return;
+      }
+
+      const response = await fetch(`/api/save_profission/${userId}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profession: selectedProfession }),
+      });
+
+      if (response.ok) {
+        alert('Profession saved successfully!');
+        navigate("/question3");
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+      console.error('Save Profession Error:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center bg-[#EEF2FF] p-4">
       {/* Progress Bar and Navigation */}
@@ -79,7 +108,7 @@ export default function ProfessionQuestion() {
         <div className="flex justify-center mt-8">
           <button
             className="bg-[#4A90E2] hover:bg-[#357ABD] text-white py-3 px-6 rounded-xl font-semibold text-lg transition duration-300"
-            onClick={() => navigate("/question4")}
+            onClick={handleConfirm}
           >
             Confirm
           </button>
