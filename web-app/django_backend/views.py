@@ -99,6 +99,26 @@ def save_employment_status (request, user_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+# for saving profession
+@csrf_exempt
+def save_profession (request, user_id):
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(id=user_id)
+            data = json.loads(request.body.decode('utf-8'))
+            profession = data.get('profession', [])
+
+            for profession in profession:
+                profession, created = profession.objects.get_or_create(profession=profession)
+                user.profession.add(profession)
+
+            return JsonResponse({'message': 'Profession saved successfully!'})
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 # User Login
 @csrf_exempt
 def login(request):
