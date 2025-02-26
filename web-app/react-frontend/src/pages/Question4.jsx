@@ -97,7 +97,7 @@ export default function PositionQuestion() {
                   ? "bg-[#4A90E2] text-white"
                   : "border-[#4A90E2] text-[#4A90E2] hover:bg-[#f0f0f0]"
               }`}
-              onClick={() => handlePositionSelect(position.text)}
+              onClick={() => handlePositionsSelect(position.text)}
             >
               <span className="text-2xl">{position.emoji}</span>
               <span className="text-lg">{position.text}</span>
