@@ -47,6 +47,7 @@ def signup(request):
                 'country': user.country,
                 'zip_code': user.zip_code,
                 'hobbies': list(user.hobbies.values_list('name', flat=True))  # Empty initially
+                
             }, status=201)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
@@ -367,6 +368,9 @@ def get_user(request, user_id):
             "hobbies": list(user.hobbies.values("id", "name")), 
             "employmentStatuses" : list(user.employmentStatuses.values("id", "employmentStatuses")),
             "profession" : list(user.profession.values("id", "profession")),
+            "position" : list(user.position.values("id", "position")),
+            "industry" : list(user.industry.values("id", "industry")),
+
             "projects": list(user.projects.values(
                 "id", "name", "description", "organization", 
                 "max_participants", "start_date", "end_date", "side_notes"
