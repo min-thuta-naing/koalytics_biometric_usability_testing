@@ -94,22 +94,27 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                     className="border border-gray-300 p-3 rounded-lg"
                     required
                 />
-                <input
-                    type="date"
-                    placeholder="Project Start Date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="border border-gray-300 p-3 rounded-lg"
-                    required
-                />
-                <input
-                    type="date"
-                    placeholder="Project End Date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="border border-gray-300 p-3 rounded-lg"
-                    required
-                />
+                    <div className="flex items-center gap-2">
+                    <label className="font-medium">Start Date:</label>
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="border border-gray-300 p-3 rounded-lg flex-1"
+                        required
+                    />
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <label className="font-medium">End Date:</label>
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="border border-gray-300 p-3 rounded-lg flex-1"
+                        required
+                    />
+                </div>
                 <textarea
                     placeholder="Sidenotes"
                     value={sideNotes}
