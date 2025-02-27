@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateProjects from "./CreateProjects";
+import { EllipsisVertical } from "lucide-react";
 
 const Projects = () => {
     const [userId, setUserId] = useState(null);
@@ -106,8 +107,8 @@ const Projects = () => {
                         <div key={project.id} className="relative p-6 bg-white border rounded-lg shadow-md">
                             {/* Three-dot dropdown button */}
                             <div className="absolute top-3 right-3">
-                                <button onClick={() => setShowDropdown(showDropdown === project.id ? null : project.id)}>
-                                    ⋮
+                                <button onClick={() => setShowDropdown(showDropdown === project.id ? null : project.id)} className="p-2 rounded-full hover:bg-gray-200">
+                                    <EllipsisVertical size={20} />
                                 </button>
                                 {showDropdown === project.id && (
                                     <div className="absolute right-0 mt-2 bg-white border rounded shadow-md">
