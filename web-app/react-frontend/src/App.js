@@ -13,6 +13,7 @@ import Question3 from "./pages/Question3";
 import Question4 from "./pages/Question4";
 import Question5 from "./pages/Question5";
 import LoginPage from "./pages/LoginPage";
+import QuestionPage from "./pages/SUSform/QuestionPage";
 import NewProjectPage from "./pages/Researcher/CreateProjects";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AddProjectDetail from "./pages/Researcher/AddProjectDetail";
@@ -36,6 +37,7 @@ function App() {
         <Route path="/new-project" element={<NewProjectPage />} />
         <Route path="/project/:projectId" element={<AddProjectDetail />} />
         <Route path="/researcher-dashboard" element={<ResearcherSidebar />} />
+        <Route path="/form/:formId" element={<QuestionPage />} />
         <Route path="/question1" element={<Question1 />} />
         <Route path="/question2" element={<Question2 />} />
         <Route path="/question3" element={<Question3 />} />
