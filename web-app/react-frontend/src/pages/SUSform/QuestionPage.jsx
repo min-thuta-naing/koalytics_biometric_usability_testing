@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 
 const QuestionPage = () => {
     const { formId } = useParams();
@@ -12,7 +11,7 @@ const QuestionPage = () => {
         const fetchForm = async () => {
             try {
                 // Ensure the correct endpoint
-                const response = await axios.get(`http://127.0.0.1:8000/api/project/${formId}/forms`);
+                const response = await fetch(`http://127.0.0.1:8000/api/project/${formId}/forms`);
                 
                 // Set form data if successful
                 setForm(response.data);
