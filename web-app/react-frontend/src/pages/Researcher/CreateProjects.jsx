@@ -12,6 +12,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
 
     const [error, setError] = useState("");
 
+    // submit the form logic 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -22,7 +23,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         }
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/create_project/${userId}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/create_project/${userId}/`, { //create_project from view.py 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -35,7 +36,6 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                     start_date: startDate,
                     end_date: endDate,
                     side_notes: sideNotes,
-
                 }),
             });
 
