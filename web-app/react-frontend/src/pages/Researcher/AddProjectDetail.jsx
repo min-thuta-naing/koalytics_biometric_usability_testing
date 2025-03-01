@@ -24,7 +24,7 @@ const AddProjectDetail = () => {
 
     const [forms, setForms] = useState([]);
 
-    // Fetch forms when the component mounts
+    // FETCH FORMS ///////////////////////////////////
     useEffect(() => {
         const fetchForms = async () => {
             try {
@@ -43,7 +43,7 @@ const AddProjectDetail = () => {
     }, [projectId]);
 
 
-    // Fetch project details on component mount
+    // FETCH PROJECT //////////////////////////////////////////////
     useEffect(() => {
         const fetchProject = async () => {
             try {
@@ -78,7 +78,7 @@ const AddProjectDetail = () => {
         return cookie ? cookie.split("=")[1] : "";
     };
 
-    // Handle form submission to update project details
+    // UPDATE PROJECT DETAILS 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -134,8 +134,9 @@ const AddProjectDetail = () => {
                 </h1>
             </div>
 
-
+            {/* 2 columns */}
             <div className="grid grid-cols-2 p-8 gap-10"> 
+                {/* left column - project details */}
                 <div className="bg-violet-100 p-8 rounded-lg" > 
                     <div className="flex justify-between items-center mb-4"> 
                         <h2 className="text-xl font-semibold mb-4">Project Information</h2>
@@ -244,6 +245,7 @@ const AddProjectDetail = () => {
                     </div>
                 )}
 
+                {/* right column - project criteria */}
                 <div className="bg-violet-100 p-8 rounded-lg" > 
                     <div className="flex justify-between items-center mb-4"> 
                         <h2 className="text-xl font-semibold mb-4">Project Criteria</h2>
@@ -292,22 +294,22 @@ const AddProjectDetail = () => {
                         </button>
                     </div>
                     <div>
-    <p>Here are your current forms:</p>
-    {forms.length === 0 ? (
-        <p>No forms available.</p>
-    ) : (
-        <div className="flex flex-wrap gap-4 mt-4">
-            {forms.map((form) => (
-                <div 
-                    key={form.id} 
-                    className="p-4 border rounded-lg shadow-md bg-white w-64"
-                >
-                    <h3 className="text-lg font-semibold">{form.title}</h3>
-                </div>
-            ))}
-        </div>
-    )}
-</div>
+                        <p>Here are your current forms:</p>
+                        {forms.length === 0 ? (
+                            <p>No forms available.</p>
+                        ) : (
+                            <div className="flex flex-wrap gap-4 mt-4">
+                                {forms.map((form) => (
+                                    <div 
+                                        key={form.id} 
+                                        className="p-4 border rounded-lg shadow-md bg-white w-64"
+                                    >
+                                        <h3 className="text-lg font-semibold">{form.title}</h3>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
 
                 </div>
