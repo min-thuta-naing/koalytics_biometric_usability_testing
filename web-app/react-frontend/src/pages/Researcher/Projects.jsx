@@ -4,6 +4,7 @@ import CreateProjects from "./CreateProjects";
 import { EllipsisVertical } from "lucide-react";
 
 const Projects = () => {
+
     const [userId, setUserId] = useState(null);
     const [showProjectForm, setShowProjectForm] = useState(false);
     const [projects, setProjects] = useState([]);
@@ -12,6 +13,7 @@ const Projects = () => {
     const [projectToDelete, setProjectToDelete] = useState(null);
     const navigate = useNavigate();
 
+    // RETRIEVE USER FOR THE PROJECT /////////////////////////////////////////////////////////////////////////////////
     // retrieve user from local storage
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -20,11 +22,19 @@ const Projects = () => {
             fetchProjects(user.id);
         }
     }, []);
+    // Helper to get CSRF token from cookies
+    const getCSRFToken = () => {
+        const cookie = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("csrftoken="));
+        return cookie ? cookie.split("=")[1] : "";
+    };
 
-    // retrieveing user data from db  
+
+    // CONNECT USER ID WITH THE PROJECT  /////////////////////////////////////////////////////////////////////////////////
     const fetchProjects = async (userId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`);
+            const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`); //get_user from view.py 
             if (response.ok) {
                 const data = await response.json();
                 setProjects(data.projects);
@@ -34,22 +44,16 @@ const Projects = () => {
         }
     };
 
+    // CREATE project /////////////////////////////////////////////////////////////////////////////////
     const handleProjectCreated = () => {
         fetchProjects(userId);
         setShowProjectForm(false);
     };
 
+    // DELETE project /////////////////////////////////////////////////////////////////////////////////
     const handleDeleteClick = (projectId) => {
         setProjectToDelete(projectId);
         setShowConfirmModal(true);
-    };
-
-    // Helper to get CSRF token from cookies
-    const getCSRFToken = () => {
-        const cookie = document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("csrftoken="));
-        return cookie ? cookie.split("=")[1] : "";
     };
 
     const confirmDeleteProject = async () => {
@@ -76,8 +80,13 @@ const Projects = () => {
         }
     };
 
+
+
+
     return (
         <div>
+
+            {/*Create New Project button*/}
             <div className="flex justify-between items-center py-3 px-12 border-b border-gray-300">
                 <div className="flex flex-col gap-2">
                     <h1 className="font-semibold text-xl">Create a New Project</h1>
@@ -91,19 +100,12 @@ const Projects = () => {
                 </button>
             </div>
 
+            {/* Display the created projects in boxes */}
             <div className="px-12 mt-8">
                 <h1 className="font-semibold text-xl gap-2">Projects</h1>
                 <p>Here are your current projects...</p>
                 <div className="grid grid-cols-3 gap-6 mt-6">
                     {projects.map((project) => (
-                        // <div
-                        //     key={project.id}
-                        //     className="p-6 bg-white border rounded-lg shadow-md cursor-pointer hover:shadow-lg"
-                        //     onClick={() => navigate(`/project/${project.id}`)}
-                        // >
-                        //     <h2 className="text-xl font-semibold">{project.name}</h2>
-                        //     <p className="text-gray-600 mt-2">{project.description}</p>
-                        // </div>
                         <div key={project.id} className="relative p-6 bg-white border rounded-lg shadow-md">
                             {/* Three-dot dropdown button */}
                             <div className="absolute top-3 right-3">
@@ -131,7 +133,7 @@ const Projects = () => {
                 </div>
             </div>
 
-            {/* Delete Confirmation Modal */}
+            {/* Delete Confirmation Pop Up */}
             {showConfirmModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -148,7 +150,7 @@ const Projects = () => {
                 </div>
             )}
 
-            {/* Popup Modal */}
+            {/* Project Creation Form Popup */}
             {showProjectForm && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl max-w-2xl w-full relative">
