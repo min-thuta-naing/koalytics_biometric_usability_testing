@@ -6,7 +6,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry
+from .models import User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest
 from .serializers import UserSerializer, ProjectSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -265,6 +265,63 @@ def update_project(request, project_id):
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
+@csrf_exempt
+def save_critieria_gender (request, project_id):
+    if request.method == 'POST': 
+        try: 
+            project = Project.objects.get(id= project_id)
+            data = json.loads(request.body.decode('utf-8'))
+            gender = data.get('gender', [])
+
+            for gender in gender:
+                gender, created = Gender.objects.get_or_create(gender=gender)
+                project.gender.add(gender)
+            
+            return JsonResponse({'message': 'Gender saved successfully!'})
+        except Project.DoesNotExist: 
+            return JsonResponse({'error': 'Project not found'}, status=404)
+        except Exception as e: 
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+@csrf_exempt
+def save_critieria_age_group (request, project_id):
+    if request.method == 'POST': 
+        try: 
+            project = Project.objects.get(id= project_id)
+            data = json.loads(request.body.decode('utf-8'))
+            age_group = data.get('age_group', [])
+
+            for age_group in age_group:
+                age_group, created = AgeGroup.objects.get_or_create(age_group=age_group)
+                project.age_group.add(age_group)
+            
+            return JsonResponse({'message': 'Age group saved successfully!'})
+        except Project.DoesNotExist: 
+            return JsonResponse({'error': 'Project not found'}, status=404)
+        except Exception as e: 
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def save_critieria_interest (request, project_id):
+    if request.method == 'POST': 
+        try: 
+            project = Project.objects.get(id= project_id)
+            data = json.loads(request.body.decode('utf-8'))
+            interest = data.get('interest', [])
+
+            for interest in interest:
+                interest, created = Interest.objects.get_or_create(interest=interest)
+                project.interest.add(interest)
+            
+            return JsonResponse({'message': 'Interest saved successfully!'})
+        except Project.DoesNotExist: 
+            return JsonResponse({'error': 'Project not found'}, status=404)
+        except Exception as e: 
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 # for viewing each project 
 def get_project(request, project_id):
@@ -444,3 +501,4 @@ def delete_user(request, user_id):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Method not allowed"}, status=405)
+
