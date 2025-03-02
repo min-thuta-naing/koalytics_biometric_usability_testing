@@ -80,6 +80,10 @@ class Project(models.Model):
     end_date = models.DateField(blank=True, null=True)
     side_notes = models.TextField(blank=True, null=True)
 
+    gender = models.ManyToManyField('Gender', related_name="projects", blank=True )
+    age_group = models.ManyToManyField('AgeGroup', related_name="projects", blank=True )
+    interest = models.ManyToManyField('Interest', related_name="projects", blank=True )
+
     #Many to many relationship with Form table 
     forms = models.ManyToManyField('Form', related_name="projects", blank=True)
 
@@ -87,7 +91,28 @@ class Project(models.Model):
     def __str__(self):
         return self.name
     
+# for genders
+class Gender(models.Model):
+    gender = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.gender
+    
+# for age groups
+class AgeGroup(models.Model):
+    age_group = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.age_group
+
+# for interest
+class Interest(models.Model):
+    interest = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.interest
+
+# for forms
 class Form(models.Model): 
     title = models.CharField(max_length=200)
 

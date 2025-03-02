@@ -26,6 +26,8 @@ from .views import form_detail
 from .views import get_forms
 from .views import create_form, update_form, delete_form
 
+from .views import save_critieria_age_group, save_critieria_gender, save_critieria_interest
+
 
 
 
@@ -33,6 +35,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index, name='index'),
     path('api/signup/', signup, name='signup'),
+
     path('api/save-hobbies/<int:user_id>/', save_hobbies, name='save-hobbies'),
     path('api/save_employment_status/<int:user_id>/', save_employment_status, name='save-employment-status'),
     path('api/save_profession/<int:user_id>/', save_profession, name='save-profession'),
@@ -43,11 +46,14 @@ urlpatterns = [
     path("api/update_project/<int:project_id>/", update_project, name="update_project"),
     path('api/project/<int:project_id>/', get_project, name='get_project'),
     path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"),
-    
+
+    path('api/save_criteria_gender/<int:project_id>/', save_critieria_gender, name='save-criteria-gender'),
+    path('api/save_criteria_age_group/<int:project_id>/', save_critieria_age_group, name='save-criteria-age-group'),
+    path('api/save_criteria_interest/<int:project_id>/', save_critieria_interest, name='save-criteria-interest'),
+
     path('api/project/<int:project_id>/create_form/', create_form, name='create_form'),
     path('api/project/<int:project_id>/forms/', get_forms, name='get_forms'),
     path('api/forms/<int:form_id>/', form_detail, name='form_detail'),
-
     path('api/update_form/<int:form_id>/', update_form, name='update_form'),
     path('api/delete_form/<int:form_id>/', delete_form, name='delete_form'),
 
@@ -58,5 +64,6 @@ urlpatterns = [
 
     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
 ]
+
 
 

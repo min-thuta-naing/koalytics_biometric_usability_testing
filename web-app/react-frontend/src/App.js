@@ -17,7 +17,7 @@ import QuestionPage from "./pages/SUSform/QuestionPage";
 import NewProjectPage from "./pages/Researcher/CreateProjects";
 import CreateSUSQue from "./pages/SUSform/CreateSUSQue";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import AddProjectDetail from "./pages/Researcher/AddProjectDetail";
+import ProjectDetail from "./pages/Researcher/ProjectDetail";
 
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
@@ -37,7 +37,7 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard/>}/>
         <Route path="/new-project" element={<NewProjectPage />} />
         <Route path="/create-susque" element={<CreateSUSQue />} />
-        <Route path="/project/:projectId" element={<AddProjectDetail />} />
+        <Route path="/project/:projectId" element={<ProjectDetail />} />
         <Route path="/researcher-dashboard" element={<ResearcherSidebar />} />
         <Route path="/form/:formId" element={<QuestionPage />} />
         <Route path="/question1" element={<Question1 />} />
