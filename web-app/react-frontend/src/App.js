@@ -13,11 +13,11 @@ import Question3 from "./pages/Question3";
 import Question4 from "./pages/Question4";
 import Question5 from "./pages/Question5";
 import LoginPage from "./pages/LoginPage";
-import QuestionPage from "./pages/SUSform/QuestionPage";
 import NewProjectPage from "./pages/Researcher/CreateProjects";
 import CreateSUSQue from "./pages/SUSform/CreateSUSQue";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import ProjectDetail from "./pages/Researcher/ProjectDetail";
+import FormDetail from "./pages/SUSform/FormDetail";
 
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
@@ -39,7 +39,7 @@ function App() {
         <Route path="/create-susque" element={<CreateSUSQue />} />
         <Route path="/project/:projectId" element={<ProjectDetail />} />
         <Route path="/researcher-dashboard" element={<ResearcherSidebar />} />
-        <Route path="/form/:formId" element={<QuestionPage />} />
+        <Route path="/form/:formId" element={<FormDetail />} />
         <Route path="/question1" element={<Question1 />} />
         <Route path="/question2" element={<Question2 />} />
         <Route path="/question3" element={<Question3 />} />
