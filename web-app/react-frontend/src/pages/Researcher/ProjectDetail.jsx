@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Pencil, SquarePlus } from 'lucide-react';
 import CreateSurveyForms from './CreateForms'; 
 
-const AddProjectDetail = () => {
+const ProjectDetail = () => {
     const { projectId } = useParams(); // Get projectId from URL
     const navigate = useNavigate();
 
@@ -304,7 +304,12 @@ const AddProjectDetail = () => {
                                         key={form.id} 
                                         className="p-4 border rounded-lg shadow-md bg-white w-64"
                                     >
-                                        <h3 className="text-lg font-semibold">{form.title}</h3>
+                                        {/* <h3 className="text-lg font-semibold">{form.id}</h3>
+                                        <h3 className="text-lg font-semibold">{form.title}</h3> */}
+                                        <div onClick={()=> navigate(`/form/${form.id}`)}> 
+                                            <h3 className="text-lg font-semibold">{form.id}</h3>
+                                            <h3 className="text-lg font-semibold">{form.title}</h3>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -338,4 +343,4 @@ const AddProjectDetail = () => {
     );
 };
 
-export default AddProjectDetail;
+export default ProjectDetail;

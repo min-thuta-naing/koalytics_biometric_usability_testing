@@ -294,20 +294,43 @@ def delete_project(request, project_id):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 
-# for creating forms 
+# # for creating forms 
+# @csrf_exempt
+# def create_form(request, project_id):
+#     if request.method == 'POST':
+#         try:
+#             project = Project.objects.get(id=project_id)
+#             data = json.loads(request.body.decode('utf-8'))
+#             form = Form.objects.create(project=project, title=data['title'])
+#             return JsonResponse({'message': 'Form created successfully!', 'form_id': form.id}, status=201)
+#         except Project.DoesNotExist:
+#             return JsonResponse({'error': 'Project not found.'}, status=404)
+#         except json.JSONDecodeError:
+#             return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
+#     return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
 @csrf_exempt
 def create_form(request, project_id):
     if request.method == 'POST':
         try:
             project = Project.objects.get(id=project_id)
             data = json.loads(request.body.decode('utf-8'))
-            form = Form.objects.create(project=project, title=data['title'])
+            
+            # Create the form independently
+            form = Form.objects.create(title=data['title'])
+            
+            # Add the form to the project's many-to-many field
+            project.forms.add(form)
+
             return JsonResponse({'message': 'Form created successfully!', 'form_id': form.id}, status=201)
+        
         except Project.DoesNotExist:
             return JsonResponse({'error': 'Project not found.'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
+    
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
 
 
 #for retrieving forms 
@@ -318,6 +341,10 @@ def get_forms(request, project_id):
         return JsonResponse({'forms': forms}, status=200)
     except Project.DoesNotExist:
         return JsonResponse({'error': 'Project not found.'}, status=404)
+    
+def form_detail(request, form_id):
+    form = get_object_or_404(Form, id=form_id)
+    return JsonResponse({"id": form.id, "title": form.title})
     
 
 #for updating form 

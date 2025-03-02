@@ -13,11 +13,11 @@ import Question3 from "./pages/Question3";
 import Question4 from "./pages/Question4";
 import Question5 from "./pages/Question5";
 import LoginPage from "./pages/LoginPage";
-import QuestionPage from "./pages/SUSform/QuestionPage";
+import QuestionPage from "./pages/SUSform/FormDetail";
 import NewProjectPage from "./pages/Researcher/CreateProjects";
 import CreateSUSQue from "./pages/SUSform/CreateSUSQue";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import AddProjectDetail from "./pages/Researcher/AddProjectDetail";
+import AddProjectDetail from "./pages/Researcher/ProjectDetail";
 
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
