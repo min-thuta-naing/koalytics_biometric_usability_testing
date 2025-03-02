@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Pencil, SquarePlus } from 'lucide-react';
 import CreateSurveyForms from './CreateForms'; 
@@ -23,6 +23,36 @@ const ProjectDetail = () => {
     const [showSurveyFormModal, setShowSurveyFormModal] = useState(false);
 
     const [forms, setForms] = useState([]);
+
+
+    // FUNCTIONS FOR CRITERIA ///////////////////////////////////
+    const [selectedCriteria, setSelectedCriteria] = useState({
+        gender: [],
+        ageGroup: [],
+        hobby: [],
+        employment: [],
+    });
+    const [tempSelectedCriteria, setTempSelectedCriteria] = useState({
+        gender: [],
+        ageGroup: [],
+        hobby: [],
+        employment: [],
+    });
+    // Function to handle checkbox changes in the popup
+    const handleCheckboxChange = useCallback((category, value) => {
+        setTempSelectedCriteria((prev) => {
+            const updatedCategory = prev[category].includes(value)
+                ? prev[category].filter((item) => item !== value) // Remove if already selected
+                : [...prev[category], value]; // Add if not selected
+            return { ...prev, [category]: updatedCategory };
+        });
+    }, []);
+    // Function to confirm the selected criteria
+    const confirmCriteria = () => {
+        setSelectedCriteria(tempSelectedCriteria);
+        setShowAddCriteriaModal(false); // Close the popup
+    };
+
 
     // FETCH FORMS ///////////////////////////////////
     useEffect(() => {
@@ -256,6 +286,51 @@ const ProjectDetail = () => {
                             <SquarePlus />
                         </button>
                     </div>
+                    <h2 className="text-xl font-semibold mb-6">Edit Project Criteria</h2>
+
+                    <div className="mb-4">
+                        <h3 className="font-medium">Gender:</h3>
+                        <div className="flex gap-2">
+                            {selectedCriteria.gender.map((option) => (
+                                <span key={option} className="bg-gray-200 px-2 py-1 rounded">
+                                    {option}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                    {/* Age Group */}
+                    <div className="mb-4">
+                        <h3 className="font-medium">Age Group:</h3>
+                        <div className="flex gap-2">
+                            {selectedCriteria.ageGroup.map((option) => (
+                                <span key={option} className="bg-gray-200 px-2 py-1 rounded">
+                                    {option}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                    {/* Hobby */}
+                    <div className="mb-4">
+                        <h3 className="font-medium">Hobby:</h3>
+                        <div className="flex gap-2">
+                            {selectedCriteria.hobby.map((option) => (
+                                <span key={option} className="bg-gray-200 px-2 py-1 rounded">
+                                    {option}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                    {/* Employment Position */}
+                    <div className="mb-4">
+                        <h3 className="font-medium">Employment Position:</h3>
+                        <div className="flex gap-2">
+                            {selectedCriteria.employment.map((option) => (
+                                <span key={option} className="bg-gray-200 px-2 py-1 rounded">
+                                    {option}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
                 </div>
                 {showAddCriteriaModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
@@ -270,9 +345,82 @@ const ProjectDetail = () => {
 
                             {error && <p className="text-red-500 mb-4">{error}</p>}
                             {success && <p className="text-green-500 mb-4">{success}</p>}
-                            <form>
+                            {/* Gender */}
+                            <div className="mb-4">
+                                <h3 className="font-medium">Gender</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {["Male", "Female", "Non-binary", "Prefer not to say"].map((option) => (
+                                        <label key={option} className="flex items-center space-x-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={tempSelectedCriteria.gender.includes(option)}
+                                                onChange={() => handleCheckboxChange("gender", option)}
+                                                className="form-checkbox h-4 w-4 text-teal-600"
+                                            />
+                                            <span>{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            {/* Age Group */}
+                            <div className="mb-4">
+                                <h3 className="font-medium">Age Group</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {["18-24", "25-34", "35-44", "45+"].map((option) => (
+                                        <label key={option} className="flex items-center space-x-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={tempSelectedCriteria.ageGroup.includes(option)}
+                                                onChange={() => handleCheckboxChange("ageGroup", option)}
+                                                className="form-checkbox h-4 w-4 text-teal-600"
+                                            />
+                                            <span>{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            {/* Hobby */}
+                            <div className="mb-4">
+                                <h3 className="font-medium">Hobby</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {["Sports and Fitness", "Music and Performing Arts", "Reading and Writing", "Outdoor Activities", "Technology and Gaming", "Cooking and Baking", "Travel and Adventure"].map((option) => (
+                                        <label key={option} className="flex items-center space-x-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={tempSelectedCriteria.hobby.includes(option)}
+                                                onChange={() => handleCheckboxChange("hobby", option)}
+                                                className="form-checkbox h-4 w-4 text-teal-600"
+                                            />
+                                            <span>{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            {/* Employment Position */}
+                            <div className="mb-4">
+                                <h3 className="font-medium">Profession</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {["Student", "Employee", "Freelancer", "Unemployed", "Looking for Job", "Entrepreneur", "Software Engineer/ Developer", "Artist/ Designer", "Business Professional", "Healthcare Professional", "Teacher/ Educator", "Scientist/Researcher"].map((option) => (
+                                        <label key={option} className="flex items-center space-x-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={tempSelectedCriteria.employment.includes(option)}
+                                                onChange={() => handleCheckboxChange("employment", option)}
+                                                className="form-checkbox h-4 w-4 text-teal-600"
+                                            />
+                                            <span>{option}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            {/* Confirm Button */}
+                            <button
+                                className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 mt-4"
+                                onClick={confirmCriteria}
+                            >
+                                Confirm
+                            </button>
 
-                            </form>
                         </div>
                     </div> 
                 )}
