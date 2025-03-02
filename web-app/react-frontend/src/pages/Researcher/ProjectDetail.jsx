@@ -2,11 +2,12 @@ import { useEffect, useState,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Pencil, SquarePlus } from 'lucide-react';
 import CreateSurveyForms from './CreateForms'; 
+import EditProjectDetail from "./EditProjectDetail";
+import AddCriteriaForm from './AddCriteriaForm';
 
 const ProjectDetail = () => {
     const { projectId } = useParams(); // Get projectId from URL
     const navigate = useNavigate();
-
     const [project, setProject] = useState(null);
 
     const [projectName, setProjectName] = useState("");
@@ -19,25 +20,24 @@ const ProjectDetail = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [showEditModal, setShowEditModal] = useState(false);
-    const [showAddCriteriaModal, setShowAddCriteriaModal] = useState(false);
     const [showSurveyFormModal, setShowSurveyFormModal] = useState(false);
 
     const [forms, setForms] = useState([]);
 
-
-    // FUNCTIONS FOR CRITERIA ///////////////////////////////////
     const [selectedCriteria, setSelectedCriteria] = useState({
         gender: [],
         ageGroup: [],
-        hobby: [],
-        employment: [],
+        interest: [],
     });
     const [tempSelectedCriteria, setTempSelectedCriteria] = useState({
         gender: [],
         ageGroup: [],
-        hobby: [],
-        employment: [],
+        interest: [],
     });
+    const [showAddCriteriaModal, setShowAddCriteriaModal] = useState(false);
+
+
+////////////////////////////////////////////// CRITERIA FUNCTIONS //////////////////////////////////////////////
     // Function to handle checkbox changes in the popup
     const handleCheckboxChange = useCallback((category, value) => {
         setTempSelectedCriteria((prev) => {
@@ -53,8 +53,7 @@ const ProjectDetail = () => {
         setShowAddCriteriaModal(false); // Close the popup
     };
 
-
-    // FETCH FORMS ///////////////////////////////////
+////////////////////////////////////////////// FETCH FORMS //////////////////////////////////////////////
     useEffect(() => {
         const fetchForms = async () => {
             try {
@@ -73,83 +72,48 @@ const ProjectDetail = () => {
     }, [projectId]);
 
 
-    // FETCH PROJECT //////////////////////////////////////////////
-    useEffect(() => {
-        const fetchProject = async () => {
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setProject(data);
-                    setProjectName(data.name || "");
-                    setProjectDescription(data.description || "");
-                    setOrganization(data.organization || "");
-                    setMaxParticipants(data.max_participants || "");
-                    setStartDate(data.start_date || "");
-                    setEndDate(data.end_date || "");
-                    setSideNotes(data.side_notes || "");
-                } else {
-                    setError("Failed to load project details.");
-                }
-            } catch (error) {
-                console.error("Error fetching project:", error);
-                setError("Error fetching project data.");
-            }
-        };
-        fetchProject();
-    }, [projectId]);
 
-
-    // Helper to get CSRF token from cookies
-    const getCSRFToken = () => {
-        const cookie = document.cookie
-            .split("; ")
-            .find((row) => row.startsWith("csrftoken="));
-        return cookie ? cookie.split("=")[1] : "";
-    };
-
-    // UPDATE PROJECT DETAILS 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
-        setSuccess("");
-
+////////////////////////////////////////////// FETCH PROJECT //////////////////////////////////////////////
+    // fetch project with fetchProject function and display the project in the project detail page with useEffect
+    const fetchProject = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/update_project/${projectId}/`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken(),
-                },
-                body: JSON.stringify({
-                    name: projectName,
-                    description: projectDescription,
-                    organization: organization,
-                    max_participants: maxParticipants ? parseInt(maxParticipants) : null,
-                    start_date: startDate,
-                    end_date: endDate,
-                    side_notes: sideNotes,
-                }),
-            });
-            
-
-            if (!response.ok) {
+            const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/`);
+            if (response.ok) {
                 const data = await response.json();
-                throw new Error(data.error || "Failed to update project.");
+                setProject(data);
+                setProjectName(data.name || "");
+                setProjectDescription(data.description || "");
+                setOrganization(data.organization || "");
+                setMaxParticipants(data.max_participants || "");
+                setStartDate(data.start_date || "");
+                setEndDate(data.end_date || "");
+                setSideNotes(data.side_notes || "");
+            } else {
+                setError("Failed to load project details.");
             }
-
-            setSuccess("Project details updated successfully!");
-            setShowEditModal(false);
-            setTimeout(() => window.location.reload(), 2000); // Redirect after editing successful
-        } catch (err) {
-            console.error("Error updating project:", err);
-            setError(err.message || "Error updating project.");
+        } catch (error) {
+            console.error("Error fetching project:", error);
+            setError("Error fetching project data.");
         }
     };
 
+    useEffect(() => {
+        fetchProject();
+    }, [projectId]);
+
+    // will display this when there is no project 
     if (!project) return <p>Loading project details...</p>;
 
-    
+
+////////////////////////////////////////////// HANDLE PROJECT EDITION //////////////////////////////////////////////
+    const handleProjectEdited = () => {
+        fetchProject()
+        setShowEditModal(false);
+    };
+
+
+
+
     return (
         <div>
             {/* Project Cover Image */}
@@ -196,81 +160,12 @@ const ProjectDetail = () => {
                             >
                                 ✕
                             </button>
-                            <h2 className="text-xl font-semibold mb-6">Edit Project Details</h2>
-
-                            {error && <p className="text-red-500 mb-4">{error}</p>}
-                            {success && <p className="text-green-500 mb-4">{success}</p>}
-
-                            <form onSubmit={handleSubmit}>
-                                <label>Project Name:</label>
-                                <input
-                                    type="text"
-                                    value={projectName}
-                                    onChange={(e) => setProjectName(e.target.value)}
-                                    className="w-full p-2 mb-4 rounded border"
-                                />
-
-                                <label>Project Description:</label>
-                                <textarea
-                                    value={projectDescription}
-                                    onChange={(e) => setProjectDescription(e.target.value)}
-                                    className="w-full p-2 mb-4 rounded border"
-                                    rows="2"
-                                />
-
-                                <label>Organization:</label>
-                                <select
-                                    value={organization}
-                                    onChange={(e) => setOrganization(e.target.value)}
-                                    className="w-full p-2 mb-4 rounded border"
-                                >
-                                    <option value="company">Company</option>
-                                    <option value="school">School</option>
-                                    <option value="college">College</option>
-                                    <option value="institution">Institution</option>
-                                    <option value="university">University</option>
-                                    <option value="freelance">Freelance</option>
-                                </select>
-
-                                <label>Max Participants:</label>
-                                <input
-                                    type="number"
-                                    value={maxParticipants}
-                                    onChange={(e) => setMaxParticipants(e.target.value)}
-                                    className="w-full p-2 mb-4 rounded border"
-                                />
-
-                                <label>Start Date:</label>
-                                <input
-                                    type="date"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(e.target.value)}
-                                    className="w-full p-2 mb-4 rounded border"
-                                />
-
-                                <label>End Date:</label>
-                                <input
-                                    type="date"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    className="w-full p-2 mb-4 rounded border"
-                                />
-
-                                <label>Side Notes:</label>
-                                <textarea
-                                    value={sideNotes}
-                                    onChange={(e) => setSideNotes(e.target.value)}
-                                    className="w-full p-2 mb-4 rounded border"
-                                    rows="2"
-                                />
-
-                                <button
-                                    type="submit"
-                                    className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700"
-                                >
-                                    Save Changes
-                                </button>
-                            </form>
+                            <EditProjectDetail 
+                                onCancel={()=> setShowEditModal(false)}
+                                projectId={projectId}
+                                onProjectEdited={handleProjectEdited}
+                                project={project} // pass the data to pop up to prevent empty field when open the edit pop up 
+                            />
                         </div>
                     </div>
                 )}
@@ -286,6 +181,7 @@ const ProjectDetail = () => {
                             <SquarePlus />
                         </button>
                     </div>
+
                     <h2 className="text-xl font-semibold mb-6">Edit Project Criteria</h2>
 
                     <div className="mb-4">
@@ -309,22 +205,11 @@ const ProjectDetail = () => {
                             ))}
                         </div>
                     </div>
-                    {/* Hobby */}
+                    {/* Interest */}
                     <div className="mb-4">
-                        <h3 className="font-medium">Hobby:</h3>
+                        <h3 className="font-medium">Interest:</h3>
                         <div className="flex gap-2">
-                            {selectedCriteria.hobby.map((option) => (
-                                <span key={option} className="bg-gray-200 px-2 py-1 rounded">
-                                    {option}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                    {/* Employment Position */}
-                    <div className="mb-4">
-                        <h3 className="font-medium">Employment Position:</h3>
-                        <div className="flex gap-2">
-                            {selectedCriteria.employment.map((option) => (
+                            {selectedCriteria.interest.map((option) => (
                                 <span key={option} className="bg-gray-200 px-2 py-1 rounded">
                                     {option}
                                 </span>
@@ -333,96 +218,12 @@ const ProjectDetail = () => {
                     </div>
                 </div>
                 {showAddCriteriaModal && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
-                        <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full relative">
-                            <button
-                                className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
-                                onClick={() => setShowAddCriteriaModal(false)}
-                            >
-                                ✕
-                            </button>
-                            <h2 className="text-xl font-semibold mb-6">Add Project Criteria</h2>
-
-                            {error && <p className="text-red-500 mb-4">{error}</p>}
-                            {success && <p className="text-green-500 mb-4">{success}</p>}
-                            {/* Gender */}
-                            <div className="mb-4">
-                                <h3 className="font-medium">Gender</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {["Male", "Female", "Non-binary", "Prefer not to say"].map((option) => (
-                                        <label key={option} className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                checked={tempSelectedCriteria.gender.includes(option)}
-                                                onChange={() => handleCheckboxChange("gender", option)}
-                                                className="form-checkbox h-4 w-4 text-teal-600"
-                                            />
-                                            <span>{option}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                            {/* Age Group */}
-                            <div className="mb-4">
-                                <h3 className="font-medium">Age Group</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {["18-24", "25-34", "35-44", "45+"].map((option) => (
-                                        <label key={option} className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                checked={tempSelectedCriteria.ageGroup.includes(option)}
-                                                onChange={() => handleCheckboxChange("ageGroup", option)}
-                                                className="form-checkbox h-4 w-4 text-teal-600"
-                                            />
-                                            <span>{option}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                            {/* Hobby */}
-                            <div className="mb-4">
-                                <h3 className="font-medium">Hobby</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {["Sports and Fitness", "Music and Performing Arts", "Reading and Writing", "Outdoor Activities", "Technology and Gaming", "Cooking and Baking", "Travel and Adventure"].map((option) => (
-                                        <label key={option} className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                checked={tempSelectedCriteria.hobby.includes(option)}
-                                                onChange={() => handleCheckboxChange("hobby", option)}
-                                                className="form-checkbox h-4 w-4 text-teal-600"
-                                            />
-                                            <span>{option}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                            {/* Employment Position */}
-                            <div className="mb-4">
-                                <h3 className="font-medium">Profession</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {["Student", "Employee", "Freelancer", "Unemployed", "Looking for Job", "Entrepreneur", "Software Engineer/ Developer", "Artist/ Designer", "Business Professional", "Healthcare Professional", "Teacher/ Educator", "Scientist/Researcher"].map((option) => (
-                                        <label key={option} className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                checked={tempSelectedCriteria.employment.includes(option)}
-                                                onChange={() => handleCheckboxChange("employment", option)}
-                                                className="form-checkbox h-4 w-4 text-teal-600"
-                                            />
-                                            <span>{option}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-                            {/* Confirm Button */}
-                            <button
-                                className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 mt-4"
-                                onClick={confirmCriteria}
-                            >
-                                Confirm
-                            </button>
-
-                        </div>
-                    </div> 
+                    <AddCriteriaForm
+                        tempSelectedCriteria={tempSelectedCriteria}
+                        handleCheckboxChange={handleCheckboxChange}
+                        confirmCriteria={confirmCriteria}
+                        setShowAddCriteriaModal={setShowAddCriteriaModal}
+                    />
                 )}
             </div>
 
@@ -467,18 +268,7 @@ const ProjectDetail = () => {
 
                 </div>
                 <div>
-                    {/* <div className="flex justify-between items-center py-3 px-12 border-b border-gray-300">
-                        <div className="flex flex-col gap-2">
-                            <h1 className="font-semibold text-xl">Create a Survey Form</h1>
-                            <p>You can create forms using questions.</p>
-                        </div>
-                        <button
-                            onClick={() => setShowSUSForm(true)}
-                            className="bg-violet-400 text-black text-sm px-4 py-2 w-40 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
-                        >
-                            Create Biometric Usability Testing
-                        </button>
-                    </div> */}
+                    <h1> this is another portion </h1>
                 </div>
             </div> 
             {showSurveyFormModal && (
