@@ -72,7 +72,6 @@ class Industry (models.Model):
     
 # for projects 
 class Project(models.Model):
-    #user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
     name = models.CharField(max_length=200)
     description = models.TextField()
     organization = models.CharField(max_length=255, blank=True, null=True)
@@ -81,13 +80,15 @@ class Project(models.Model):
     end_date = models.DateField(blank=True, null=True)
     side_notes = models.TextField(blank=True, null=True)
 
+    #Many to many relationship with Form table 
+    forms = models.ManyToManyField('Form', related_name="projects", blank=True)
+
 
     def __str__(self):
         return self.name
     
 
 class Form(models.Model): 
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="forms")  # One-to-Many
     title = models.CharField(max_length=200)
 
     def __str__(self):
