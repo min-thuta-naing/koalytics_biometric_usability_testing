@@ -118,3 +118,25 @@ class Form(models.Model):
 
     def __str__(self):
         return self.title
+
+class Question(models.Model):
+    TEXT = 'text'
+    MULTIPLE_CHOICE = 'mcq'
+    RATING = 'rating'
+    
+    QUESTION_TYPES = [
+        (TEXT, 'Text'),
+        (MULTIPLE_CHOICE, 'Multiple Choice'),
+        (RATING, 'Rating')
+    ]
+
+    form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    question_text = models.TextField()
+    question_type = models.CharField(max_length=10, choices=QUESTION_TYPES)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class Answer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    answer_text = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)

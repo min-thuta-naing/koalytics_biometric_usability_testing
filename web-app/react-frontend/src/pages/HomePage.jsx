@@ -56,33 +56,61 @@ const HomePage = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="h-screen flex flex-col">
             {isSwitching ? (
                 <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-red-600 via-green-400 to-blue-600 animate-gradient-move">
                     <h1 className="text-4xl font-bold text-white animate-fade-in">Switching to Researcher Mode...</h1>
                 </div>
             ) : (
                 <>
-                    <header className="bg-white py-3 px-6 sticky top-0 z-10 flex justify-between items-center border-b border-gray-300">
+
+                    {/* Header bar */}
+                    <header className="fixed bg-[#E0FBE2] py-3 px-6 top-0 left-0 w-full z-10 flex justify-between items-center shadow-md">
                         <div className="flex items-center gap-3">
                             <img src="/static/images/logo.png" alt="Logo" className="h-7 w-auto" />
-                            <h1 className="font-funnel font-bold text-3xl text-black">Koalytics</h1>
+                            <h1 className="font-funnel font-bold text-xl text-black">Koalytics</h1>
                         </div>
 
-                        <div className="flex gap-4 relative">
-                        <p>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
-                        <img
-                                src="/images/profile.jpg"
+                        <div className="flex gap-4 items-center relative">
+
+                            <button
+                                onClick={handleSwitch}
+                                className="w-40 bg-[#ACE1AF] py-1 text-black text-sm rounded-lg hover:bg-[#91C79B]"
+                            >
+                                Switch to Researcher
+                            </button>
+
+                            
+                            <img
+                                src="/static/images/profile.jpg"
                                 alt="Profile"
                                 className="h-10 w-10 rounded-full border-2 border-gray-300 object-cover cursor-pointer"
                                 onClick={() => setShowPopup(!showPopup)}
                             />
                             {showPopup && (
-                                <div className="absolute right-0 mt-16 w-48 bg-white shadow-lg rounded-lg py-2 border border-gray-400 ">
-                                    <Link to="/my-account" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Account</Link>
-                                    <Link to="/settings" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</Link>
-                                    <Link to="/about-us" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">About us</Link>
-                                    <button onClick={() => setShowLogoutPopup(true)} className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">Sign Out</button>
+                                <div className="absolute right-0 top-full mt-4 w-64 bg-purple-100 shadow-lg rounded-lg py-2  z-50">
+                                    {/* <img
+                                        src="/images/profile.jpg"
+                                        alt="Profile"
+                                        className="h-20 w-20 p-3 rounded-full border-2 border-gray-300 object-cover"
+                                    />
+                                    <p className="block px-4 py-4 text-gray-700 text-center border-b border-gray-400">Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p> */}
+                                    <div className="flex px-4 py-4 items-center gap-4 border-b border-gray-400">
+                                        <img
+                                            src="/images/profile.jpg"
+                                            alt="Profile"
+                                            className="h-16 w-16 rounded-full border-2 border-gray-400 object-cover"
+                                        />
+                                        <p className="block text-gray-700">
+                                            Welcome back!<br />
+                                            {user ? `${user.first_name} ${user.last_name}` : "Loading..."}
+                                        </p>
+                                    </div>
+
+                                    <Link to="/my-account" className="block px-4 py-2 text-gray-700 text-sm hover:bg-gray-100">My Account</Link>
+                                    <Link to="/settings" className="block px-4 py-2 text-gray-700 text-sm hover:bg-gray-100">Settings</Link>
+                                    <Link to="/about-us" className="block px-4 py-2 text-gray-700 text-sm hover:bg-gray-100">About us</Link>
+                                    <button onClick={() => setShowLogoutPopup(true)} className="block w-full text-left px-4 py-2 text-gray-700 text-sm hover:bg-gray-100">Sign Out</button>
                                     {showLogoutPopup && (
                                         <LogoutConfirmation
                                             onConfirm={handleSignOut}
@@ -94,7 +122,8 @@ const HomePage = () => {
                         </div>
                     </header>
 
-                    <main className="flex-1 overflow-y-auto">
+                    <main className="flex-1 bg-[#EEEEEE] overflow-y-auto pt-[4rem]">
+                        <p className='p-10 font-funnel text-xl'>Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
                         {/* Main content */}
                     </main>
 
