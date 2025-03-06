@@ -115,7 +115,7 @@ const ProjectDetail = () => {
 
 
     return (
-        <div>
+        <div className="bg-[#F0EEED]">
             {/* Project Cover Image */}
             <div className="relative">
                 <img
@@ -131,7 +131,7 @@ const ProjectDetail = () => {
             {/* 2 columns */}
             <div className="grid grid-cols-2 p-8 gap-10"> 
                 {/* left column - project details */}
-                <div className="bg-violet-100 p-8 rounded-lg" > 
+                <div className="bg-white p-8 rounded-lg shadow-md" > 
                     <div className="flex justify-between items-center mb-4"> 
                         <h2 className="text-xl font-semibold mb-4">Project Information</h2>
                         <button
@@ -171,7 +171,7 @@ const ProjectDetail = () => {
                 )}
 
                 {/* right column - project criteria */}
-                <div className="bg-violet-100 p-8 rounded-lg" > 
+                <div className="bg-white p-8 rounded-lg shadow-md" > 
                     <div className="flex justify-between items-center mb-4"> 
                         <h2 className="text-xl font-semibold mb-4">Project Criteria</h2>
                         <button
