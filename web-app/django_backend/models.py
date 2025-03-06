@@ -133,7 +133,7 @@ class Question(models.Model):
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
     question_text = models.TextField()
     question_type = models.CharField(max_length=10, choices=QUESTION_TYPES)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

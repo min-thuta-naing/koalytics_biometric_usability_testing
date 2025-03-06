@@ -122,7 +122,7 @@ const HomePage = () => {
                         </div>
                     </header>
 
-                    <main className="flex-1 bg-[#EEEEEE] overflow-y-auto pt-[4rem]">
+                    <main className="flex-1 bg-[#F0EEED] overflow-y-auto pt-[4rem]">
                         <p className='p-10 font-funnel text-xl'>Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
                         {/* Main content */}
                     </main>

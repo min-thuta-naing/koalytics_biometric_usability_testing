@@ -76,16 +76,16 @@ const ResearcherSidebar = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#EEF2FF]">
+    <div className="flex h-screen bg-[#F0EEED]">
       <div
-        className={`fixed left-0 top-0 h-full bg-white shadow-lg p-4 transition-all duration-300 ease-in-out ${
+        className={`fixed left-0 top-0 h-full bg-[#DCD6F7] shadow-lg p-4 transition-all duration-300 ease-in-out ${
           isCollapsed ? "w-20" : "w-48"
         }`}
       >
         <div className="flex flex-col h-full relative">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="absolute -right-10 top-2 w-12 h-12 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-all duration-300 shadow-md border border-gray-400"
+            className="absolute -right-10 top-2 w-12 h-12 flex items-center justify-center rounded-full bg-[#C4BDED] hover:bg-[#ACA3E3] transition-all duration-300 shadow-md border border-gray-400"
           >
             <Menu size={18} />
           </button>
@@ -95,7 +95,7 @@ const ResearcherSidebar = () => {
 
             <button
               onClick={() => setActivePage("projects")}
-              className={`flex items-center p-2 w-full rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out ${activePage === "projects" ? "bg-gray-300" : ""}`}
+              className={`flex items-center p-2 w-full rounded-lg hover:bg-[#ACA3E3] cursor-pointer transition-all duration-300 ease-in-out ${activePage === "projects" ? "bg-gray-300" : ""}`}
             >
               <FolderOpenDot size={20} />
               {showText && <span className="ml-3 text-sm">Projects</span>}
@@ -103,7 +103,7 @@ const ResearcherSidebar = () => {
             
             <button
               onClick={() => setActivePage("guideline")}
-              className={`flex items-center p-2 w-full rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out ${activePage === "guideline" ? "bg-gray-300" : ""}`}
+              className={`flex items-center p-2 w-full rounded-lg hover:bg-[#ACA3E3] cursor-pointer transition-all duration-300 ease-in-out ${activePage === "guideline" ? "bg-gray-300" : ""}`}
             >
               <Info size={20} />
               {showText && <span className="ml-3 text-sm">Guideline</span>}

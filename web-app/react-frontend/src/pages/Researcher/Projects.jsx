@@ -83,23 +83,23 @@ const Projects = () => {
         <div>
 
             {/* New project creation button */}
-            <div className="flex justify-between items-center py-3 px-12 border-b border-gray-300">
+            <div className="flex justify-between items-center py-3 px-12 border-b border-gray-400">
                 <div className="flex flex-col gap-2">
-                    <h1 className="font-semibold text-xl">Create a New Project</h1>
-                    <p>Let's get started with Koalytics!</p>
+                    <h1 className="font-funnel font-semibold text-xl">Create a New Project</h1>
+                    <p className="font-funnel">Let's get started with Koalytics!</p>
                 </div>
                 <button
                     onClick={() => setShowProjectForm(true)}
-                    className="bg-violet-400 text-black text-sm px-4 py-2 w-40 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
+                    className="bg-[#C4BDED] font-funnel text-black text-sm px-4 py-2 w-40 h-12 rounded-lg hover:bg-[#ACA3E3]"
                 >
-                    New Project
+                    Create New Project
                 </button>
             </div>
 
             {/* Created project list */}
             <div className="px-12 mt-8">
-                <h1 className="font-semibold text-xl gap-2">Projects</h1>
-                <p>Here are your current projects...</p>
+                <h1 className="font-funnel font-semibold text-xl gap-2">Projects</h1>
+                <p className="font-funnel">Here are your current projects...</p>
                 <div className="grid grid-cols-3 gap-6 mt-6">
                     {projects.map((project) => (
                         <div key={project.id} className="relative p-6 bg-white border rounded-lg shadow-md">

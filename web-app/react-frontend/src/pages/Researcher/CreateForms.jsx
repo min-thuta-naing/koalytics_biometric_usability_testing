@@ -35,9 +35,9 @@ const CreateSurveyForms = ({ onClose, projectId }) => {
                 throw new Error(data.error || "Failed to create form.");
             }
 
-            setSuccess("Form created successfully!");
+            alert("Form created successfully!");
             setTitle("");
-            setTimeout(() => onClose(), 1500); // Close modal after success
+            onClose(); // Close modal after success
         } catch (err) {
             console.error("Error creating form:", err);
             setError(err.message || "Error creating form.");

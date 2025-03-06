@@ -42,7 +42,7 @@ const CreateSUSQue = () => {
                     <select value={questionType} onChange={(e) => setQuestionType(e.target.value)} style={{ flex: 1, padding: '12px' }}>
                         <option value="scale">Scale (1 to 5)</option>
                         <option value="open-ended">Open-ended</option>
-                    </select>
+                    </select>  
                 </div>
 
                 <h3>Theme Customization</h3>
