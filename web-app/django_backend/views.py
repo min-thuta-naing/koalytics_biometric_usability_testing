@@ -402,6 +402,14 @@ def get_forms(request, project_id):
 def form_detail(request, form_id):
     form = get_object_or_404(Form, id=form_id)
     return JsonResponse({"id": form.id, "title": form.title})
+
+
+#for retrieving all forms for participant to display in the homepage
+def get_all_forms(request):
+    if request.method == "GET":
+        forms = list(Form.objects.values("id", "title"))
+        return JsonResponse(forms, safe=False)
+    return JsonResponse({"error": "Invalid request method."}, status=405)
     
 
 #for updating form 

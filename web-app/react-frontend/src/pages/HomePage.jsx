@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect} from "react";
-import { ArrowLeftRight } from "lucide-react";
+import { Info } from "lucide-react";
 
 const HomePage = () => {
     const [showPopup, setShowPopup] = useState(false);
@@ -9,6 +9,7 @@ const HomePage = () => {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+    const [forms, setForms] = useState([]);
 
     // log in user info 
     useEffect(() => {
@@ -19,10 +20,21 @@ const HomePage = () => {
             navigate("/homepage"); // Redirect if no user data
         }
     }, [navigate]);
+
+    //fetching all forms
+    useEffect(() => {
+        fetch("http://127.0.0.1:8000/api/forms/") // Update with actual backend URL
+            .then(response => response.json())
+            .then(data => setForms(data))
+            .catch(error => console.error("Error fetching forms:", error));
+    }, []);
+
+    //sign out 
     const handleSignOut = () => {
         localStorage.removeItem("user"); // Clear user session
         navigate("/loginpage"); // Redirect to login page
     };
+    //sign out confirmation 
     const LogoutConfirmation = ({ onConfirm, onCancel }) => (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
@@ -58,14 +70,13 @@ const HomePage = () => {
     return (
         <div className="h-screen flex flex-col">
             {isSwitching ? (
-                <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-red-600 via-green-400 to-blue-600 animate-gradient-move">
-                    <h1 className="text-4xl font-bold text-white animate-fade-in">Switching to Researcher Mode...</h1>
+                <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-purple-600 via-blue-600 to-green-600 animate-gradient-move">
+                    <h1 className="text-4xl font-funnel font-bold text-white animate-fade-in">Switching to Researcher Dashboard ...</h1>
                 </div>
             ) : (
                 <>
-
                     {/* Header bar */}
-                    <header className="fixed bg-[#E0FBE2] py-3 px-6 top-0 left-0 w-full z-10 flex justify-between items-center shadow-md">
+                    <header className="fixed bg-[#DCD6F7] py-3 px-6 top-0 left-0 w-full z-10 flex justify-between items-center shadow-md">
                         <div className="flex items-center gap-3">
                             <img src="/static/images/logo.png" alt="Logo" className="h-7 w-auto" />
                             <h1 className="font-funnel font-bold text-xl text-black">Koalytics</h1>
@@ -74,11 +85,22 @@ const HomePage = () => {
                         <div className="flex gap-4 items-center relative">
 
                             <button
-                                onClick={handleSwitch}
-                                className="w-40 bg-[#ACE1AF] py-1 text-black text-sm rounded-lg hover:bg-[#91C79B]"
+                                onClick={() => setShowSwitchPopup(!showSwitchPopup)}
+                                className="w-40 bg-[#C4BDED] py-1 text-black font-funnel text-sm rounded-lg hover:bg-[#ACA3E3]"
                             >
                                 Switch to Researcher
                             </button>
+                            {showSwitchPopup && (
+                                <div className="absolute right-0 top-full mt-7 w-64 p-4 bg-[#DCD6F7] shadow-lg rounded-lg border border-gray-400">
+                                    <p className="text-gray-700 text-sm mb-4">Switch to Researcher to create<br/>and manage biometric usability tests.</p>
+                                    <button
+                                        onClick={handleSwitch}
+                                        className="w-full py-2 bg-[#C4BDED] text-sm text-black rounded-lg hover:bg-[#ACA3E3]"
+                                    >
+                                        Switch to Researcher
+                                    </button>
+                                </div>
+                            )}
 
                             
                             <img
@@ -88,13 +110,7 @@ const HomePage = () => {
                                 onClick={() => setShowPopup(!showPopup)}
                             />
                             {showPopup && (
-                                <div className="absolute right-0 top-full mt-4 w-64 bg-purple-100 shadow-lg rounded-lg py-2  z-50">
-                                    {/* <img
-                                        src="/images/profile.jpg"
-                                        alt="Profile"
-                                        className="h-20 w-20 p-3 rounded-full border-2 border-gray-300 object-cover"
-                                    />
-                                    <p className="block px-4 py-4 text-gray-700 text-center border-b border-gray-400">Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p> */}
+                                <div className="absolute right-0 top-full mt-7 w-64 bg-[#DCD6F7] shadow-lg rounded-lg py-2  z-50 border border-gray-400">
                                     <div className="flex px-4 py-4 items-center gap-4 border-b border-gray-400">
                                         <img
                                             src="/images/profile.jpg"
@@ -107,10 +123,10 @@ const HomePage = () => {
                                         </p>
                                     </div>
 
-                                    <Link to="/my-account" className="block px-4 py-2 text-gray-700 text-sm hover:bg-gray-100">My Account</Link>
-                                    <Link to="/settings" className="block px-4 py-2 text-gray-700 text-sm hover:bg-gray-100">Settings</Link>
-                                    <Link to="/about-us" className="block px-4 py-2 text-gray-700 text-sm hover:bg-gray-100">About us</Link>
-                                    <button onClick={() => setShowLogoutPopup(true)} className="block w-full text-left px-4 py-2 text-gray-700 text-sm hover:bg-gray-100">Sign Out</button>
+                                    <Link to="/my-account" className="block px-4 py-2 text-gray-700 text-sm hover:bg-[#ACA3E3]">My Account</Link>
+                                    <Link to="/settings" className="block px-4 py-2 text-gray-700 text-sm hover:bg-[#ACA3E3]">Settings</Link>
+                                    <Link to="/about-us" className="block px-4 py-2 text-gray-700 text-sm hover:bg-[#ACA3E3]">About us</Link>
+                                    <button onClick={() => setShowLogoutPopup(true)} className="block w-full text-left px-4 py-2 text-gray-700 text-sm hover:bg-[#ACA3E3]">Sign Out</button>
                                     {showLogoutPopup && (
                                         <LogoutConfirmation
                                             onConfirm={handleSignOut}
@@ -122,31 +138,31 @@ const HomePage = () => {
                         </div>
                     </header>
 
+                    {/* main content */}
                     <main className="flex-1 bg-[#F0EEED] overflow-y-auto pt-[4rem]">
-                        <p className='p-10 font-funnel text-xl'>Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
-                        {/* Main content */}
+                        <p className='p-4 mx-8 mt-8 font-funnel text-xl border-b border-gray-400'>Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
+                        {/* all forms */}
+                        <div className="grid grid-cols-4 gap-6 p-8">
+                            {forms.map(form => (
+                                <div 
+                                    key={form.id} 
+                                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400"
+                                    onClick={() => navigate(`/all-form/${form.id}`)}
+                                >
+                                    <h2 className="font-semibold text-lg">{form.title}</h2>
+                                </div>
+                            ))}
+                        </div>
                     </main>
 
-                    {/* Floating Switch Icon */}
+                    {/* Floating guide Icon */}
                     <div className="fixed bottom-6 right-6">
                         <button
-                            className="h-14 w-14 rounded-full bg-violet-400 text-white flex items-center justify-center shadow-lg hover:bg-violet-500"
-                            onClick={() => setShowSwitchPopup(!showSwitchPopup)}
+                            className="h-14 w-14 rounded-full bg-[#C4BDED] text-black flex items-center justify-center shadow-lg hover:bg-[#ACA3E3]"
+                            onClick={() => navigate("/guide")}
                         >
-                            <ArrowLeftRight size={28} />
+                            <Info size={28} />
                         </button>
-
-                        {showSwitchPopup && (
-                            <div className="absolute bottom-20 right-0 w-64 p-4 bg-white shadow-lg rounded-lg border border-gray-400">
-                                <p className="text-gray-700 mb-4">Switch to Researcher Mode <br/>to create and manage biometric usability tests.</p>
-                                <button
-                                    onClick={handleSwitch}
-                                    className="w-full py-2 bg-violet-400 text-white rounded-lg hover:bg-violet-500"
-                                >
-                                    Switch to Researcher Mode
-                                </button>
-                            </div>
-                        )}
                     </div>
                 </>
             )}
