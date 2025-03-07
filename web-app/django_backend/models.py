@@ -87,6 +87,7 @@ class Project(models.Model):
     #Many to many relationship with Form table 
     forms = models.ManyToManyField('Form', related_name="projects", blank=True)
 
+    usability_testings = models.ManyToManyField('UsabilityTesting', related_name="projects", blank=True)
 
     def __str__(self):
         return self.name
@@ -140,3 +141,11 @@ class Answer(models.Model):
     participant = models.ForeignKey(User, on_delete=models.CASCADE)
     answer_text = models.TextField()
     submitted_at = models.DateTimeField(auto_now_add=True, blank=True)
+
+class UsabilityTesting(models.Model):
+    title = models.CharField(max_length=200)
+    task = models.CharField(max_length=500) 
+
+    def __str__(self):
+        return self.title
+
