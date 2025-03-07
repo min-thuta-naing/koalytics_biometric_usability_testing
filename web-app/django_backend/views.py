@@ -549,6 +549,10 @@ def get_usability_testing(request, project_id):
         return JsonResponse({'usability_testings': usability_testings}, status=200)
     except Project.DoesNotExist:
         return JsonResponse({'error': 'Project not found.'}, status=404)
+    
+def usability_testing_detail(request, usability_testing_id):
+    usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
+    return JsonResponse({"id": usability_testing.id, "title": usability_testing.title, "task": usability_testing.task})
 
 # Get user by ID to display in MyAccount page
 @csrf_exempt

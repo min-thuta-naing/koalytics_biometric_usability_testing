@@ -311,7 +311,7 @@ useEffect(() => {
                                     >
                                         {/* <h3 className="text-lg font-semibold">{form.id}</h3>
                                         <h3 className="text-lg font-semibold">{form.title}</h3> */}
-                                        <div onClick={()=> navigate()}> 
+                                        <div onClick={()=> navigate(`/usability_testing/${usabilityTesting.id}`)}> 
                                             <h3 className="text-lg font-semibold">{usabilityTesting.id}</h3>
                                             <h3 className="text-lg font-semibold">{usabilityTesting.title}</h3>
                                             <h3 className="text-lg font-semibold">{usabilityTesting.task}</h3>
