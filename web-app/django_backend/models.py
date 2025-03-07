@@ -139,4 +139,4 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     participant = models.ForeignKey(User, on_delete=models.CASCADE)
     answer_text = models.TextField()
-    submitted_at = models.DateTimeField(auto_now_add=True)
+    submitted_at = models.DateTimeField(auto_now_add=True, blank=True)

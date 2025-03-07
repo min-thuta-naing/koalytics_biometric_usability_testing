@@ -20,6 +20,8 @@ import ProjectDetail from "./pages/Researcher/ProjectDetail";
 import FormDetail from "./pages/SUSform/FormDetail";
 import CreateQuestions from "./pages/SUSform/CreateQuestions";
 import ViewResults from "./pages/SUSform/ViewResults";
+import Guide from "./pages/Guide";
+import AnswerForm from "./pages/AnswerForms";
 
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
@@ -40,10 +42,12 @@ function App() {
         <Route path="/new-project" element={<NewProjectPage />} />
         <Route path="/create-susque" element={<CreateSUSQue />} />
         <Route path="/create" element={<CreateQuestions/>}/>
+        <Route path="/guide" element={<Guide/>}/>
         <Route path="/results" element={<ViewResults/>}/>
         <Route path="/project/:projectId" element={<ProjectDetail />} />
         <Route path="/researcher-dashboard" element={<ResearcherSidebar />} />
         <Route path="/form/:formId" element={<FormDetail />} />
+        <Route path="/all-form/:formId" element={<AnswerForm />} />
         <Route path="/question1" element={<Question1 />} />
         <Route path="/question2" element={<Question2 />} />
         <Route path="/question3" element={<Question3 />} />

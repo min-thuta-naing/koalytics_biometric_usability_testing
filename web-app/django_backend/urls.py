@@ -26,6 +26,8 @@ from .views import form_detail
 from .views import get_forms
 from .views import create_form, update_form, delete_form
 
+from .views import get_all_forms
+
 from .views import create_question, get_questions, delete_question
 
 from .views import save_critieria_age_group, save_critieria_gender, save_critieria_interest
@@ -62,6 +64,8 @@ urlpatterns = [
     path('api/forms/<int:form_id>/questions/', create_question, name="create_question"),
     path('api/forms/<int:form_id>/questions/list/', get_questions, name="get_questions"),
     path("api/forms/<int:form_id>/questions/<int:question_id>/", delete_question, name="delete_question"),
+
+    path("api/forms/", get_all_forms, name="get_all_forms"),
 
     path('api/login/', login, name='login'),
     path('api/user/<int:user_id>/', get_user, name='get_user'),
