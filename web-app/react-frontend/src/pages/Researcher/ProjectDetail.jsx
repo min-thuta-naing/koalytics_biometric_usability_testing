@@ -349,7 +349,7 @@ const ProjectDetail = () => {
                             <div className="mb-4">
                                 <h3 className="font-medium">Gender</h3>
                                 <div className="flex flex-wrap gap-2">
-                                    {["Male", "Female", "Non-binary", "Prefer not to say"].map((option) => (
+                                    {["Male", "Female"].map((option) => (
                                         <label key={option} className="flex items-center space-x-2">
                                             <input
                                                 type="checkbox"
@@ -366,7 +366,7 @@ const ProjectDetail = () => {
                             <div className="mb-4">
                                 <h3 className="font-medium">Age Group</h3>
                                 <div className="flex flex-wrap gap-2">
-                                    {["18-24", "25-34", "35-44", "45+"].map((option) => (
+                                    {["Below 18","18-24", "25-34", "35-44", "45+"].map((option) => (
                                         <label key={option} className="flex items-center space-x-2">
                                             <input
                                                 type="checkbox"
