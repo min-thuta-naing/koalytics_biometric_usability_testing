@@ -26,6 +26,8 @@ from .views import form_detail
 from .views import get_forms
 from .views import create_form, update_form, delete_form
 
+from .views import create_usability_testing, get_usability_testing
+
 from .views import get_all_projects, get_all_forms, get_project_forms
 
 from .views import create_question, get_questions, delete_question
@@ -60,6 +62,9 @@ urlpatterns = [
     path('api/forms/<int:form_id>/', form_detail, name='form_detail'),
     path('api/update_form/<int:form_id>/', update_form, name='update_form'),
     path('api/delete_form/<int:form_id>/', delete_form, name='delete_form'),
+
+    path('api/project/<int:project_id>/create_usability_testing/', create_usability_testing, name='create_usability_testing'),
+    path('api/project/<int:project_id>/get_usability_testing/', get_usability_testing, name='get_usability_testing'),
 
     path('api/forms/<int:form_id>/questions/', create_question, name="create_question"),
     path('api/forms/<int:form_id>/questions/list/', get_questions, name="get_questions"),

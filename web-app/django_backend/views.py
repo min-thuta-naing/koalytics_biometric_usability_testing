@@ -6,7 +6,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question
+from .models import User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, UsabilityTesting
 from .serializers import UserSerializer, ProjectSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -511,7 +511,44 @@ def delete_question(request, form_id, question_id):
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
+#for creating usability testings
+@csrf_exempt
+def create_usability_testing(request, project_id): 
+    if request.method == "POST":
+        try: 
+            project = Project.objects.get(id=project_id)
+            data = json.loads(request.body.decode('utf-8'))
 
+            # Ensure both title and task are provided
+            if 'title' not in data or 'task' not in data:
+                return JsonResponse({'error': 'Missing required fields: title and task'}, status=400)
+
+            usability_testing = UsabilityTesting.objects.create(
+                title=data['title'],
+                task=data['task']
+            )
+
+            project.usability_testings.add(usability_testing)
+
+
+            return JsonResponse({'message': 'Usability testing created successfully', 'usability_testing_id': usability_testing.id}, status=201)
+        
+        except Project.DoesNotExist: 
+            return JsonResponse({'error': 'Project not found.'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+
+#for retrieving usability testing in project detail page 
+def get_usability_testing(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        usability_testings = list(project.usability_testings.values('id', 'title', 'task'))
+        return JsonResponse({'usability_testings': usability_testings}, status=200)
+    except Project.DoesNotExist:
+        return JsonResponse({'error': 'Project not found.'}, status=404)
 
 # Get user by ID to display in MyAccount page
 @csrf_exempt

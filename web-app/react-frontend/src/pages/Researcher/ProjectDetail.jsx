@@ -4,6 +4,7 @@ import { Pencil, SquarePlus } from 'lucide-react';
 import CreateSurveyForms from './CreateForms'; 
 import EditProjectDetail from "./EditProjectDetail";
 import AddCriteriaForm from './AddCriteriaForm';
+import CreateUsabilityTesting from "./CreateUsabilityTesting";
 
 const ProjectDetail = () => {
     const { projectId } = useParams(); // Get projectId from URL
@@ -21,8 +22,10 @@ const ProjectDetail = () => {
     const [success, setSuccess] = useState("");
     const [showEditModal, setShowEditModal] = useState(false);
     const [showSurveyFormModal, setShowSurveyFormModal] = useState(false);
+    const [showUsabilityTestingModal, setShowUsabilityTestingModal] = useState(false); 
 
     const [forms, setForms] = useState([]);
+    const [usabilityTestings, setUsabilityTestings] = useState([]);
 
     const [selectedCriteria, setSelectedCriteria] = useState({
         gender: [],
@@ -71,7 +74,23 @@ const ProjectDetail = () => {
         fetchForms();
     }, [projectId]);
 
-
+////////////////////////////////////////////// FETCH Usability Testings //////////////////////////////////////////////
+useEffect(() => {
+    const fetchUsabilityTesting = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/get_usability_testing/`);
+            if (response.ok) {
+                const data = await response.json();
+                setUsabilityTestings(data.usability_testings);
+            } else {
+                console.error("Failed to fetch usability testings");
+            }
+        } catch (error) {
+            console.error("Error fetching usability testings:", error);
+        }
+    };
+    fetchUsabilityTesting();
+}, [projectId]);
 
 ////////////////////////////////////////////// FETCH PROJECT //////////////////////////////////////////////
     // fetch project with fetchProject function and display the project in the project detail page with useEffect
@@ -110,8 +129,6 @@ const ProjectDetail = () => {
         fetchProject()
         setShowEditModal(false);
     };
-
-
 
 
     return (
@@ -268,12 +285,54 @@ const ProjectDetail = () => {
 
                 </div>
                 <div>
-                    <h1> this is another portion </h1>
+                    <div className="flex justify-between items-center py-3 px-12 border-b border-gray-300">
+                        <div className="flex flex-col gap-2">
+                            <h1 className="font-semibold text-xl">Create Usability Testings</h1>
+                            <p>You can create usability testings.</p>
+                        </div>
+                        <button
+                            className="bg-violet-400 text-black text-sm px-4 py-2 w-40 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
+                            onClick={() => setShowUsabilityTestingModal(true)}
+                        >
+                            Create Usability Testing
+                        </button>
+                    </div>
+
+                    <div>
+                        <p>Here are your current usability testings:</p>
+                        {usabilityTestings.length === 0 ? (
+                            <p>No forms available.</p>
+                        ) : (
+                            <div className="flex flex-wrap gap-4 mt-4">
+                                {usabilityTestings.map((usabilityTesting) => (
+                                    <div 
+                                        key={usabilityTesting.id} 
+                                        className="p-4 border rounded-lg shadow-md bg-white w-64"
+                                    >
+                                        {/* <h3 className="text-lg font-semibold">{form.id}</h3>
+                                        <h3 className="text-lg font-semibold">{form.title}</h3> */}
+                                        <div onClick={()=> navigate()}> 
+                                            <h3 className="text-lg font-semibold">{usabilityTesting.id}</h3>
+                                            <h3 className="text-lg font-semibold">{usabilityTesting.title}</h3>
+                                            <h3 className="text-lg font-semibold">{usabilityTesting.task}</h3>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                 </div>
             </div> 
             {showSurveyFormModal && (
                 <CreateSurveyForms 
                     onClose={() => setShowSurveyFormModal(false)} 
+                    projectId={projectId} 
+                />
+            )}
+            {showUsabilityTestingModal && (
+                <CreateUsabilityTesting 
+                    onClose={() => setShowUsabilityTestingModal(false)} 
                     projectId={projectId} 
                 />
             )}
