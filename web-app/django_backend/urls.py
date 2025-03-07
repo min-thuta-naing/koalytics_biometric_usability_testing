@@ -26,7 +26,7 @@ from .views import form_detail
 from .views import get_forms
 from .views import create_form, update_form, delete_form
 
-from .views import get_all_forms
+from .views import get_all_projects, get_all_forms, get_project_forms
 
 from .views import create_question, get_questions, delete_question
 
@@ -65,6 +65,8 @@ urlpatterns = [
     path('api/forms/<int:form_id>/questions/list/', get_questions, name="get_questions"),
     path("api/forms/<int:form_id>/questions/<int:question_id>/", delete_question, name="delete_question"),
 
+    path("api/projects/", get_all_projects, name="get_all_project"), 
+    path("api/projects/<int:project_id>/related_forms/", get_project_forms, name="get_project_forms"),
     path("api/forms/", get_all_forms, name="get_all_forms"),
 
     path('api/login/', login, name='login'),
@@ -74,6 +76,3 @@ urlpatterns = [
 
     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
 ]
-
-
-
