@@ -9,7 +9,8 @@ const HomePage = () => {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const [showLogoutPopup, setShowLogoutPopup] = useState(false);
-    const [forms, setForms] = useState([]);
+    const [projects, setProjects] = useState([]);
+
 
     // log in user info 
     useEffect(() => {
@@ -21,13 +22,14 @@ const HomePage = () => {
         }
     }, [navigate]);
 
-    //fetching all forms
+
+    //feching all projects 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/forms/") // Update with actual backend URL
+        fetch("http://127.0.0.1:8000/api/projects/")
             .then(response => response.json())
-            .then(data => setForms(data))
-            .catch(error => console.error("Error fetching forms:", error));
-    }, []);
+            .then(data => setProjects(data))
+            .catch(error => console.error("Error fetching projects:", error)); 
+    }, []); 
 
     //sign out 
     const handleSignOut = () => {
@@ -141,15 +143,14 @@ const HomePage = () => {
                     {/* main content */}
                     <main className="flex-1 bg-[#F0EEED] overflow-y-auto pt-[4rem]">
                         <p className='p-4 mx-8 mt-8 font-funnel text-xl border-b border-gray-400'>Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
-                        {/* all forms */}
                         <div className="grid grid-cols-4 gap-6 p-8">
-                            {forms.map(form => (
+                            {projects.map(project => (
                                 <div 
-                                    key={form.id} 
+                                    key={project.id} 
                                     className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400"
-                                    onClick={() => navigate(`/all-form/${form.id}`)}
+                                    onClick={() => navigate(`/all-project/${project.id}`)}
                                 >
-                                    <h2 className="font-semibold text-lg">{form.title}</h2>
+                                    <h2 className="font-semibold text-lg">{project.name}</h2>
                                 </div>
                             ))}
                         </div>

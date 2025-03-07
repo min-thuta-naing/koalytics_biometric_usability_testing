@@ -403,6 +403,23 @@ def form_detail(request, form_id):
     form = get_object_or_404(Form, id=form_id)
     return JsonResponse({"id": form.id, "title": form.title})
 
+#get all projects on the homepage for participant 
+def get_all_projects(request):
+    if request.method == "GET":
+        projects = list(Project.objects.values("id", "name", "description", "organization", "start_date", "end_date"))
+        return JsonResponse(projects, safe=False)
+    return JsonResponse({"error": "Invalid request method."}, status=405)
+
+#get all forms for a specific project to display in the homepage for participant 
+def get_project_forms(request, project_id):
+    if request.method == "GET":
+        try:
+            project = Project.objects.get(id=project_id)
+            forms = list(project.forms.values("id", "title"))  # Get forms related to this project
+            return JsonResponse(forms, safe=False)
+        except Project.DoesNotExist:
+            return JsonResponse({"error": "Project not found."}, status=404)
+    return JsonResponse({"error": "Invalid request method."}, status=405)
 
 #for retrieving all forms for participant to display in the homepage
 def get_all_forms(request):
@@ -410,7 +427,7 @@ def get_all_forms(request):
         forms = list(Form.objects.values("id", "title"))
         return JsonResponse(forms, safe=False)
     return JsonResponse({"error": "Invalid request method."}, status=405)
-    
+
 
 #for updating form 
 @csrf_exempt

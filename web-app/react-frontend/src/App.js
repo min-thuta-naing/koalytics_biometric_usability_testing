@@ -22,6 +22,7 @@ import CreateQuestions from "./pages/SUSform/CreateQuestions";
 import ViewResults from "./pages/SUSform/ViewResults";
 import Guide from "./pages/Guide";
 import AnswerForm from "./pages/AnswerForms";
+import ChooseTest from "./pages/ChooseTest";
 
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
@@ -47,7 +48,8 @@ function App() {
         <Route path="/project/:projectId" element={<ProjectDetail />} />
         <Route path="/researcher-dashboard" element={<ResearcherSidebar />} />
         <Route path="/form/:formId" element={<FormDetail />} />
-        <Route path="/all-form/:formId" element={<AnswerForm />} />
+        <Route path="/all-project/:projectId" element={<ChooseTest />} />
+        <Route path="/related-form/:formId" element={<AnswerForm />} />
         <Route path="/question1" element={<Question1 />} />
         <Route path="/question2" element={<Question2 />} />
         <Route path="/question3" element={<Question3 />} />
