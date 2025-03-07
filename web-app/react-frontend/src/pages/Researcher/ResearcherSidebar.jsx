@@ -79,7 +79,7 @@ const ResearcherSidebar = () => {
     <div className="flex h-screen bg-[#F0EEED]">
       <div
         className={`fixed left-0 top-0 h-full bg-[#DCD6F7] shadow-lg p-4 transition-all duration-300 ease-in-out ${
-          isCollapsed ? "w-20" : "w-48"
+          isCollapsed ? "w-20" : "w-50"
         }`}
       >
         <div className="flex flex-col h-full relative">
@@ -119,6 +119,13 @@ const ResearcherSidebar = () => {
               <CircleUserRound size={20} />
               {showText && <span className="ml-3 text-sm">My Account</span>}
             </div>
+
+            {/* Switch to Participant Mode */}
+            <div onClick={() => navigate('/homepage')} className="flex items-center p-2 rounded-lg hover:bg-blue-200 cursor-pointer transition-all duration-300 ease-in-out">
+              <FolderOpenDot size={20} />
+              {showText && <span className="ml-3 text-sm">Switch to Participant</span>}
+            </div>
+
             <div onClick={() => setShowLogoutPopup(true)} className="flex items-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out">
               <LogOut size={20} />
               {showText && <span className="ml-3 text-sm">Log Out</span>}
