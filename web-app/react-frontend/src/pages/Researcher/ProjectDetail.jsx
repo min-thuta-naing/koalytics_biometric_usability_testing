@@ -80,7 +80,7 @@ const ProjectDetail = () => {
 
     const fetchForms = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/forms/`);
+            const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/forms/`);
             if (response.ok) {
                 const data = await response.json();
                 setForms(data.forms);
@@ -99,7 +99,7 @@ useEffect(() => {
 
 const fetchUsabilityTesting = async () => {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/get_usability_testing/`);
+        const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/usability-testings/`);
         if (response.ok) {
             const data = await response.json();
             setUsabilityTestings(data.usability_testings);
@@ -163,7 +163,7 @@ const fetchUsabilityTesting = async () => {
         if (!formToDelete) return;
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/delete_form/${formToDelete}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/forms/delete/${formToDelete}/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -183,6 +183,7 @@ const fetchUsabilityTesting = async () => {
         }
     };
 
+////////////////////////////////////////////// HANDLE CREATION + DELETE Usability Testings //////////////////////////////////////////////
     const handleUsabilityTestingCreated = () => {
         fetchUsabilityTesting(projectId);
         setShowUsabilityTestingModal(false);
@@ -197,11 +198,10 @@ const fetchUsabilityTesting = async () => {
         if (!usabilityTestingsToDelete) return;
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/delete_usability_testing/${usabilityTestingsToDelete}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/usability-testing/delete/${usabilityTestingsToDelete}/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken(),
                 },
             });
 
@@ -471,7 +471,7 @@ const fetchUsabilityTesting = async () => {
             {showConfirmModalUT && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <p className="text-lg font-semibold">Are you sure you want to delete this form?</p>
+                        <p className="text-lg font-semibold">Are you sure you want to delete this usability testing?</p>
                         <div className="flex justify-end gap-4 mt-4">
                             <button onClick={() => setShowConfirmModalUT(false)} className="px-4 py-2 bg-gray-300 rounded-lg">
                                 Cancel

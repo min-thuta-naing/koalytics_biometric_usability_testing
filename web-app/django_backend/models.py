@@ -134,13 +134,13 @@ class Question(models.Model):
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
     question_text = models.TextField()
     question_type = models.CharField(max_length=10, choices=QUESTION_TYPES)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    #created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     participant = models.ForeignKey(User, on_delete=models.CASCADE)
     answer_text = models.TextField()
-    submitted_at = models.DateTimeField(auto_now_add=True, blank=True)
+    # submitted_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 class UsabilityTesting(models.Model):
     title = models.CharField(max_length=200)
@@ -152,15 +152,17 @@ class UsabilityTesting(models.Model):
 
     def __str__(self):
         return self.title
+    
 
-
-class UsabilityTestRecordingV2(models.Model):  # New model
-    usability_testing = models.OneToOneField(UsabilityTesting, on_delete=models.CASCADE, related_name="recording")
+class UsabilityTestRecordingV3(models.Model):
+    usability_testing = models.ForeignKey(UsabilityTesting, on_delete=models.CASCADE, related_name="recordings")
     video = models.FileField(upload_to='recordings/')
     created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="usability_test_recordings")
 
     def __str__(self):
-        return f"Recording for Test {self.usability_testing.title}"
+        return f"Recording for Test {self.usability_testing.title} by {self.user.email}"
+
 
 
 # class UsabilityTestRecording(models.Model):

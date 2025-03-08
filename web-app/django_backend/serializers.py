@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import User, Hobby, Project
+from .models import User, Hobby, Project, Form, Question
 
-from .models import UsabilityTestRecordingV2
+from .models import UsabilityTestRecordingV3
 from .models import UsabilityTesting
 
 
@@ -30,19 +30,31 @@ class ProjectSerializer (serializers.ModelSerializer):
         fields = ["id", "name", "description", "organization", "max_participants", "start_date", "end_date", "side_notes"]
 
 
-class UsabilityTestRecordingV2Serializer(serializers.ModelSerializer):
+class FormSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UsabilityTestRecordingV2
-        # fields = "__all__"
-        fields = ['id', 'video', 'created_at']  # Add any additional fields you want to expose
+        model = Form
+        fields = ['id', 'title']
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'form', 'question_text', 'question_type']
+        #extra_kwargs = {'created_by': {'read_only': True}}
 
 
 class UsabilityTestingSerializer(serializers.ModelSerializer):
-    recording = UsabilityTestRecordingV2Serializer(read_only=True)  # Include related video
-
     class Meta:
-        model = UsabilityTesting
-        fields = ['id', 'title', 'task', 'duration', 'website_link', 'figma_embed_code', 'recording']
+        model = UsabilityTesting #model name 
+        fields = ['id', 'title', 'task', 'duration', 'website_link', 'figma_embed_code'] #fields inside that mdoels 
+
+
+class UsabilityTestRecordingV3Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsabilityTestRecordingV3
+        # fields = "__all__"
+        fields = ['id', 'video', 'created_at']  # Add any additional fields you want to expose
+
 
 
 

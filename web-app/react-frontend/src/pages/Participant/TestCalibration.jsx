@@ -61,7 +61,7 @@ const TestCalibration = () => {
   useEffect(() => {
     const fetchUsabilityTestingDetails = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/usability_testing/${usabilityTestingId}/`);
+        const response = await fetch(`http://127.0.0.1:8000/usability-testing/${usabilityTestingId}/`);
         if (!response.ok) throw new Error("Failed to fetch usability testing details.");
         const data = await response.json();
         setUsabilityTesting(data);

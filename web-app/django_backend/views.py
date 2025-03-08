@@ -7,20 +7,23 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, UsabilityTesting
+from .models import UsabilityTestRecordingV3, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, UsabilityTesting
 from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from django.core.files.storage import default_storage
-from .models import UsabilityTestRecordingV2
-from .serializers import UsabilityTestRecordingV2Serializer
+from .models import UsabilityTestRecordingV3
+from .serializers import UsabilityTestRecordingV3Serializer, FormSerializer, QuestionSerializer
 import logging
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+
 
 logger = logging.getLogger(__name__)
 
@@ -370,42 +373,44 @@ def delete_project(request, project_id):
 
 
 # FORM RELATED METHODS (RESEARCER SIDE) ##########################################################
-@csrf_exempt
+@api_view(['POST'])
 def create_form(request, project_id):
-    if request.method == 'POST':
         try:
             project = Project.objects.get(id=project_id)
-            data = json.loads(request.body.decode('utf-8'))
+        except Project.DoesNotExist: 
+            return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.method == 'POST':
+            serializer = FormSerializer(data=request.data)
+            if serializer.is_valid(): 
+                form = serializer.save() 
+                project.forms.add(form)
+
+                return Response({'message': 'Form created successfully!', 'form_id': form.id}, status=status.HTTP_201_CREATED)
             
-            # Create the form independently
-            form = Form.objects.create(title=data['title'])
-            
-            # Add the form to the project's many-to-many field
-            project.forms.add(form)
-
-            return JsonResponse({'message': 'Form created successfully!', 'form_id': form.id}, status=201)
-        
-        except Project.DoesNotExist:
-            return JsonResponse({'error': 'Project not found.'}, status=404)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
-    
-    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-#for retrieving forms 
-def get_forms(request, project_id):
+@api_view(['GET'])
+def get_form(request, project_id):
     try:
         project = Project.objects.get(id=project_id)
-        forms = list(project.forms.values('id', 'title'))
-        return JsonResponse({'forms': forms}, status=200)
+        forms = project.forms.all()
     except Project.DoesNotExist:
-        return JsonResponse({'error': 'Project not found.'}, status=404)
+        return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
     
-def form_detail(request, form_id):
-    form = get_object_or_404(Form, id=form_id)
-    return JsonResponse({"id": form.id, "title": form.title})
+    serializer = FormSerializer(forms, many=True)
+    return Response({'forms': serializer.data}, status=status.HTTP_200_OK)
 
+@api_view(['GET'])   
+def form_detail(request, form_id):
+    try: 
+        form = Form.objects.get(id=form_id)
+    except Form.DoesNotExist: 
+        return Response({'error': 'Form is not found.'},  status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = FormSerializer(form)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 #for updating form 
 @csrf_exempt
@@ -423,31 +428,15 @@ def update_form(request, form_id):
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
-# for deleting form 
-# @csrf_exempt
-# def delete_form(request, form_id):
-#     if request.method == 'DELETE':
-#         form = get_object_or_404(Form, id=form_id)
-#         form.delete()
-#         return JsonResponse({'message': 'Form deleted successfully'}, status=200)
-#     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-@csrf_exempt
+@api_view(['DELETE'])
 def delete_form(request, form_id):
-    if request.method == "DELETE":
-        # Get the form object or return 404 if not found
-        form = get_object_or_404(Form, id=form_id)
-        
-        # Delete the related questions (if not using cascading delete)
-        form.question_set.all().delete()  # This deletes all related questions
-        
-        # Now delete the form itself
-        form.delete()
-        
-        return JsonResponse({"message": "Form and its related questions deleted successfully"}, status=200)
+    try: 
+        form = Form.objects.get(id=form_id)
+    except Form.DoesNotExist: 
+        return Response({'error': 'Form is not found.'},  status=status.HTTP_404_NOT_FOUND)
     
-    return JsonResponse({"error": "Method not allowed"}, status=405)
+    form.delete()
+    return Response({'message': 'Form deleted successfully.'}, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
@@ -507,85 +496,69 @@ def delete_question(request, form_id, question_id):
 
 # USABILITY TESTING RELATED METHODS (RESEARCER SIDE) ##########################################################
 #for creating usability testings
-@csrf_exempt
-def create_usability_testing(request, project_id): 
-    if request.method == "POST":
-        try: 
-            project = Project.objects.get(id=project_id)
-            data = json.loads(request.body.decode('utf-8'))
+@api_view(['POST'])
+def create_usability_testing(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+    except Project.DoesNotExist:
+        return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-            # Ensure both title and task are provided
-            if 'title' not in data or 'task' not in data:
-                return JsonResponse({'error': 'Missing required fields: title and task'}, status=400)
-
-            usability_testing = UsabilityTesting.objects.create(
-                title=data['title'],
-                task=data['task'],
-                duration=data.get('duration', None),
-                website_link=data.get('website_link', None),
-                figma_embed_code=data.get('figma_embed_code', None)
-            )
-
+    if request.method == 'POST':
+        serializer = UsabilityTestingSerializer(data=request.data)
+        if serializer.is_valid():
+            usability_testing = serializer.save()
             project.usability_testings.add(usability_testing)
 
+            return Response({
+                'message': 'Usability testing created successfully',
+                'usability_testing_id': usability_testing.id
+            }, status=status.HTTP_201_CREATED)
 
-            return JsonResponse({'message': 'Usability testing created successfully', 'usability_testing_id': usability_testing.id}, status=201)
-        
-        except Project.DoesNotExist: 
-            return JsonResponse({'error': 'Project not found.'}, status=404)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
-        
-    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 #for retrieving usability testing in project detail page 
+@api_view(['GET'])
 def get_usability_testing(request, project_id):
     try:
         project = Project.objects.get(id=project_id)
-        usability_testings = list(project.usability_testings.values('id', 'title', 'task', 'duration', 'website_link', 'figma_embed_code'))
-        return JsonResponse({'usability_testings': usability_testings}, status=200)
+        usability_testings = project.usability_testings.all()
     except Project.DoesNotExist:
-        return JsonResponse({'error': 'Project not found.'}, status=404)
+        return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UsabilityTestingSerializer(usability_testings, many=True)
+    return Response({'usability_testings': serializer.data}, status=status.HTTP_200_OK)
+
     
-# def usability_testing_detail(request, usability_testing_id):
-#     usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
-#     return JsonResponse({
-#         "id": usability_testing.id, 
-#         "title": usability_testing.title, 
-#         "task": usability_testing.task,
-#         "duration": usability_testing.duration,
-#         "website_link": usability_testing.website_link,
-#         "figma_embed_code": usability_testing.figma_embed_code,
-#         "recording": {
-#             "video": f"{settings.MEDIA_URL}{recording.video}" if recording else None  # Construct full URL
-#         }
-#     })
-
-
-@api_view(["GET"])
+@api_view(['GET'])
 def usability_testing_detail(request, usability_testing_id):
-    usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
-    
-    # Serialize the data
+    try:
+        usability_testing = UsabilityTesting.objects.get(id=usability_testing_id)
+    except UsabilityTesting.DoesNotExist:
+        return Response({'error': 'Usability testing not found.'}, status=status.HTTP_404_NOT_FOUND)
+
     serializer = UsabilityTestingSerializer(usability_testing)
-    
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@csrf_exempt
+@api_view(['DELETE'])
 def delete_usability_testing(request, usability_testing_id):
-    if request.method == "DELETE":
-        # Get the form object or return 404 if not found
-        usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
-        
-        # Now delete the form itself
-        usability_testing.delete()
-        
-        return JsonResponse({"message": "Usability testing deleted successfully"}, status=200)
-    
-    return JsonResponse({"error": "Method not allowed"}, status=405)
+    try:
+        usability_testing = UsabilityTesting.objects.get(id=usability_testing_id)
+    except UsabilityTesting.DoesNotExist:
+        return Response({'error': 'Usability testing not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+    usability_testing.delete()
+    return Response({'message': 'Usability testing deleted successfully'}, status=status.HTTP_200_OK)
+
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def check_recording(request, usability_testing_id):
+    user = request.user
+    has_recording = UsabilityTestRecordingV3.objects.filter(user=user, usability_testing_id=usability_testing_id).exists()
+    return Response({"hasRecording": has_recording})
 
 
 @api_view(["POST"])
@@ -594,6 +567,10 @@ def save_recording(request):
     
     usability_testing_id = request.data.get("usability_testing_id")
     video_file = request.FILES.get("video")
+    user = request.user
+
+    if UsabilityTestRecordingV3.objects.filter(user=user, usability_testing_id=usability_testing_id).exists():
+        raise ValidationError("You can only upload one recording per usability test.")
 
     logger.info(f"Received recording for Usability Test ID: {usability_testing_id}")
 
@@ -602,13 +579,14 @@ def save_recording(request):
         return Response({"error": "No video file provided"}, status=400)
 
     # Save the video file
-    recording = UsabilityTestRecordingV2.objects.create(
-        usability_testing_id=usability_testing_id, video=video_file
+    usability_testing = UsabilityTesting.objects.get(id=usability_testing_id)
+    recording = UsabilityTestRecordingV3.objects.create(
+        usability_testing=usability_testing, video=video_file, user=user
     )
 
     logger.info(f"Recording saved successfully with ID: {recording.id}")
 
-    return Response(UsabilityTestRecordingV2Serializer(recording).data, status=201)
+    return Response(UsabilityTestRecordingV3Serializer(recording).data, status=201)
 
 
 # PROJECT RELATED MEHTODS (PARTICIPANT SIDE) ##########################################

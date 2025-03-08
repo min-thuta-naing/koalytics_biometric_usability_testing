@@ -10,7 +10,6 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
-    // Function to get CSRF token
     const getCSRFToken = () => {
         const cookie = document.cookie
             .split("; ")
@@ -25,7 +24,7 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
         setSuccess("");
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/create_usability_testing/`, {
+            const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/usability-testing/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -43,7 +42,7 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Failed to create form.");
+                throw new Error(data.error || "Failed to create usability testing.");
             }
 
             //alert("Usability testing created successfully!");
@@ -55,8 +54,8 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
             onUsabilityTestingCreated(); 
             onClose(); // Close modal after success
         } catch (err) {
-            console.error("Error creating form:", err);
-            setError(err.message || "Error creating form.");
+            console.error("Error creating usability testing:", err);
+            setError(err.message || "Error creating usability testing.");
         }
     };
 
@@ -69,7 +68,7 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
                 >
                     ✕
                 </button>
-                <h2 className="text-xl font-semibold mb-6">Create Survey Form</h2>
+                <h2 className="text-xl font-semibold mb-6">Create Usability Testing</h2>
 
                 {error && <p className="text-red-500 mb-4">{error}</p>}
                 {success && <p className="text-green-500 mb-4">{success}</p>}
