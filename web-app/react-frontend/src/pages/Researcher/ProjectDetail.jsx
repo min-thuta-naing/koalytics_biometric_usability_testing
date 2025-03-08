@@ -1,6 +1,6 @@
 import { useEffect, useState,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Pencil, SquarePlus } from 'lucide-react';
+import { Pencil, SquarePlus, EllipsisVertical } from 'lucide-react';
 import CreateSurveyForms from './CreateForms'; 
 import EditProjectDetail from "./EditProjectDetail";
 import AddCriteriaForm from './AddCriteriaForm';
@@ -21,8 +21,17 @@ const ProjectDetail = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [showEditModal, setShowEditModal] = useState(false);
+    
     const [showSurveyFormModal, setShowSurveyFormModal] = useState(false);
     const [showUsabilityTestingModal, setShowUsabilityTestingModal] = useState(false); 
+
+    const [showDropdown, setShowDropdown] = useState(null);
+    const [formToDelete, setFormToDelete] = useState(null); 
+    const [showConfirmModalForm, setShowConfirmModalForm] = useState(false);
+    const [usabilityTestingsToDelete, setUsabilityTestingsToDelete] = useState(null); 
+    const [showConfirmModalUT, setShowConfirmModalUT] = useState(false);
+
+
 
     const [forms, setForms] = useState([]);
     const [usabilityTestings, setUsabilityTestings] = useState([]);
@@ -38,6 +47,14 @@ const ProjectDetail = () => {
         interest: [],
     });
     const [showAddCriteriaModal, setShowAddCriteriaModal] = useState(false);
+
+    // Helper to get CSRF token from cookies
+    const getCSRFToken = () => {
+        const cookie = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("csrftoken="));
+        return cookie ? cookie.split("=")[1] : "";
+    };
 
 
 ////////////////////////////////////////////// CRITERIA FUNCTIONS //////////////////////////////////////////////
@@ -58,19 +75,6 @@ const ProjectDetail = () => {
 
 ////////////////////////////////////////////// FETCH FORMS //////////////////////////////////////////////
     useEffect(() => {
-        // const fetchForms = async () => {
-        //     try {
-        //         const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/forms/`);
-        //         if (response.ok) {
-        //             const data = await response.json();
-        //             setForms(data.forms);
-        //         } else {
-        //             console.error("Failed to fetch forms");
-        //         }
-        //     } catch (error) {
-        //         console.error("Error fetching forms:", error);
-        //     }
-        // };
         fetchForms();
     }, [projectId]);
 
@@ -90,19 +94,6 @@ const ProjectDetail = () => {
 
 ////////////////////////////////////////////// FETCH Usability Testings //////////////////////////////////////////////
 useEffect(() => {
-    // const fetchUsabilityTesting = async () => {
-    //     try {
-    //         const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/get_usability_testing/`);
-    //         if (response.ok) {
-    //             const data = await response.json();
-    //             setUsabilityTestings(data.usability_testings);
-    //         } else {
-    //             console.error("Failed to fetch usability testings");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching usability testings:", error);
-    //     }
-    // };
     fetchUsabilityTesting();
 }, [projectId]);
 
@@ -163,10 +154,68 @@ const fetchUsabilityTesting = async () => {
         setShowSurveyFormModal(false);
     }
 
+    const handleDeleteForm = (formId) => {
+        setFormToDelete(formId); 
+        setShowConfirmModalForm(true); 
+    }
+
+    const confirmDeleteForm = async () => {
+        if (!formToDelete) return;
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/delete_form/${formToDelete}/`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken(),
+                },
+            });
+
+            if (response.ok) {
+                setForms(forms.filter((form) => form.id !== formToDelete));
+                setShowConfirmModalForm(false);
+                setFormToDelete(null);
+            } else {
+                console.error("Failed to delete project");
+            }
+        } catch (error) {
+            console.error("Error deleting project:", error);
+        }
+    };
+
     const handleUsabilityTestingCreated = () => {
         fetchUsabilityTesting(projectId);
         setShowUsabilityTestingModal(false);
     }
+
+    const handleDeleteUsabilityTesting = (usabilityTestingId) => {
+        setUsabilityTestingsToDelete(usabilityTestingId); 
+        setShowConfirmModalUT(true); 
+    }
+
+    const confirmDeleteUsabilityTesting = async () => {
+        if (!usabilityTestingsToDelete) return;
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/delete_form/${usabilityTestingsToDelete}/`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken(),
+                },
+            });
+
+            if (response.ok) {
+                setUsabilityTestings(usabilityTestings.filter((usabilityTesting) => usabilityTesting.id !== usabilityTestingsToDelete));
+                setShowConfirmModalUT(false);
+                setUsabilityTestingsToDelete(null);
+            } else {
+                console.error("Failed to delete UT");
+            }
+        } catch (error) {
+            console.error("Error deleting UT:", error);
+        }
+    };
 
 
     return (
@@ -306,10 +355,23 @@ const fetchUsabilityTesting = async () => {
                                 {forms.map((form) => (
                                     <div 
                                         key={form.id} 
-                                        className="p-4 border rounded-lg shadow-md bg-white w-64"
+                                        className="p-4 border rounded-lg shadow-md bg-white w-64 relative"
                                     >
-                                        {/* <h3 className="text-lg font-semibold">{form.id}</h3>
-                                        <h3 className="text-lg font-semibold">{form.title}</h3> */}
+                                        <div className="absolute top-3 right-3">
+                                            <button onClick={() => setShowDropdown(showDropdown === form.id ? null : form.id)} className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                                                <EllipsisVertical size={20}/> 
+                                            </button>
+                                            {showDropdown === form.id && (
+                                                <div className="absolute right-0 mt-2 bg-white border rounded shadow-md">
+                                                    <button
+                                                        onClick={() => handleDeleteForm(form.id)}
+                                                        className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100"
+                                                    >
+                                                        Delete
+                                                    </button> 
+                                                </div>
+                                            )}
+                                        </div>
                                         <div onClick={()=> navigate(`/form/${form.id}`)}> 
                                             <h3 className="text-lg font-semibold">{form.id}</h3>
                                             <h3 className="text-lg font-semibold">{form.title}</h3>
@@ -345,14 +407,27 @@ const fetchUsabilityTesting = async () => {
                                 {usabilityTestings.map((usabilityTesting) => (
                                     <div 
                                         key={usabilityTesting.id} 
-                                        className="p-4 border rounded-lg shadow-md bg-white w-64"
+                                        className="p-4 border rounded-lg shadow-md bg-white w-64 relative"
                                     >
-                                        {/* <h3 className="text-lg font-semibold">{form.id}</h3>
-                                        <h3 className="text-lg font-semibold">{form.title}</h3> */}
+                                        <div className="absolute top-3 right-3">
+                                            <button onClick={() => setShowDropdown(showDropdown === usabilityTesting.id ? null : usabilityTesting.id)} className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                                                <EllipsisVertical size={20}/> 
+                                            </button>
+                                            {showDropdown === usabilityTesting.id && (
+                                                <div className="absolute right-0 mt-2 bg-white border rounded shadow-md">
+                                                    <button
+                                                        onClick={() => handleDeleteUsabilityTesting(usabilityTesting.id)}
+                                                        className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100"
+                                                    >
+                                                        Delete
+                                                    </button> 
+                                                </div>
+                                            )}
+                                        </div>
+                                        
                                         <div onClick={()=> navigate(`/usability_testing/${usabilityTesting.id}`)}> 
                                             <h3 className="text-lg font-semibold">{usabilityTesting.id}</h3>
                                             <h3 className="text-lg font-semibold">{usabilityTesting.title}</h3>
-                                            <h3 className="text-lg font-semibold">{usabilityTesting.task}</h3>
                                         </div>
                                     </div>
                                 ))}
@@ -375,6 +450,38 @@ const fetchUsabilityTesting = async () => {
                     projectId={projectId} 
                     onUsabilityTestingCreated = {handleUsabilityTestingCreated}
                 />
+            )}
+            {/* Delete Confirmation Pop up */}
+            {showConfirmModalForm && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <p className="text-lg font-semibold">Are you sure you want to delete this form?</p>
+                        <div className="flex justify-end gap-4 mt-4">
+                            <button onClick={() => setShowConfirmModalForm(false)} className="px-4 py-2 bg-gray-300 rounded-lg">
+                                Cancel
+                            </button>
+                            <button onClick={confirmDeleteForm} className="px-4 py-2 bg-red-500 text-white rounded-lg">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Delete Confirmation Pop up */}
+            {showConfirmModalUT && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <p className="text-lg font-semibold">Are you sure you want to delete this form?</p>
+                        <div className="flex justify-end gap-4 mt-4">
+                            <button onClick={() => setShowConfirmModalUT(false)} className="px-4 py-2 bg-gray-300 rounded-lg">
+                                Cancel
+                            </button>
+                            <button onClick={confirmDeleteUsabilityTesting} className="px-4 py-2 bg-red-500 text-white rounded-lg">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
