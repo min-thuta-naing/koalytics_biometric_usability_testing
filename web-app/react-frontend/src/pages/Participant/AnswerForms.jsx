@@ -114,7 +114,7 @@ const AnswerForm = () => {
     const [answers, setAnswers] = useState({});
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/forms/${formId}/questions/list/`)
+        fetch(`http://127.0.0.1:8000/forms/${formId}/questions/list/`)
             .then(response => response.json())
             .then(data => setQuestions(data))
             .catch(error => console.error("Error fetching questions:", error));

@@ -7,8 +7,8 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import UsabilityTestRecordingV3, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, UsabilityTesting
-from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer
+from .models import UsabilityTestRecordingV3, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, Answer, UsabilityTesting
+from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 
@@ -439,59 +439,115 @@ def delete_form(request, form_id):
     return Response({'message': 'Form deleted successfully.'}, status=status.HTTP_200_OK)
 
 
-@csrf_exempt
+# @csrf_exempt
+# def create_question(request, form_id):
+#     if request.method == "POST":
+#         try:
+#             data = json.loads(request.body)
+
+#             # Ensure required fields exist
+#             if "question_text" not in data or "question_type" not in data:
+#                 return JsonResponse({"error": "Missing question_text or question_type"}, status=400)
+
+#             form = Form.objects.get(id=form_id)
+#             question = Question.objects.create(
+#                 form=form,
+#                 question_text=data["question_text"],
+#                 question_type=data["question_type"]
+#             )
+
+#             return JsonResponse({
+#                 "id": question.id,
+#                 "question_text": question.question_text,
+#                 "question_type": question.question_type
+#             }, status=201)
+
+#         except Form.DoesNotExist:
+#             return JsonResponse({"error": "Form not found"}, status=404)
+#         except Exception as e:
+#             return JsonResponse({"error": str(e)}, status=400)
+
+#     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+@api_view(['POST'])
 def create_question(request, form_id):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
+    """Create a new question for a specific form."""
+    form = get_object_or_404(Form, id=form_id)
 
-            # Ensure required fields exist
-            if "question_text" not in data or "question_type" not in data:
-                return JsonResponse({"error": "Missing question_text or question_type"}, status=400)
+    # Ensure 'form' is included before saving
+    data = request.data.copy()  
+    data['form'] = form.id  
 
-            form = Form.objects.get(id=form_id)
-            question = Question.objects.create(
-                form=form,
-                question_text=data["question_text"],
-                question_type=data["question_type"]
-            )
-
-            return JsonResponse({
-                "id": question.id,
-                "question_text": question.question_text,
-                "question_type": question.question_type
-            }, status=201)
-
-        except Form.DoesNotExist:
-            return JsonResponse({"error": "Form not found"}, status=404)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
-
-    return JsonResponse({"error": "Invalid request method"}, status=405)
+    serializer = QuestionSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()  # The form is already included in data
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
+# @csrf_exempt
+# def get_questions(request, form_id):
+#     if request.method == "GET":
+#         questions = list(Question.objects.filter(form_id=form_id).values("id", "question_text", "question_type"))
+#         return JsonResponse(questions, safe=False, status=200)
+
+#     return JsonResponse({"error": "Invalid request method."}, status=405)
+
+@api_view(['GET'])
 def get_questions(request, form_id):
-    if request.method == "GET":
-        questions = list(Question.objects.filter(form_id=form_id).values("id", "question_text", "question_type"))
-        return JsonResponse(questions, safe=False, status=200)
+    """Retrieve all questions for a specific form."""
+    questions = Question.objects.filter(form_id=form_id)
+    serializer = QuestionSerializer(questions, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
-    return JsonResponse({"error": "Invalid request method."}, status=405)
+# @csrf_exempt
+# def delete_question(request, form_id, question_id):
+#     if request.method == "DELETE":
+#         try:
+#             question = Question.objects.get(id=question_id, form_id=form_id)
+#             question.delete()
+#             return JsonResponse({"message": "Question deleted successfully"}, status=204)
+#         except Question.DoesNotExist:
+#             return JsonResponse({"error": "Question not found"}, status=404)
+#         except Exception as e:
+#             return JsonResponse({"error": str(e)}, status=400)
 
-
-@csrf_exempt
+#     return JsonResponse({"error": "Invalid request method"}, status=405)
+@api_view(['DELETE'])
 def delete_question(request, form_id, question_id):
-    if request.method == "DELETE":
-        try:
-            question = Question.objects.get(id=question_id, form_id=form_id)
-            question.delete()
-            return JsonResponse({"message": "Question deleted successfully"}, status=204)
-        except Question.DoesNotExist:
-            return JsonResponse({"error": "Question not found"}, status=404)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
+    """Delete a specific question from a form."""
+    question = get_object_or_404(Question, id=question_id, form_id=form_id)
+    question.delete()
+    return Response({'message': 'Question deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
-    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+@api_view(['POST'])
+def create_answer(request, question_id):
+    """Create a new question for a specific form."""
+    question = get_object_or_404(Form, id=question_id)
+
+    # Ensure 'question' is included before saving
+    data = request.data.copy()  
+    data['question'] = question.id  
+
+    serializer = AnswerSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()  # The form is already included in data
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_answers(request, question_id):
+    """Retrieve all questions for a specific form."""
+    answers = Answer.objects.filter(question_id=question_id)
+    serializer = AnswerSerializer(answers, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 # USABILITY TESTING RELATED METHODS (RESEARCER SIDE) ##########################################################

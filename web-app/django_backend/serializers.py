@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import User, Hobby, Project, Form, Question
+from .models import User, Hobby, Project, Form, Question, Answer
 
 from .models import UsabilityTestRecordingV3
 from .models import UsabilityTesting
@@ -42,6 +42,10 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ['id', 'form', 'question_text', 'question_type']
         #extra_kwargs = {'created_by': {'read_only': True}}
 
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ['id', 'question', 'participant_email', 'answer_text']
 
 class UsabilityTestingSerializer(serializers.ModelSerializer):
     class Meta:
