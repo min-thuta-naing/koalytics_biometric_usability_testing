@@ -197,7 +197,7 @@ const fetchUsabilityTesting = async () => {
         if (!usabilityTestingsToDelete) return;
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/delete_form/${usabilityTestingsToDelete}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/delete_usability_testing/${usabilityTestingsToDelete}/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
