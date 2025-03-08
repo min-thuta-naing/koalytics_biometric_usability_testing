@@ -21,9 +21,10 @@ import FormDetail from "./pages/SUSform/FormDetail";
 import CreateQuestions from "./pages/SUSform/CreateQuestions";
 import ViewResults from "./pages/SUSform/ViewResults";
 import Guide from "./pages/Guide";
-import AnswerForm from "./pages/AnswerForms";
-import ChooseTest from "./pages/ChooseTest";
+import AnswerForm from "./pages/Participant/AnswerForms";
+import ChooseTest from "./pages/Participant/ChooseTest";
 import UsabilityTestingDetail from "./pages/UsabilityTesting/UsabilityTestingDetail";
+import TestCalibration from "./pages/Participant/TestCalibration";
 
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
@@ -52,6 +53,7 @@ function App() {
         <Route path="/usability_testing/:usabilityTestingId" element={<UsabilityTestingDetail />} />
         <Route path="/all-project/:projectId" element={<ChooseTest />} />
         <Route path="/related-form/:formId" element={<AnswerForm />} />
+        <Route path="/related-usability-testing/:usabilityTestingId" element={<TestCalibration/>}/>
         <Route path="/question1" element={<Question1 />} />
         <Route path="/question2" element={<Question2 />} />
         <Route path="/question3" element={<Question3 />} />

@@ -2,6 +2,10 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .models import User, Hobby, Project
 
+from .models import UsabilityTestRecordingV2
+from .models import UsabilityTesting
+
+
 class HobbySerializer(serializers.ModelSerializer):
     class Meta:
         model = Hobby
@@ -26,7 +30,19 @@ class ProjectSerializer (serializers.ModelSerializer):
         fields = ["id", "name", "description", "organization", "max_participants", "start_date", "end_date", "side_notes"]
 
 
+class UsabilityTestRecordingV2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsabilityTestRecordingV2
+        # fields = "__all__"
+        fields = ['id', 'video', 'created_at']  # Add any additional fields you want to expose
 
+
+class UsabilityTestingSerializer(serializers.ModelSerializer):
+    recording = UsabilityTestRecordingV2Serializer(read_only=True)  # Include related video
+
+    class Meta:
+        model = UsabilityTesting
+        fields = ['id', 'title', 'task', 'duration', 'website_link', 'figma_embed_code', 'recording']
 
 
 

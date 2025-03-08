@@ -36,7 +36,22 @@ const UsabilityTestingDetail = () => {
                 <p className="font-funnel font-3xl">Website: <a href={usabilityTesting.website_link} target="_blank" rel="noopener noreferrer">{usabilityTesting.website_link}</a></p>
                 <p className="font-funnel font-3xl">Figma Embed Code: {usabilityTesting.figma_embed_code}</p>
             </div>
+
+            {/* Display Video */}
+            {usabilityTesting.recording && usabilityTesting.recording.video ? (
+                <div className="mt-6">
+                    <p className="text-2xl font-semibold">Recorded Video:</p>
+                    <video controls className="w-full max-w-lg mt-4">
+                        <source src={`http://127.0.0.1:8000${usabilityTesting.recording.video}`} type="video/webm" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            ) : (
+                <p className="mt-6 text-gray-600">No recording available.</p>
+            )}
+
         </div>
+        
     )
 }
 

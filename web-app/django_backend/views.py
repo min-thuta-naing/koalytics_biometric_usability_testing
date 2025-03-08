@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render 
 
 
@@ -7,9 +8,23 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 from .models import User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, UsabilityTesting
-from .serializers import UserSerializer, ProjectSerializer
+from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
+
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
+from django.core.files.storage import default_storage
+from .models import UsabilityTestRecordingV2
+from .serializers import UsabilityTestRecordingV2Serializer
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 
 def index(request):
     return render (request, 'index.html')
@@ -533,16 +548,29 @@ def get_usability_testing(request, project_id):
     except Project.DoesNotExist:
         return JsonResponse({'error': 'Project not found.'}, status=404)
     
+# def usability_testing_detail(request, usability_testing_id):
+#     usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
+#     return JsonResponse({
+#         "id": usability_testing.id, 
+#         "title": usability_testing.title, 
+#         "task": usability_testing.task,
+#         "duration": usability_testing.duration,
+#         "website_link": usability_testing.website_link,
+#         "figma_embed_code": usability_testing.figma_embed_code,
+#         "recording": {
+#             "video": f"{settings.MEDIA_URL}{recording.video}" if recording else None  # Construct full URL
+#         }
+#     })
+
+
+@api_view(["GET"])
 def usability_testing_detail(request, usability_testing_id):
     usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
-    return JsonResponse({
-        "id": usability_testing.id, 
-        "title": usability_testing.title, 
-        "task": usability_testing.task,
-        "duration": usability_testing.duration,
-        "website_link": usability_testing.website_link,
-        "figma_embed_code": usability_testing.figma_embed_code
-    })
+    
+    # Serialize the data
+    serializer = UsabilityTestingSerializer(usability_testing)
+    
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
@@ -559,6 +587,28 @@ def delete_usability_testing(request, usability_testing_id):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 
+
+@api_view(["POST"])
+def save_recording(request):
+    parser_classes = (MultiPartParser, FormParser)
+    
+    usability_testing_id = request.data.get("usability_testing_id")
+    video_file = request.FILES.get("video")
+
+    logger.info(f"Received recording for Usability Test ID: {usability_testing_id}")
+
+    if not video_file:
+        logger.error("No video file provided.")
+        return Response({"error": "No video file provided"}, status=400)
+
+    # Save the video file
+    recording = UsabilityTestRecordingV2.objects.create(
+        usability_testing_id=usability_testing_id, video=video_file
+    )
+
+    logger.info(f"Recording saved successfully with ID: {recording.id}")
+
+    return Response(UsabilityTestRecordingV2Serializer(recording).data, status=201)
 
 
 # PROJECT RELATED MEHTODS (PARTICIPANT SIDE) ##########################################

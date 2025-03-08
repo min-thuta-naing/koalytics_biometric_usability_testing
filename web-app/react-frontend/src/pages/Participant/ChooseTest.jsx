@@ -32,7 +32,7 @@ const ChooseTest = () => {
     }, [projectId]);
 
     return (
-        <div className="h-screen bg-gray-100 p-8">
+        <div className="h-screen bg-[#F0EEED] p-8">
             <div class="grid grid-cols-2 gap-8 p-8">
                 {/*form section*/}
                 <div className="pr-8 border-r border-gray-400">
@@ -55,7 +55,7 @@ const ChooseTest = () => {
                     </div>
                 </div>
 
-                <div className="pl-8">
+                <div className="pl-8">  
                     <h1 className="text-2xl font-semibold mb-6">Select a usability </h1>
                     <div className="grid grid-cols-2 gap-6"> 
                         {usabilityTestings.length > 0 ? (
@@ -63,7 +63,7 @@ const ChooseTest = () => {
                                 <div 
                                     key={usabilityTesting.id} 
                                     className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400"
-                                    onClick={() => navigate(`/related-form/${usabilityTesting.id}`)}
+                                    onClick={() => navigate(`/related-usability-testing/${usabilityTesting.id}`)}
                                 >
                                     <h2 className="font-semibold text-lg">{usabilityTesting.title}</h2>
                                 </div>
@@ -74,8 +74,6 @@ const ChooseTest = () => {
                     </div>
                 </div>
                 
-                
-
             </div>
             
         </div>
