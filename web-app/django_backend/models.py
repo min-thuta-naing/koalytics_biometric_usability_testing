@@ -149,6 +149,29 @@ class UsabilityTesting(models.Model):
     website_link = models.URLField(max_length=500, blank=True, null=True)  # URL field for the website link
     figma_embed_code = models.TextField(blank=True, null=True)  # Field to store the Figma embed code
 
+
     def __str__(self):
         return self.title
 
+
+class UsabilityTestRecordingV2(models.Model):  # New model
+    usability_testing = models.OneToOneField(UsabilityTesting, on_delete=models.CASCADE, related_name="recording")
+    video = models.FileField(upload_to='recordings/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Recording for Test {self.usability_testing.title}"
+
+
+# class UsabilityTestRecording(models.Model):
+#     # usability_testing_id = models.IntegerField()  # ForeignKey can be used if usability testing is a model
+#     usability_testing = models.OneToOneField(
+#         UsabilityTesting, 
+#         on_delete=models.CASCADE,  # Delete recording if usability test is deleted
+#         related_name="recording"   # Allows accessing recording from usability test instance
+#     )
+#     video = models.FileField(upload_to='recordings/')
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f"Recording for Test {self.usability_testing_id}"

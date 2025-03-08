@@ -30,14 +30,20 @@ from .views import create_usability_testing, get_usability_testing, usability_te
 
 from .views import get_all_projects, get_all_forms, get_project_forms, get_project_usabilitytesting, delete_usability_testing
 
+from .views import save_recording
+
+
 from .views import create_question, get_questions, delete_question
 
 from .views import save_critieria_age_group, save_critieria_gender, save_critieria_interest
 
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
+    
+
     path("admin/", admin.site.urls),
     path("", views.index, name='index'),
     path('api/signup/', signup, name='signup'),
@@ -67,6 +73,8 @@ urlpatterns = [
     path('api/project/<int:project_id>/get_usability_testing/', get_usability_testing, name='get_usability_testing'),
     path('api/usability_testing/<int:usability_testing_id>/', usability_testing_detail, name='usability_testing_details'),
     path('api/delete_usability_testing/<int:usability_testing_id>/', delete_usability_testing, name='delete_usability_testing'),
+    path("api/save-recording/", save_recording, name="save-recording"),
+
 
     path('api/forms/<int:form_id>/questions/', create_question, name="create_question"),
     path('api/forms/<int:form_id>/questions/list/', get_questions, name="get_questions"),
@@ -83,4 +91,7 @@ urlpatterns = [
     path('api/delete_user/<int:user_id>/', delete_user, name='delete_user'),
 
     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
-]
+] 
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
