@@ -549,7 +549,7 @@ def usability_testing_detail(request, usability_testing_id):
 def delete_usability_testing(request, usability_testing_id):
     if request.method == "DELETE":
         # Get the form object or return 404 if not found
-        usability_testing = get_object_or_404(Form, id=usability_testing_id)
+        usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
         
         # Now delete the form itself
         usability_testing.delete()
