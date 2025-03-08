@@ -224,7 +224,7 @@ const FormDetail = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/forms/${formId}/questions/list/`);
+        const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/list/`);
         if (!response.ok) {
           throw new Error("Failed to fetch questions.");
         }
@@ -243,7 +243,7 @@ const FormDetail = () => {
     if (!questionText.trim()) return alert("Question text cannot be empty!");
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/forms/${formId}/questions/`, {
+      const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

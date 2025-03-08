@@ -77,9 +77,9 @@ urlpatterns = [
     path("api/save-recording/", views.save_recording, name="save-recording"),
 
 
-    path('api/forms/<int:form_id>/questions/', create_question, name="create_question"),
-    path('api/forms/<int:form_id>/questions/list/', get_questions, name="get_questions"),
-    path("api/forms/<int:form_id>/questions/<int:question_id>/", delete_question, name="delete_question"),
+    path('forms/<int:form_id>/questions/', views.create_question, name="create_question"),
+    path('forms/<int:form_id>/questions/list/', views.get_questions, name="get_questions"),
+    path("forms/<int:form_id>/questions/<int:question_id>/", views.delete_question, name="delete_question"),
 
     path("api/projects/", get_all_projects, name="get_all_project"), 
     path("api/projects/<int:project_id>/related_forms/", get_project_forms, name="get_project_forms"),

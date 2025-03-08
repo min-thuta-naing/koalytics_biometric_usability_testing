@@ -138,7 +138,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    participant = models.ForeignKey(User, on_delete=models.CASCADE)
+    participant_email = models.ForeignKey(User, on_delete=models.CASCADE)
     answer_text = models.TextField()
     # submitted_at = models.DateTimeField(auto_now_add=True, blank=True)
 

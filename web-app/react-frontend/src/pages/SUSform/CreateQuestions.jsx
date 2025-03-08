@@ -10,7 +10,7 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
         if (!confirmDelete) return;
 
         try {
-        const response = await fetch(`http://127.0.0.1:8000/api/forms/${formId}/questions/${questionId}/`, {
+        const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/${questionId}/`, {
             method: "DELETE",
         });
 
