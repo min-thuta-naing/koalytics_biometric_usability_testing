@@ -354,21 +354,7 @@ def delete_project(request, project_id):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 
-# # for creating forms 
-# @csrf_exempt
-# def create_form(request, project_id):
-#     if request.method == 'POST':
-#         try:
-#             project = Project.objects.get(id=project_id)
-#             data = json.loads(request.body.decode('utf-8'))
-#             form = Form.objects.create(project=project, title=data['title'])
-#             return JsonResponse({'message': 'Form created successfully!', 'form_id': form.id}, status=201)
-#         except Project.DoesNotExist:
-#             return JsonResponse({'error': 'Project not found.'}, status=404)
-#         except json.JSONDecodeError:
-#             return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
-#     return JsonResponse({'error': 'Invalid request method.'}, status=405)
-
+# FORM RELATED METHODS (RESEARCER SIDE) ##########################################################
 @csrf_exempt
 def create_form(request, project_id):
     if request.method == 'POST':
@@ -424,13 +410,29 @@ def update_form(request, form_id):
 
 
 # for deleting form 
+# @csrf_exempt
+# def delete_form(request, form_id):
+#     if request.method == 'DELETE':
+#         form = get_object_or_404(Form, id=form_id)
+#         form.delete()
+#         return JsonResponse({'message': 'Form deleted successfully'}, status=200)
+#     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 @csrf_exempt
 def delete_form(request, form_id):
-    if request.method == 'DELETE':
+    if request.method == "DELETE":
+        # Get the form object or return 404 if not found
         form = get_object_or_404(Form, id=form_id)
+        
+        # Delete the related questions (if not using cascading delete)
+        form.question_set.all().delete()  # This deletes all related questions
+        
+        # Now delete the form itself
         form.delete()
-        return JsonResponse({'message': 'Form deleted successfully'}, status=200)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+        
+        return JsonResponse({"message": "Form and its related questions deleted successfully"}, status=200)
+    
+    return JsonResponse({"error": "Method not allowed"}, status=405)
 
 
 @csrf_exempt
@@ -487,6 +489,8 @@ def delete_question(request, form_id, question_id):
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
+
+# USABILITY TESTING RELATED METHODS (RESEARCER SIDE) ##########################################################
 #for creating usability testings
 @csrf_exempt
 def create_usability_testing(request, project_id): 
@@ -539,6 +543,21 @@ def usability_testing_detail(request, usability_testing_id):
         "website_link": usability_testing.website_link,
         "figma_embed_code": usability_testing.figma_embed_code
     })
+
+
+@csrf_exempt
+def delete_usability_testing(request, usability_testing_id):
+    if request.method == "DELETE":
+        # Get the form object or return 404 if not found
+        usability_testing = get_object_or_404(Form, id=usability_testing_id)
+        
+        # Now delete the form itself
+        usability_testing.delete()
+        
+        return JsonResponse({"message": "Usability testing deleted successfully"}, status=200)
+    
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
 
 
 
