@@ -20,7 +20,7 @@ const CreateSurveyForms = ({ onClose, projectId, onFormCreated }) => {
         setSuccess("");
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/create_form/`, {
+            const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/form/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

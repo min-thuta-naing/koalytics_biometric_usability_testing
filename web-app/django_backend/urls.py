@@ -23,7 +23,7 @@ from .views import delete_project
 from .views import delete_user
 
 from .views import form_detail
-from .views import get_forms
+from .views import get_form
 from .views import create_form, update_form, delete_form
 
 from .views import create_usability_testing, get_usability_testing, usability_testing_detail
@@ -63,17 +63,18 @@ urlpatterns = [
     path('api/save_criteria_age_group/<int:project_id>/', save_critieria_age_group, name='save-criteria-age-group'),
     path('api/save_criteria_interest/<int:project_id>/', save_critieria_interest, name='save-criteria-interest'),
 
-    path('api/project/<int:project_id>/create_form/', create_form, name='create_form'),
-    path('api/project/<int:project_id>/forms/', get_forms, name='get_forms'),
-    path('api/forms/<int:form_id>/', form_detail, name='form_detail'),
-    path('api/update_form/<int:form_id>/', update_form, name='update_form'),
-    path('api/delete_form/<int:form_id>/', delete_form, name='delete_form'),
+    path('projects/<int:project_id>/form/', views.create_form, name='create_form'),
+    path('projects/<int:project_id>/forms/', views.get_form, name='get_forms'),
+    path('forms/<int:form_id>/', views.form_detail, name='form_detail'),
+    path('forms/update/<int:form_id>/', views.update_form, name='update_form'),
+    path('forms/delete/<int:form_id>/', views.delete_form, name='delete_form'),
 
-    path('api/project/<int:project_id>/create_usability_testing/', create_usability_testing, name='create_usability_testing'),
-    path('api/project/<int:project_id>/get_usability_testing/', get_usability_testing, name='get_usability_testing'),
-    path('api/usability_testing/<int:usability_testing_id>/', usability_testing_detail, name='usability_testing_details'),
-    path('api/delete_usability_testing/<int:usability_testing_id>/', delete_usability_testing, name='delete_usability_testing'),
-    path("api/save-recording/", save_recording, name="save-recording"),
+    path('projects/<int:project_id>/usability-testing/', views.create_usability_testing, name='create_usability_testing'),
+    path('projects/<int:project_id>/usability-testings/', views.get_usability_testing, name='get_usability_testing'),
+    path('usability-testing/<int:usability_testing_id>/', views.usability_testing_detail, name='usability_testing_detail'),
+    path('usability-testing/delete/<int:usability_testing_id>/', views.delete_usability_testing, name='delete_usability_testing'),
+    path("api/save-recording/check/<int:usability_testing_id>/", views.check_recording, name="check-recording"),
+    path("api/save-recording/", views.save_recording, name="save-recording"),
 
 
     path('api/forms/<int:form_id>/questions/', create_question, name="create_question"),
