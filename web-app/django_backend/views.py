@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_protect
 def index(request):
     return render (request, 'index.html')
 
+# AUTENTICATION RELATED METHODS ##########################################################
 # for sign up 
 @csrf_exempt
 def signup(request):
@@ -194,6 +195,7 @@ def login(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
+# PROJECT RELATED METHODS (RESEARCER SIDE) ##########################################################
 #for creating projects 
 @csrf_exempt
 def create_project(request, user_id):
@@ -336,6 +338,7 @@ def get_project(request, project_id):
             "start_date": project.start_date,
             "end_date": project.end_date,
             "side_notes": project.side_notes,
+            "usability_testings": list(project.usability_testings.values("id", "title", "task")),
         })
     except Project.DoesNotExist:
         return JsonResponse({"error": "Project not found"}, status=404)
@@ -389,7 +392,6 @@ def create_form(request, project_id):
     return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 
-
 #for retrieving forms 
 def get_forms(request, project_id):
     try:
@@ -402,31 +404,6 @@ def get_forms(request, project_id):
 def form_detail(request, form_id):
     form = get_object_or_404(Form, id=form_id)
     return JsonResponse({"id": form.id, "title": form.title})
-
-#get all projects on the homepage for participant 
-def get_all_projects(request):
-    if request.method == "GET":
-        projects = list(Project.objects.values("id", "name", "description", "organization", "start_date", "end_date"))
-        return JsonResponse(projects, safe=False)
-    return JsonResponse({"error": "Invalid request method."}, status=405)
-
-#get all forms for a specific project to display in the homepage for participant 
-def get_project_forms(request, project_id):
-    if request.method == "GET":
-        try:
-            project = Project.objects.get(id=project_id)
-            forms = list(project.forms.values("id", "title"))  # Get forms related to this project
-            return JsonResponse(forms, safe=False)
-        except Project.DoesNotExist:
-            return JsonResponse({"error": "Project not found."}, status=404)
-    return JsonResponse({"error": "Invalid request method."}, status=405)
-
-#for retrieving all forms for participant to display in the homepage
-def get_all_forms(request):
-    if request.method == "GET":
-        forms = list(Form.objects.values("id", "title"))
-        return JsonResponse(forms, safe=False)
-    return JsonResponse({"error": "Invalid request method."}, status=405)
 
 
 #for updating form 
@@ -445,7 +422,6 @@ def update_form(request, form_id):
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-    
 
 # for deleting form 
 @csrf_exempt
@@ -525,7 +501,10 @@ def create_usability_testing(request, project_id):
 
             usability_testing = UsabilityTesting.objects.create(
                 title=data['title'],
-                task=data['task']
+                task=data['task'],
+                duration=data.get('duration', None),
+                website_link=data.get('website_link', None),
+                figma_embed_code=data.get('figma_embed_code', None)
             )
 
             project.usability_testings.add(usability_testing)
@@ -545,14 +524,67 @@ def create_usability_testing(request, project_id):
 def get_usability_testing(request, project_id):
     try:
         project = Project.objects.get(id=project_id)
-        usability_testings = list(project.usability_testings.values('id', 'title', 'task'))
+        usability_testings = list(project.usability_testings.values('id', 'title', 'task', 'duration', 'website_link', 'figma_embed_code'))
         return JsonResponse({'usability_testings': usability_testings}, status=200)
     except Project.DoesNotExist:
         return JsonResponse({'error': 'Project not found.'}, status=404)
     
 def usability_testing_detail(request, usability_testing_id):
     usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
-    return JsonResponse({"id": usability_testing.id, "title": usability_testing.title, "task": usability_testing.task})
+    return JsonResponse({
+        "id": usability_testing.id, 
+        "title": usability_testing.title, 
+        "task": usability_testing.task,
+        "duration": usability_testing.duration,
+        "website_link": usability_testing.website_link,
+        "figma_embed_code": usability_testing.figma_embed_code
+    })
+
+
+
+# PROJECT RELATED MEHTODS (PARTICIPANT SIDE) ##########################################
+#get all projects on the homepage for participant 
+def get_all_projects(request):
+    if request.method == "GET":
+        projects = list(Project.objects.values("id", "name", "description", "organization", "start_date", "end_date"))
+        return JsonResponse(projects, safe=False)
+    return JsonResponse({"error": "Invalid request method."}, status=405)
+
+#get all forms for a specific project to display in the choosetest page for participant 
+def get_project_forms(request, project_id):
+    if request.method == "GET":
+        try:
+            project = Project.objects.get(id=project_id)
+            forms = list(project.forms.values("id", "title"))  # Get forms related to this project
+            return JsonResponse(forms, safe=False)
+        except Project.DoesNotExist:
+            return JsonResponse({"error": "Project not found."}, status=404)
+    return JsonResponse({"error": "Invalid request method."}, status=405)
+
+def get_project_usabilitytesting(request, project_id):
+    if request.method == "GET":
+        try:
+            project = Project.objects.get(id=project_id)
+            usability_testings = list(project.usability_testings.values("id", "title", "task"))
+            print("Fetched usability testings:", usability_testings)  # Debugging line
+            return JsonResponse(usability_testings, safe=False)
+        except Project.DoesNotExist:
+            print("Project not found")  # Debugging line
+            return JsonResponse({"error": "Project not found."}, status=404)
+    print("Invalid request method")  # Debugging line
+    return JsonResponse({"error": "Invalid request method."}, status=405)
+
+
+#for retrieving all forms for participant to display in the homepage
+def get_all_forms(request):
+    if request.method == "GET":
+        forms = list(Form.objects.values("id", "title"))
+        return JsonResponse(forms, safe=False)
+    return JsonResponse({"error": "Invalid request method."}, status=405)
+
+
+
+
 
 # Get user by ID to display in MyAccount page
 @csrf_exempt

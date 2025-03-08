@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const CreateSurveyForms = ({ onClose, projectId }) => {
+const CreateSurveyForms = ({ onClose, projectId, onFormCreated }) => {
     const [title, setTitle] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -35,8 +35,9 @@ const CreateSurveyForms = ({ onClose, projectId }) => {
                 throw new Error(data.error || "Failed to create form.");
             }
 
-            alert("Form created successfully!");
+            // alert("Form created successfully!");
             setTitle("");
+            onFormCreated(); 
             onClose(); // Close modal after success
         } catch (err) {
             console.error("Error creating form:", err);

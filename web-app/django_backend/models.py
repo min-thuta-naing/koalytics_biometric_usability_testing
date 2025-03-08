@@ -145,6 +145,9 @@ class Answer(models.Model):
 class UsabilityTesting(models.Model):
     title = models.CharField(max_length=200)
     task = models.CharField(max_length=500) 
+    duration = models.IntegerField(blank=True, null=True) 
+    website_link = models.URLField(max_length=500, blank=True, null=True)  # URL field for the website link
+    figma_embed_code = models.TextField(blank=True, null=True)  # Field to store the Figma embed code
 
     def __str__(self):
         return self.title
