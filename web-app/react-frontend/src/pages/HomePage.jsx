@@ -143,11 +143,11 @@ const HomePage = () => {
                     {/* main content */}
                     <main className="flex-1 bg-[#F0EEED] overflow-y-auto pt-[4rem]">
                         <p className='p-4 mx-8 mt-8 font-funnel text-xl border-b border-gray-400'>Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
-                        <div className="grid grid-cols-4 gap-6 p-8">
+                        <div className="grid grid-cols-4 gap-6 p-8 place-items-center">
                             {projects.map(project => (
                                 <div 
                                     key={project.id} 
-                                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400"
+                                    className="bg-white w-72 h-48 flex items-center justify-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400 transition-transform duration-300 hover:-translate-y-2"
                                     onClick={() => navigate(`/all-project/${project.id}`)}
                                 >
                                     <h2 className="font-semibold text-lg">{project.name}</h2>

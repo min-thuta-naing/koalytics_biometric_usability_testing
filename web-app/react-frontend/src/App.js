@@ -3,7 +3,7 @@ import SignUp from "./pages/SignupPage";
 import './index.css'; // Ensure this is already here
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
-import ResearcherSidebar from "./pages/Researcher/ResearcherSidebar";
+import SideandTopBar from "./pages/Researcher/SideandTopBar";
 import MyAccount from "./pages/MyAccount";
 import AboutUs from "./pages/AboutUs";
 import Settings from "./pages/Settings";
@@ -47,7 +47,7 @@ function App() {
         <Route path="/guide" element={<Guide/>}/>
         <Route path="/results" element={<ViewResults/>}/>
         <Route path="/project/:projectId" element={<ProjectDetail />} />
-        <Route path="/researcher-dashboard" element={<ResearcherSidebar />} />
+        <Route path="/researcher-dashboard" element={<SideandTopBar />} />
         <Route path="/form/:formId" element={<FormDetail />} />
         <Route path="/usability_testing/:usabilityTestingId" element={<UsabilityTestingDetail />} />
         <Route path="/all-project/:projectId" element={<ChooseTest />} />

@@ -58,39 +58,67 @@ const ProjectDetail = () => {
 
 ////////////////////////////////////////////// FETCH FORMS //////////////////////////////////////////////
     useEffect(() => {
-        const fetchForms = async () => {
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/forms/`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setForms(data.forms);
-                } else {
-                    console.error("Failed to fetch forms");
-                }
-            } catch (error) {
-                console.error("Error fetching forms:", error);
-            }
-        };
+        // const fetchForms = async () => {
+        //     try {
+        //         const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/forms/`);
+        //         if (response.ok) {
+        //             const data = await response.json();
+        //             setForms(data.forms);
+        //         } else {
+        //             console.error("Failed to fetch forms");
+        //         }
+        //     } catch (error) {
+        //         console.error("Error fetching forms:", error);
+        //     }
+        // };
         fetchForms();
     }, [projectId]);
 
-////////////////////////////////////////////// FETCH Usability Testings //////////////////////////////////////////////
-useEffect(() => {
-    const fetchUsabilityTesting = async () => {
+    const fetchForms = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/get_usability_testing/`);
+            const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/forms/`);
             if (response.ok) {
                 const data = await response.json();
-                setUsabilityTestings(data.usability_testings);
+                setForms(data.forms);
             } else {
-                console.error("Failed to fetch usability testings");
+                console.error("Failed to fetch forms");
             }
         } catch (error) {
-            console.error("Error fetching usability testings:", error);
+            console.error("Error fetching forms:", error);
         }
     };
+
+////////////////////////////////////////////// FETCH Usability Testings //////////////////////////////////////////////
+useEffect(() => {
+    // const fetchUsabilityTesting = async () => {
+    //     try {
+    //         const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/get_usability_testing/`);
+    //         if (response.ok) {
+    //             const data = await response.json();
+    //             setUsabilityTestings(data.usability_testings);
+    //         } else {
+    //             console.error("Failed to fetch usability testings");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching usability testings:", error);
+    //     }
+    // };
     fetchUsabilityTesting();
 }, [projectId]);
+
+const fetchUsabilityTesting = async () => {
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/get_usability_testing/`);
+        if (response.ok) {
+            const data = await response.json();
+            setUsabilityTestings(data.usability_testings);
+        } else {
+            console.error("Failed to fetch usability testings");
+        }
+    } catch (error) {
+        console.error("Error fetching usability testings:", error);
+    }
+};
 
 ////////////////////////////////////////////// FETCH PROJECT //////////////////////////////////////////////
     // fetch project with fetchProject function and display the project in the project detail page with useEffect
@@ -129,6 +157,16 @@ useEffect(() => {
         fetchProject()
         setShowEditModal(false);
     };
+
+    const handleFormCreated = () => {
+        fetchForms(projectId); 
+        setShowSurveyFormModal(false);
+    }
+
+    const handleUsabilityTestingCreated = () => {
+        fetchUsabilityTesting(projectId);
+        setShowUsabilityTestingModal(false);
+    }
 
 
     return (
@@ -246,13 +284,13 @@ useEffect(() => {
 
             <div className="grid grid-cols-2 p-8 gap-10"> 
                 <div> 
-                    <div className="flex justify-between items-center py-3 px-12 border-b border-gray-300">
+                    <div className="flex justify-between items-center border-b border-gray-300">
                         <div className="flex flex-col gap-2">
                             <h1 className="font-semibold text-xl">Create a Survey Form</h1>
                             <p>You can create forms using questions.</p>
                         </div>
                         <button
-                            className="bg-violet-400 text-black text-sm px-4 py-2 w-40 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
+                            className="bg-violet-400 text-black text-sm px-4 py-2 w-48 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
                             onClick={() => setShowSurveyFormModal(true)}
 
                         >
@@ -285,13 +323,13 @@ useEffect(() => {
 
                 </div>
                 <div>
-                    <div className="flex justify-between items-center py-3 px-12 border-b border-gray-300">
+                    <div className="flex justify-between items-center border-b border-gray-300">
                         <div className="flex flex-col gap-2">
                             <h1 className="font-semibold text-xl">Create Usability Testings</h1>
                             <p>You can create usability testings.</p>
                         </div>
                         <button
-                            className="bg-violet-400 text-black text-sm px-4 py-2 w-40 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
+                            className="bg-violet-400 text-black text-sm px-4 py-2 w-48 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
                             onClick={() => setShowUsabilityTestingModal(true)}
                         >
                             Create Usability Testing
@@ -328,12 +366,14 @@ useEffect(() => {
                 <CreateSurveyForms 
                     onClose={() => setShowSurveyFormModal(false)} 
                     projectId={projectId} 
+                    onFormCreated = {handleFormCreated}
                 />
             )}
             {showUsabilityTestingModal && (
                 <CreateUsabilityTesting 
                     onClose={() => setShowUsabilityTestingModal(false)} 
                     projectId={projectId} 
+                    onUsabilityTestingCreated = {handleUsabilityTestingCreated}
                 />
             )}
         </div>

@@ -1,9 +1,12 @@
 import { useState } from "react";
 
-const CreateUsabilityTesting = ({ onClose, projectId }) => {
+const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated }) => {
 
     const [title, setTitle] = useState("");
     const [task, setTask] = useState("");
+    const [duration, setDuration] = useState("");  
+    const [websiteLink, setWebsiteLink] = useState("");  
+    const [figmaEmbedCode, setFigmaEmbedCode] = useState(""); 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
@@ -28,7 +31,13 @@ const CreateUsabilityTesting = ({ onClose, projectId }) => {
                     "Content-Type": "application/json",
                     "X-CSRFToken": getCSRFToken(),
                 },
-                body: JSON.stringify({ title, task }),
+                body: JSON.stringify({ 
+                    title, 
+                    task, 
+                    duration,
+                    website_link: websiteLink,
+                    figma_embed_code: figmaEmbedCode
+                }),
             });
 
             const data = await response.json();
@@ -37,9 +46,13 @@ const CreateUsabilityTesting = ({ onClose, projectId }) => {
                 throw new Error(data.error || "Failed to create form.");
             }
 
-            alert("Usability testing created successfully!");
+            //alert("Usability testing created successfully!");
             setTitle("");
             setTask(""); 
+            setDuration(""); 
+            setWebsiteLink(""); 
+            setFigmaEmbedCode(""); 
+            onUsabilityTestingCreated(); 
             onClose(); // Close modal after success
         } catch (err) {
             console.error("Error creating form:", err);
@@ -76,6 +89,32 @@ const CreateUsabilityTesting = ({ onClose, projectId }) => {
                         type="text"
                         value={task}
                         onChange={(e) => setTask(e.target.value)}
+                        className="w-full p-2 mb-4 rounded border"
+                        required
+                    />
+
+                    <label className="block mb-2">Duration of the test:</label>
+                    <input
+                        type="number"
+                        value={duration}
+                        onChange={(e) => setDuration(e.target.value)}
+                        className="w-full p-2 mb-4 rounded border"
+                        required
+                    />
+
+                    <label className="block mb-2">Website Link:</label>
+                    <input
+                        type="url"
+                        value={websiteLink}
+                        onChange={(e) => setWebsiteLink(e.target.value)}
+                        className="w-full p-2 mb-4 rounded border"
+                        required
+                    />
+
+                    <label className="block mb-2">Figma Embed Code:</label>
+                    <textarea
+                        value={figmaEmbedCode}
+                        onChange={(e) => setFigmaEmbedCode(e.target.value)}
                         className="w-full p-2 mb-4 rounded border"
                         required
                     />

@@ -30,8 +30,11 @@ const UsabilityTestingDetail = () => {
         <div className="bg-[#F0EEED] h-screen"> 
             <div className="p-8 border-b border-gray-400">
                 <p className="font-funnel font-3xl">{usabilityTesting.id}</p>
-                <p className="font-funnel font-3xl">{usabilityTesting.title}</p>
-                <p className="font-funnel font-3xl">{usabilityTesting.task}</p>
+                <p className="font-funnel font-3xl">Title: {usabilityTesting.title}</p>
+                <p className="font-funnel font-3xl">Task: {usabilityTesting.task}</p>
+                <p className="font-funnel font-3xl">Duration: {usabilityTesting.duration}</p>
+                <p className="font-funnel font-3xl">Website: <a href={usabilityTesting.website_link} target="_blank" rel="noopener noreferrer">{usabilityTesting.website_link}</a></p>
+                <p className="font-funnel font-3xl">Figma Embed Code: {usabilityTesting.figma_embed_code}</p>
             </div>
         </div>
     )
