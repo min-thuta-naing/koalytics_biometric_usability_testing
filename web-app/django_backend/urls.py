@@ -97,6 +97,9 @@ urlpatterns = [
     path('api/user/<int:user_id>/', get_user, name='get_user'),
     path('api/admin/users/', get_all_users, name='get_all_users'),
     path('api/delete_user/<int:user_id>/', delete_user, name='delete_user'),
+
+    path('emotion-detection/', views.emotion_detection, name='emotion_detection'),
+
     
     # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 
