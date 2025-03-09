@@ -112,7 +112,20 @@ const AnswerForm = () => {
     const { formId } = useParams();
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
+    const userEmail = localStorage.getItem("userEmail"); // Get logged-in user email
 
+
+    const userData = localStorage.getItem("user");
+    if (userData) {
+        const parsedUser = JSON.parse(userData); // Convert JSON string to object
+        const userEmail = parsedUser.email; // Extract the email
+        console.log("Extracted email:", userEmail);
+    } else {
+        console.log("User not found in localStorage!");
+    }
+
+
+    //fetch the question list 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/forms/${formId}/questions/list/`)
             .then(response => response.json())
@@ -120,9 +133,57 @@ const AnswerForm = () => {
             .catch(error => console.error("Error fetching questions:", error));
     }, [formId]);
 
+    // handle answer input change 
     const handleAnswerChange = (questionId, value) => {
         setAnswers(prev => ({ ...prev, [questionId]: value }));
     };
+
+    // Submit Answers
+    const submitAnswers = async () => {
+        const userData = localStorage.getItem("user");
+    
+        if (!userData) {
+            console.error("User data not found in localStorage!");
+            alert("Error: You are not logged in.");
+            return;
+        }
+    
+        const parsedUser = JSON.parse(userData);
+        const userEmail = parsedUser.email; // Extract email
+    
+        if (!userEmail) {
+            console.error("User email is missing in stored data!");
+            alert("Error: Could not retrieve user email.");
+            return;
+        }
+    
+        console.log("Submitting answers for user:", userEmail); // Debugging
+    
+        for (const questionId in answers) {
+            const answerData = {
+                participant_email: userEmail,
+                answer_text: answers[questionId]
+            };
+    
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/questions/${questionId}/answers/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(answerData)
+                });
+    
+                const data = await response.json();
+                console.log("Answer submitted:", data);
+            } catch (error) {
+                console.error("Error submitting answer:", error);
+            }
+        }
+    
+        alert("Answers submitted successfully!");
+    };
+    
 
     return (
         <div className="min-h-screen bg-[#F0EEED] p-8 flex flex-col items-center">
@@ -175,6 +236,13 @@ const AnswerForm = () => {
                     </div>
                 ))}
             </div>
+            <button
+                onClick={submitAnswers}
+                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700"
+            >
+                Submit Answers
+            </button>
+
         </div>
     );
 };

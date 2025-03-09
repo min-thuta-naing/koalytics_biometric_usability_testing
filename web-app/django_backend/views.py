@@ -524,30 +524,59 @@ def delete_question(request, form_id, question_id):
 
 
 
+# @api_view(['POST'])
+# def create_answer(request, question_id):
+#     """Create a new answer for a specific question."""
+#     question = get_object_or_404(Question, id=question_id)
+
+#     # Ensure 'question' is included before saving
+#     data = request.data.copy()
+#     data['question'] = question.id  
+
+#     serializer = AnswerSerializer(data=data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 def create_answer(request, question_id):
-    """Create a new question for a specific form."""
-    question = get_object_or_404(Form, id=question_id)
+    """Create a new answer for a specific question."""
+    question = get_object_or_404(Question, id=question_id)
 
-    # Ensure 'question' is included before saving
-    data = request.data.copy()  
-    data['question'] = question.id  
+    # Extract user email from request (Frontend should send it)
+    user_email = request.data.get("participant_email")  
+    if not user_email:
+        return Response({"error": "User email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Fetch user based on email
+    try:
+        user = User.objects.get(email=user_email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Prepare data and save answer
+    data = request.data.copy()
+    data["question"] = question.id
+    data["participant_email"] = user.id
 
     serializer = AnswerSerializer(data=data)
     if serializer.is_valid():
-        serializer.save()  # The form is already included in data
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
-def get_answers(request, question_id):
-    """Retrieve all questions for a specific form."""
-    answers = Answer.objects.filter(question_id=question_id)
+def get_form_answers(request, form_id):
+    """Retrieve all answers for a specific form."""
+    questions = Question.objects.filter(form_id=form_id)
+    answers = Answer.objects.filter(question__in=questions)
+
     serializer = AnswerSerializer(answers, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 # USABILITY TESTING RELATED METHODS (RESEARCER SIDE) ##########################################################

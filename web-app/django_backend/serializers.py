@@ -43,6 +43,8 @@ class QuestionSerializer(serializers.ModelSerializer):
         #extra_kwargs = {'created_by': {'read_only': True}}
 
 class AnswerSerializer(serializers.ModelSerializer):
+    participant_email = serializers.EmailField(source="participant_email.email", read_only=True)
+
     class Meta:
         model = Answer
         fields = ['id', 'question', 'participant_email', 'answer_text']

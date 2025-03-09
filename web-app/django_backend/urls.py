@@ -81,6 +81,9 @@ urlpatterns = [
     path('forms/<int:form_id>/questions/list/', views.get_questions, name="get_questions"),
     path("forms/<int:form_id>/questions/<int:question_id>/", views.delete_question, name="delete_question"),
 
+    path('questions/<int:question_id>/answers/', views.create_answer, name='create-answer'),
+    path('forms/<int:form_id>/answers/', views.get_form_answers, name='get-form-answers'),
+
     path("api/projects/", get_all_projects, name="get_all_project"), 
     path("api/projects/<int:project_id>/related_forms/", get_project_forms, name="get_project_forms"),
     path("api/projects/<int:project_id>/related_usability_testing/", get_project_usabilitytesting, name="get_project_usabilitytesting"),
