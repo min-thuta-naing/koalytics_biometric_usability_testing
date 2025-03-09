@@ -94,7 +94,7 @@ const HomePage = () => {
                             </button>
                             {showSwitchPopup && (
                                 <div className="absolute right-0 top-full mt-7 w-64 p-4 bg-[#DCD6F7] shadow-lg rounded-lg border border-gray-400">
-                                    <p className="text-gray-700 text-sm mb-4">Switch to Researcher to create<br/>and manage biometric usability tests.</p>
+                                    <p className="text-gray-700 text-sm mb-4">This section is for researchers. <br/>Switch to Researcher to create<br/>and manage SUS forms and biometric usability tests.</p>
                                     <button
                                         onClick={handleSwitch}
                                         className="w-full py-2 bg-[#C4BDED] text-sm text-black rounded-lg hover:bg-[#ACA3E3]"
@@ -143,6 +143,7 @@ const HomePage = () => {
                     {/* main content */}
                     <main className="flex-1 bg-[#F0EEED] overflow-y-auto pt-[4rem]">
                         <p className='p-4 mx-8 mt-8 font-funnel text-xl border-b border-gray-400'>Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
+                        <p className='p-4 mx-8 mt-1 font-funnel '>These are the surveys related to usability of websites and mobile apps from the researchers. <br/>You can choose whatever you like to participate in the survey.<br/>And enjoy your survey! </p>
                         <div className="grid grid-cols-4 gap-6 p-8 place-items-center">
                             {projects.map(project => (
                                 <div 
