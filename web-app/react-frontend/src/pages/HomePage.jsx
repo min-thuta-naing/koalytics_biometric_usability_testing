@@ -147,10 +147,13 @@ const HomePage = () => {
                             {projects.map(project => (
                                 <div 
                                     key={project.id} 
-                                    className="bg-white w-72 h-48 flex items-center justify-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400 transition-transform duration-300 hover:-translate-y-2"
+                                    // className="w-80 h-56 flex items-center justify-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400 transition-transform duration-300 hover:-translate-y-2 bg-cover bg-center"
+                                    className="w-80 h-56 relative rounded-lg shadow-md hover:shadow-lg cursor-pointer border border-gray-400 transition-transform duration-300 hover:-translate-y-2 bg-cover bg-center"
                                     onClick={() => navigate(`/all-project/${project.id}`)}
+                                    style={{ backgroundImage: "url('/static/images/projectbg.png')" }}
+
                                 >
-                                    <h2 className="font-semibold text-lg">{project.name}</h2>
+                                    <h2 className="absolute bottom-4 left-4 font-semibold font-funnel text-lg text-black bg-[#C4BDED] px-3 py-1 rounded-lg">{project.name}</h2>
                                 </div>
                             ))}
                         </div>
