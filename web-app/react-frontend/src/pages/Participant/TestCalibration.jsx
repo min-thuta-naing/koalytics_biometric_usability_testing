@@ -51,6 +51,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import React from 'react';
 
 const TestCalibration = () => {
   const { usabilityTestingId } = useParams();
@@ -72,7 +73,7 @@ const TestCalibration = () => {
     fetchUsabilityTestingDetails();
   }, [usabilityTestingId]);
 
-const startRecording = async () => {
+  const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
       console.log("Screen capture stream started:", stream);
@@ -124,7 +125,7 @@ const startRecording = async () => {
         mediaRecorder.stop();
       }, 4000); // Stop recording after 4 seconds
   
-      window.open(usabilityTesting.website_link, "_blank"); // Open website in a new tab
+      window.open(`/browser-in-browser?url=${encodeURIComponent(usabilityTesting.website_link)}`, "_blank"); // Open website in a new tab
     } catch (error) {
       console.error("Screen recording error:", error);
     }

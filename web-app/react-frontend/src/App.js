@@ -25,6 +25,8 @@ import AnswerForm from "./pages/Participant/AnswerForms";
 import ChooseTest from "./pages/Participant/ChooseTest";
 import UsabilityTestingDetail from "./pages/UsabilityTesting/UsabilityTestingDetail";
 import TestCalibration from "./pages/Participant/TestCalibration";
+import TempoFacial from "./pages/Participant/TempoFacial";
+import BrowserInBrowser from "./pages/Participant/BrowserInBrowser";
 
 // import Login from "./pages/LoginPage";
 // import Welcome from "./pages/WelcomePage";
@@ -59,6 +61,10 @@ function App() {
         <Route path="/question3" element={<Question3 />} />
         <Route path="/question4" element={<Question4 />} />
         <Route path="/question5" element={<Question5 />} />
+
+        {/* temporary page */}
+        <Route path="/facial" element={<TempoFacial />} />
+        <Route path="/browser-in-browser" element={<BrowserInBrowser/>}/>
       </Routes>
     </Router>
   );
