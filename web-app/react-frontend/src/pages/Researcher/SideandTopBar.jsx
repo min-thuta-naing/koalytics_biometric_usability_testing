@@ -127,7 +127,7 @@ const SideandTopBar = () => {
           <nav className="space-y-2 flex-grow mt-20">
             <button
               onClick={() => setActivePage("projects")}
-              className={`flex items-center p-2 w-full rounded-lg hover:bg-[#ACA3E3] cursor-pointer transition-all duration-300 ease-in-out ${activePage === "projects" ? "bg-gray-300" : ""}`}
+              className={`flex items-center p-2 w-full rounded-lg hover:bg-[#ACA3E3] cursor-pointer transition-all duration-300 ease-in-out ${activePage === "projects" ? "bg-[#F0EEED]" : ""}`}
             >
               <FolderOpenDot size={20} />
               {showText && <span className="ml-3 text-sm">Projects</span>}
@@ -135,7 +135,7 @@ const SideandTopBar = () => {
             
             <button
               onClick={() => setActivePage("guideline")}
-              className={`flex items-center p-2 w-full rounded-lg hover:bg-[#ACA3E3] cursor-pointer transition-all duration-300 ease-in-out ${activePage === "guideline" ? "bg-gray-300" : ""}`}
+              className={`flex items-center p-2 w-full rounded-lg hover:bg-[#ACA3E3] cursor-pointer transition-all duration-300 ease-in-out ${activePage === "guideline" ? "bg-[#F0EEED]" : ""}`}
             >
               <Info size={20} />
               {showText && <span className="ml-3 text-sm">Guideline</span>}
