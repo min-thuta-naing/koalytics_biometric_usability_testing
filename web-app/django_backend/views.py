@@ -1,13 +1,14 @@
+import os
 from django.conf import settings
 from django.shortcuts import render 
 
 
 # import for sign up & log in 
 import json
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
-from .models import UsabilityTestRecordingV3, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, Answer, UsabilityTesting
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, Answer, UsabilityTesting
 from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -18,8 +19,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from django.core.files.storage import default_storage
-from .models import UsabilityTestRecordingV3
-from .serializers import UsabilityTestRecordingV3Serializer, FormSerializer, QuestionSerializer
+from .models import UsabilityTestRecordingV4
+from .serializers import UsabilityTestRecordingV4Serializer, FormSerializer, QuestionSerializer
 import logging
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -642,8 +643,36 @@ def delete_usability_testing(request, usability_testing_id):
 @permission_classes([IsAuthenticated])
 def check_recording(request, usability_testing_id):
     user = request.user
-    has_recording = UsabilityTestRecordingV3.objects.filter(user=user, usability_testing_id=usability_testing_id).exists()
+    has_recording = UsabilityTestRecordingV4.objects.filter(user=user, usability_testing_id=usability_testing_id).exists()
     return Response({"hasRecording": has_recording})
+
+
+# @api_view(["POST"])
+# def save_recording(request):
+#     parser_classes = (MultiPartParser, FormParser)
+    
+#     usability_testing_id = request.data.get("usability_testing_id")
+#     video_file = request.FILES.get("video")
+#     user = request.user
+
+#     if UsabilityTestRecordingV4.objects.filter(user=user, usability_testing_id=usability_testing_id).exists():
+#         raise ValidationError("You can only upload one recording per usability test.")
+
+#     logger.info(f"Received recording for Usability Test ID: {usability_testing_id}")
+
+#     if not video_file:
+#         logger.error("No video file provided.")
+#         return Response({"error": "No video file provided"}, status=400)
+
+#     # Save the video file
+#     usability_testing = UsabilityTesting.objects.get(id=usability_testing_id)
+#     recording = UsabilityTestRecordingV4.objects.create(
+#         usability_testing=usability_testing, video=video_file, user=user
+#     )
+
+#     logger.info(f"Recording saved successfully with ID: {recording.id}")
+
+#     return Response(UsabilityTestRecordingV4Serializer(recording).data, status=201)
 
 
 @api_view(["POST"])
@@ -652,9 +681,16 @@ def save_recording(request):
     
     usability_testing_id = request.data.get("usability_testing_id")
     video_file = request.FILES.get("video")
-    user = request.user
+    participant_email = request.data.get("participant_email")  # Extract participant email from request
 
-    if UsabilityTestRecordingV3.objects.filter(user=user, usability_testing_id=usability_testing_id).exists():
+    if not participant_email:
+        return Response({"error": "Participant email is required"}, status=400)
+
+    user = User.objects.filter(email=participant_email).first()  # Get user based on email
+    if not user:
+        return Response({"error": "User not found"}, status=404)
+
+    if UsabilityTestRecordingV4.objects.filter(participant_email=user, usability_testing_id=usability_testing_id).exists():
         raise ValidationError("You can only upload one recording per usability test.")
 
     logger.info(f"Received recording for Usability Test ID: {usability_testing_id}")
@@ -665,14 +701,37 @@ def save_recording(request):
 
     # Save the video file
     usability_testing = UsabilityTesting.objects.get(id=usability_testing_id)
-    recording = UsabilityTestRecordingV3.objects.create(
-        usability_testing=usability_testing, video=video_file, user=user
+    recording = UsabilityTestRecordingV4.objects.create(
+        usability_testing=usability_testing,
+        video=video_file,
+        participant_email=user  # Save the participant email (user object)
     )
 
     logger.info(f"Recording saved successfully with ID: {recording.id}")
 
-    return Response(UsabilityTestRecordingV3Serializer(recording).data, status=201)
+    return Response(UsabilityTestRecordingV4Serializer(recording).data, status=201)
 
+@api_view(['GET'])
+def get_recordings_for_usability_testing(request, usability_testing_id):
+    """Retrieve all recordings for a specific usability testing."""
+    usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
+    recordings = UsabilityTestRecordingV4.objects.filter(usability_testing=usability_testing)
+    
+    # Serialize the data and return it
+    serializer = UsabilityTestRecordingV4Serializer(recordings, many=True)
+    return Response(serializer.data)
+
+def video_view(request, video_name):
+    print(f"Requested video: {video_name}")  # Debugging log
+    video_path = os.path.join(settings.MEDIA_ROOT, 'recordings', video_name)
+    print(f"Video path: {video_path}")  # Debugging log
+
+    if os.path.exists(video_path):
+        with open(video_path, 'rb') as f:
+            return HttpResponse(f.read(), content_type='video/webm')
+    else:
+        print(f"Video not found: {video_path}")  # Debugging log
+        return HttpResponse("Video not found", status=404)
 
 # PROJECT RELATED MEHTODS (PARTICIPANT SIDE) ##########################################
 #get all projects on the homepage for participant 
