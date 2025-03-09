@@ -149,19 +149,14 @@ class UsabilityTesting(models.Model):
     website_link = models.URLField(max_length=500, blank=True, null=True)  # URL field for the website link
     figma_embed_code = models.TextField(blank=True, null=True)  # Field to store the Figma embed code
 
-
-    def __str__(self):
-        return self.title
     
 
-class UsabilityTestRecordingV3(models.Model):
-    usability_testing = models.ForeignKey(UsabilityTesting, on_delete=models.CASCADE, related_name="recordings")
+class UsabilityTestRecordingV4(models.Model):
+    usability_testing = models.ForeignKey(UsabilityTesting, on_delete=models.CASCADE)
     video = models.FileField(upload_to='recordings/')
-    created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="usability_test_recordings")
+    #created_at = models.DateTimeField(auto_now_add=True)
+    participant_email = models.ForeignKey(User, on_delete=models.CASCADE )
 
-    def __str__(self):
-        return f"Recording for Test {self.usability_testing.title} by {self.user.email}"
 
 
 

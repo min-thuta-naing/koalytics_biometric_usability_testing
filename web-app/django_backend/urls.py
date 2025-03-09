@@ -41,6 +41,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+
 urlpatterns = [
     
 
@@ -75,11 +76,17 @@ urlpatterns = [
     path('usability-testing/delete/<int:usability_testing_id>/', views.delete_usability_testing, name='delete_usability_testing'),
     path("api/save-recording/check/<int:usability_testing_id>/", views.check_recording, name="check-recording"),
     path("api/save-recording/", views.save_recording, name="save-recording"),
+    path('usability-testing/<int:usability_testing_id>/recordings/', views.get_recordings_for_usability_testing, name='get_recordings_for_usability_testing'),
+    path('video/<str:video_name>/', lambda request, video_name: print(f"Video requested: {video_name}") or views.video_view(request, video_name), name='video-view'),
+
 
 
     path('forms/<int:form_id>/questions/', views.create_question, name="create_question"),
     path('forms/<int:form_id>/questions/list/', views.get_questions, name="get_questions"),
     path("forms/<int:form_id>/questions/<int:question_id>/", views.delete_question, name="delete_question"),
+
+    path('questions/<int:question_id>/answers/', views.create_answer, name='create-answer'),
+    path('forms/<int:form_id>/answers/', views.get_form_answers, name='get-form-answers'),
 
     path("api/projects/", get_all_projects, name="get_all_project"), 
     path("api/projects/<int:project_id>/related_forms/", get_project_forms, name="get_project_forms"),
@@ -90,9 +97,23 @@ urlpatterns = [
     path('api/user/<int:user_id>/', get_user, name='get_user'),
     path('api/admin/users/', get_all_users, name='get_all_users'),
     path('api/delete_user/<int:user_id>/', delete_user, name='delete_user'),
+    
+    # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 
-    re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
+
+    #re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
 ] 
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# # Ensure the static media path is served before the catch-all route
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
+
+# Static files URL handling
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Catch-all route should be placed at the end of urlpatterns
+urlpatterns += [
+    re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
+]

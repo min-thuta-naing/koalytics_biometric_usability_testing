@@ -1,8 +1,9 @@
+from django.conf import settings
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .models import User, Hobby, Project, Form, Question, Answer
 
-from .models import UsabilityTestRecordingV3
+from .models import UsabilityTestRecordingV4
 from .models import UsabilityTesting
 
 
@@ -43,6 +44,8 @@ class QuestionSerializer(serializers.ModelSerializer):
         #extra_kwargs = {'created_by': {'read_only': True}}
 
 class AnswerSerializer(serializers.ModelSerializer):
+    participant_email = serializers.EmailField(source="participant_email.email", read_only=True)
+
     class Meta:
         model = Answer
         fields = ['id', 'question', 'participant_email', 'answer_text']
@@ -53,11 +56,17 @@ class UsabilityTestingSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'task', 'duration', 'website_link', 'figma_embed_code'] #fields inside that mdoels 
 
 
-class UsabilityTestRecordingV3Serializer(serializers.ModelSerializer):
+class UsabilityTestRecordingV4Serializer(serializers.ModelSerializer):
+    participant_email = serializers.EmailField(source="participant_email.email", read_only=True)
+    video = serializers.SerializerMethodField()
+
+    def get_video(self, obj):
+        # Return the correct URL for the video file
+        return f"{settings.MEDIA_URL}/{obj.video.name}"
+
     class Meta:
-        model = UsabilityTestRecordingV3
-        # fields = "__all__"
-        fields = ['id', 'video', 'created_at']  # Add any additional fields you want to expose
+        model = UsabilityTestRecordingV4
+        fields = ['id', 'usability_testing', 'video', 'participant_email']
 
 
 

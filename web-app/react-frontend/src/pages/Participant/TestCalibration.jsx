@@ -72,51 +72,64 @@ const TestCalibration = () => {
     fetchUsabilityTestingDetails();
   }, [usabilityTestingId]);
 
-  const startRecording = async () => {
+const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
       console.log("Screen capture stream started:", stream);
-
+  
       const mediaRecorder = new MediaRecorder(stream);
       const chunks = [];
-
+  
       mediaRecorder.ondataavailable = (event) => {
         chunks.push(event.data);
       };
-
+  
       mediaRecorder.onstop = async () => {
         console.log("Recording stopped, processing video...");
         const blob = new Blob(chunks, { type: "video/webm" });
         const formData = new FormData();
         formData.append("usability_testing_id", usabilityTestingId);
         formData.append("video", blob, "recording.webm");
-
+  
+        // Get logged-in user's email
+        const userData = localStorage.getItem("user");
+        if (!userData) {
+          console.error("User data not found in localStorage!");
+          alert("Error: You are not logged in.");
+          return;
+        }
+  
+        const parsedUser = JSON.parse(userData);
+        const userEmail = parsedUser.email;  // Extract the email
+        formData.append("participant_email", userEmail);  // Append participant email to the formData
+  
         const uploadResponse = await fetch("http://127.0.0.1:8000/api/save-recording/", {
           method: "POST",
           body: formData,
         });
-
+  
         if (!uploadResponse.ok) {
           console.error("Error uploading the recording.");
         } else {
           console.log("Recording uploaded successfully.");
         }
-
+  
         navigate(-1); // Redirect back to the previous page
       };
-
+  
       mediaRecorder.start();
       console.log("Recording started...");
-
+  
       setTimeout(() => {
         mediaRecorder.stop();
       }, 4000); // Stop recording after 4 seconds
-
+  
       window.open(usabilityTesting.website_link, "_blank"); // Open website in a new tab
     } catch (error) {
       console.error("Screen recording error:", error);
     }
   };
+  
 
   if (error) return <p className="text-red-500">{error}</p>;
   if (!usabilityTesting) return <p>Loading...</p>;
