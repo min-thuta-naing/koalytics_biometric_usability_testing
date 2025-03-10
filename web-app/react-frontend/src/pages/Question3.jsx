@@ -62,18 +62,18 @@ export default function ProfessionQuestion() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-[#EEF2FF] p-4">
+    <div className="min-h-screen w-full flex flex-col items-center bg-[#F0EEED] p-4">
       {/* Progress Bar and Navigation */}
       <div className="w-full max-w-3xl flex items-center justify-between mt-8 mb-8">
         <button
-          className="text-[#4A90E2] font-semibold hover:underline"
+          className="text-gray-500 font-semibold hover:underline"
           onClick={() => navigate("/question2")} // Navigate back to Question 2
         >
           ← Back
         </button>
         <div className="flex-grow h-3 mx-4 bg-gray-300 rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#4A90E2] transition-all"
+            className="h-full bg-[#ACA3E3] transition-all"
             style={{ width: `${(currentQuestion / totalQuestions) * 100}%` }}
           />
         </div>
@@ -82,7 +82,7 @@ export default function ProfessionQuestion() {
 
       {/* Question Box */}
       <div className="w-full max-w-3xl p-10 bg-white shadow-md rounded-md flex flex-col justify-center items-center mt-8">
-        <p className="text-2xl font-semibold text-gray-700 mb-6 text-center">
+        <p className="font-funnel text-2xl font-semibold text-gray-700 mb-6 text-center">
           What is your profession?
         </p>
 
@@ -94,12 +94,12 @@ export default function ProfessionQuestion() {
               className={`inline-flex items-center gap-2 border-2 rounded-full font-semibold transition duration-300 px-6 py-3 ${
                 selectedProfession.includes(profession.text)
                   ? "bg-[#4A90E2] text-white"
-                  : "border-[#4A90E2] text-[#4A90E2] hover:bg-[#f0f0f0]"
+                  : "border-gray-400 text-gray-500 hover:bg-[#DCD6F7]"
               }`}
               onClick={() => handleProfessionSelect(profession.text)}
             >
               <span className="text-2xl">{profession.emoji}</span>
-              <span className="text-lg">{profession.text}</span>
+              <span className="font-funnel text-lg">{profession.text}</span>
             </button>
           ))}
         </div>
@@ -107,7 +107,7 @@ export default function ProfessionQuestion() {
         {/* Confirm Button */}
         <div className="flex justify-center mt-8">
           <button
-            className="bg-[#4A90E2] hover:bg-[#357ABD] text-white py-3 px-6 rounded-xl font-semibold text-lg transition duration-300"
+            className="bg-[#C4BDED] hover:bg-[#ACA3E3] text-gray-700 py-3 px-6 rounded-xl font-semibold text-lg transition duration-300"
             onClick={handleConfirm}
           >
             Confirm
