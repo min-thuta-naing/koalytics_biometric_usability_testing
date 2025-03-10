@@ -249,9 +249,9 @@ export default function SignUpLayout() {
       </div>
 
       {/*the right column */}
-      <div className="ml-[33.33%] w-2/3 bg-white flex items-center p-8 overflow-y-auto">
+      <div className="ml-[33.33%] w-2/3 bg-[#F0EEED] flex items-center p-8 overflow-y-auto">
         <div className="w-full h-full max-w-sm mx-auto text-center items-center">
-            <h2 className="text-3xl font-funnel font-semibold mb-4">Koalytics</h2>
+            <h2 className="text-3xl font-funnel font-semibold mb-4">Welcome to Koalytics</h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {[{ label: "First Name", name: "first_name", type: "text" },

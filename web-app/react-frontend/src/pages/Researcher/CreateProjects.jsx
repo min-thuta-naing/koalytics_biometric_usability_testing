@@ -56,46 +56,66 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         <div>
             <h2 className="font-semibold text-3xl mb-6">Create a New Project</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <input
-                    type="text"
-                    placeholder="Project Name"
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    className="border border-gray-300 p-3 rounded-lg"
-                    required
-                />
-                <textarea
-                    placeholder="Project Description"
-                    value={projectDescription}
-                    onChange={(e) => setProjectDescription(e.target.value)}
-                    className="border border-gray-300 p-3 rounded-lg"
-                    rows="3"
-                    required
-                />
-                <select
-                    placeholder ="Organization"
-                    value={organization}
-                    onChange={(e) => setOrganization(e.target.value)}
-                    className="border border-gray-300 p-3 rounded-lg"
-                    required
-                >
-                    <option value="company">Company</option>
-                    <option value="school">School</option>
-                    <option value="college">College</option>
-                    <option value="institution">Institution</option>
-                    <option value="university">University</option>
-                    <option value="freelance">Freelance</option>
-                </select>
-                <input
-                    type="number"
-                    placeholder="Maximun Participant Number"
-                    value={maxParticipants}
-                    onChange={(e) => setMaxParticipants(e.target.value)}
-                    className="border border-gray-300 p-3 rounded-lg"
-                    required
-                />
-                    <div className="flex items-center gap-2">
-                    <label className="font-medium">Start Date:</label>
+
+                <div className="flex items-center gap-4">
+                    <label className="font-medium w-24">Name:</label>
+                    <input
+                        type="text"
+                        placeholder="Add Project Name"
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        className="border border-gray-300 p-3 rounded-lg flex-1"
+                        required
+                    />
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <label className="font-medium w-24">Description:</label>
+                    <textarea
+                        placeholder="Add Project Description"
+                        value={projectDescription}
+                        onChange={(e) => setProjectDescription(e.target.value)}
+                        className="border border-gray-300 p-3 rounded-lg flex-1"
+                        rows="3"
+                        required
+                    />
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <label className="font-medium w-24">Organization:</label>
+                    <select
+                        value={organization}
+                        onChange={(e) => setOrganization(e.target.value)}
+                        className="border border-gray-300 p-3 rounded-lg flex-1"
+                        required
+                        style={{ color: organization ? 'black' : '#9CA3AF' }}
+                    >
+                        <option value="" disabled >
+                            Select Organization
+                        </option>
+                        <option value="company">Company</option>
+                        <option value="school">School</option>
+                        <option value="college">College</option>
+                        <option value="institution">Institution</option>
+                        <option value="university">University</option>
+                        <option value="freelance">Freelance</option>
+                    </select>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <label className="font-medium w-24">Participant number:</label>
+                    <input
+                        type="number"
+                        placeholder="Maximun Participant Number"
+                        value={maxParticipants}
+                        onChange={(e) => setMaxParticipants(e.target.value)}
+                        className="border border-gray-300 p-3 rounded-lg flex-1"
+                        required
+                    />
+                </div>
+                    
+                <div className="flex items-center gap-4">
+                    <label className="font-medium w-24">Start Date:</label>
                     <input
                         type="date"
                         value={startDate}
@@ -106,7 +126,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <label className="font-medium">End Date:</label>
+                    <label className="font-medium w-24">End Date:</label>
                     <input
                         type="date"
                         value={endDate}
@@ -115,14 +135,20 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                         required
                     />
                 </div>
-                <textarea
-                    placeholder="Sidenotes"
-                    value={sideNotes}
-                    onChange={(e) => setSideNotes(e.target.value)}
-                    className="border border-gray-300 p-3 rounded-lg"
-                    rows="3"
-                    required
-                />
+               
+
+                <div className="flex items-center gap-4">
+                    <label className="font-medium w-24">Side Notes:</label>
+                    <textarea
+                        placeholder="Add Sidenotes"
+                        value={sideNotes}
+                        onChange={(e) => setSideNotes(e.target.value)}
+                        className="border border-gray-300 p-3 rounded-lg flex-1"
+                        rows="2"
+                        required
+                    />
+                </div>
+                
 
                 <div className="flex justify-end gap-4">
                     <button
