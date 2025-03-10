@@ -12,7 +12,7 @@ const MyAccount = () => {
         "/static/images/user3.png",
         "/static/images/user4.png",
         "/static/images/user5.png",
-        "/static/images/user5.png"
+        "/static/images/user6.png"
     ];
 
     useEffect(() => {
