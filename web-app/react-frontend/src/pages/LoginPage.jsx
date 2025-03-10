@@ -53,7 +53,7 @@ const LoginPage = () => {
       </div>
 
       {/*the right column */}
-      <div className="ml-[33.33%] w-2/3 bg-white flex items-center p-4 overflow-y-auto">
+      <div className="ml-[33.33%] w-2/3 bg-[#F0EEED] flex items-center p-4 overflow-y-auto">
         {/* <div className="bg-white p-10 rounded-3xl w-full max-w-md mx-auto text-center shadow-lg border border-gray-300"> */}
         <div className="w-full max-w-sm mx-auto text-center items-center ">
           <h2 className="text-3xl font-funnel font-semibold mb-4">Welcome back to Koalytics</h2>
@@ -63,7 +63,7 @@ const LoginPage = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-400 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               required
             />
             <input
@@ -71,13 +71,13 @@ const LoginPage = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-400 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               required
             />
             {error && <p className="text-red-500">{error}</p>}
             <button
               type="submit"
-              className="w-full bg-violet-500 text-white py-2 rounded-2xl hover:bg-violet-600 transition"
+              className="w-full bg-violet-500 text-white py-2 rounded-lg hover:bg-violet-600 transition"
             >
               Log in
             </button>
