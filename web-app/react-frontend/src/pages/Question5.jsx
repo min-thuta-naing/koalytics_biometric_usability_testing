@@ -54,7 +54,7 @@ export default function IndustryQuestion() {
       const response = await fetch(`/api/save_industry/${userId}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ position: selectedIndustry }),
+        body: JSON.stringify({ industry: selectedIndustry }),
       });
 
       if (response.ok) {
