@@ -182,7 +182,7 @@ def save_industry (request, user_id):
 
             for industry in industry:
                 industry, created = Industry.objects.get_or_create(industry=industry)
-                user.position.add(industry)
+                user.industry.add(industry)
 
             return JsonResponse({'message': 'Industry saved successfully!'})
         except User.DoesNotExist:
