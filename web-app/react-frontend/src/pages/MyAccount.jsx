@@ -3,6 +3,16 @@ import React, { useEffect, useState } from "react";
 const MyAccount = () => {
     const [userData, setUserData] = useState(null);
     const [error, setError] = useState("");
+    const [selectedImage, setSelectedImage] = useState("");
+
+    const profileImages = [
+        "/static/images/user1.png",
+        "/static/images/user2.png",
+        "/static/images/user3.png",
+        "/static/images/user4.png",
+        "/static/images/user5.png",
+        "/static/images/user5.png"
+    ];
 
     useEffect(() => {
         try {
@@ -13,12 +23,39 @@ const MyAccount = () => {
             if (!user?.id) throw new Error("User ID missing. Please log in.");
 
             setUserData(user);
+            const savedProfilePic = localStorage.getItem("profilePic");
+            if (savedProfilePic) {
+                setSelectedImage(savedProfilePic);
+            }
         } catch (error) {
             console.error("Error loading user data:", error);
             setError(error.message);
         }
     }, []);
 
+
+    const handleProfileImageSelect = (image) => {
+        setSelectedImage(image);
+    };
+ 
+ 
+    const handleConfirmProfileImage = () => {
+        localStorage.setItem("profilePic", selectedImage);
+        alert("Profile picture updated!");
+    };
+   
+    const handleProfilePictureChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                localStorage.setItem("profilePicture", reader.result); // Save image URL
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    
     if (error) {
         return <p className="text-red-500">Error: {error}</p>;
     }
@@ -41,6 +78,34 @@ const MyAccount = () => {
                     <button style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer' }}>Edit</button>
                 </div>
             </div>
+
+            {/* Profile Picture Selection */}
+           <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "8px", marginBottom: "20px" }}>
+               <h3>Select Profile Picture</h3>
+               <div style={{ display: "flex", gap: "10px" }}>
+                   {profileImages.map((img, index) => (
+                       <img
+                           key={index}
+                           src={img}
+                           alt={`Profile ${index + 1}`}
+                           onClick={() => handleProfileImageSelect(img)}
+                           style={{
+                               width: "60px",
+                               height: "60px",
+                               borderRadius: "50%",
+                               cursor: "pointer",
+                               border: selectedImage === img ? "3px solid blue" : "3px solid transparent"
+                           }}
+                       />
+                   ))}
+               </div>
+               <button
+                   onClick={handleConfirmProfileImage}
+                   style={{ marginTop: "10px", padding: "10px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
+               >
+                   Confirm Selection
+               </button>
+           </div>
 
             {/* Personal Information Section (with Edit) */}
             <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>

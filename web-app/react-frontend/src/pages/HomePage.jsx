@@ -12,15 +12,16 @@ const HomePage = () => {
     const [projects, setProjects] = useState([]);
 
 
-    // log in user info 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
-            setUser(JSON.parse(storedUser));
+            const parsedUser = JSON.parse(storedUser);
+            setUser(parsedUser);
         } else {
-            navigate("/homepage"); // Redirect if no user data
+            navigate("/loginpage");
         }
     }, [navigate]);
+ 
 
 
     //feching all projects 
@@ -105,20 +106,25 @@ const HomePage = () => {
                             )}
 
                             
-                            <img
-                                src="/static/images/profile.jpg"
-                                alt="Profile"
-                                className="h-10 w-10 rounded-full border-2 border-gray-300 object-cover cursor-pointer"
-                                onClick={() => setShowPopup(!showPopup)}
-                            />
+                           
+
+                           {/* Profile Picture */}
+                           <img
+                               src={localStorage.getItem("profilePic") || "/static/images/user1.jpg"}
+                               alt="Profile"
+                               className="h-10 w-10 rounded-full border-2 border-gray-300 object-cover cursor-pointer"
+                               onClick={() => setShowPopup(!showPopup)}
+                           />
+
                             {showPopup && (
                                 <div className="absolute right-0 top-full mt-7 w-64 bg-[#DCD6F7] shadow-lg rounded-lg py-2  z-50 border border-gray-400">
                                     <div className="flex px-4 py-4 items-center gap-4 border-b border-gray-400">
-                                        <img
-                                            src="/images/profile.jpg"
-                                            alt="Profile"
-                                            className="h-16 w-16 rounded-full border-2 border-gray-400 object-cover"
-                                        />
+                                    <img
+                                           src={localStorage.getItem("profilePic") || "/static/images/user1.png"}
+                                           alt="Profile"
+                                           className="h-16 w-16 rounded-full border-2 border-gray-400 object-cover"
+                                       />
+
                                         <p className="block text-gray-700">
                                             Welcome back!<br />
                                             {user ? `${user.first_name} ${user.last_name}` : "Loading..."}
