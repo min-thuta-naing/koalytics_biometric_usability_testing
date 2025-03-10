@@ -4,6 +4,7 @@ const MyAccount = () => {
     const [userData, setUserData] = useState(null);
     const [error, setError] = useState("");
     const [selectedImage, setSelectedImage] = useState("");
+    const [hover, setHover] = useState(false);
 
     const profileImages = [
         "/static/images/user1.png",
@@ -99,12 +100,12 @@ const MyAccount = () => {
                        />
                    ))}
                </div>
-               <button
-                   onClick={handleConfirmProfileImage}
-                   style={{ marginTop: "10px", padding: "10px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
-               >
-                   Confirm Selection
-               </button>
+                    <button
+                    onClick={handleConfirmProfileImage}
+                    className="mt-2 px-4 py-2 bg-[#C4BDED] text-white border-none rounded-md cursor-pointer hover:bg-[#ACA3E3]"
+                    >
+                    Confirm Selection
+                    </button>
            </div>
 
             {/* Personal Information Section (with Edit) */}
