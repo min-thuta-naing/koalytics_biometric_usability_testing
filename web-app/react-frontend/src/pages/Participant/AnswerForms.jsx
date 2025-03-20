@@ -113,6 +113,7 @@ const AnswerForm = () => {
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
     const userEmail = localStorage.getItem("userEmail"); // Get logged-in user email
+    const [showPopup, setShowPopup] = useState(true); 
 
 
     const userData = localStorage.getItem("user");
@@ -187,6 +188,24 @@ const AnswerForm = () => {
 
     return (
         <div className="min-h-screen bg-[#F0EEED] p-8 flex flex-col items-center">
+
+            {/* Popup */}
+            {showPopup && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <h2 className="text-lg font-bold mb-4">Welcome to the Survey</h2>
+                        <p>Please take a moment to read the following consent forms</p>
+                        <p></p>
+                        <button
+                            onClick={() => setShowPopup(false)}
+                            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <h1 className="text-xl font-bold mb-6">Answer the Questions</h1>
 
             <div className="w-full max-w-2xl flex flex-col gap-6">
