@@ -4,6 +4,21 @@ import {Trash2} from "lucide-react";
 
 const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQuestionText, questionType, setQuestionType, handleAddQuestion }) => {
 
+    const [step, setStep] = useState(1);
+    // const [currentStep, setCurrentStep] = useState(1); 
+    // const setps = [1,2,3]; 
+    // const handleNext = () => {
+    //     if (currentStep < steps.length) {
+    //       setCurrentStep(currentStep + 1);
+    //     }
+    // };
+    // const handleBack = () => {
+    //     if (currentStep > 1) {
+    //       setCurrentStep(currentStep - 1);
+    //     }
+    // };
+
+
     // Function to delete a question
     const handleDeleteQuestion = async (questionId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this question?");
@@ -30,36 +45,138 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
     return (
         <div className="flex gap-8 p-4 mx-10">
             {/* Column 1: Add Question */}
-            <div className="w-1/3 bg-[#DCD6F7] p-4 rounded-xl shadow-xl">
-                <h2 className="text-lg font-funnel font-bold">Add Question</h2>
-                <div className="mt-6 mx-8">
-                <input
-                    type="text"
-                    placeholder="Enter question"
-                    value={questionText}
-                    onChange={(e) => setQuestionText(e.target.value)}
-                    className="w-full p-2 border rounded-lg my-2"
-                />
-                <select
-                    value={questionType}
-                    onChange={(e) => setQuestionType(e.target.value)}
-                    className="w-full p-2 border rounded-lg"
-                >
-                    <option value="text">Text</option>
-                    {/* <option value="mcq">Multiple Choice</option> */}
-                    <option value="rating">Rating</option>
-                </select>
-                <button
-                    onClick={handleAddQuestion}
-                    className="mt-2 bg-blue-500 text-white px-4 py-2 rounded justify-items-end"
-                >
-                    Add Question
-                </button>
+            <div className="w-1/3 bg-white p-4 rounded-xl shadow-xl relative">
+                {/* Progress bar */}
+                <div className="flex items-center justify-between mb-6 relative w-full">
+                    {["Add Consent", "Add Questions", "Add Something"].map((label, index) => (
+                    <div key={index} className="relative flex flex-col items-center w-1/3">
+                        
+                        {index !== 0 && (
+                            <div
+                                className={`absolute top-1/2 left-[-50%] w-full h-1 -translate-y-1/2
+                                    ${step > index ? "bg-blue-500" : "bg-gray-300"}`}
+                            />
+                        )}
+
+                        <div
+                            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                                step >= index + 1 ? "bg-blue-500 text-white" : "bg-gray-300"}`}
+                        >
+                            {index + 1}
+                        </div>
+                        <span className="text-sm mt-1">{label}</span>
+                    </div>
+                    ))}
                 </div>
+
+                {/* Step 1 */}
+                {step === 1 && (
+                    <div className="flex flex-col">
+                        <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
+                            <h2 className="text-lg font-bold">Add Consent</h2>
+                            <textarea className="w-full p-2 border rounded-lg my-2 rows=7" />
+                        </div>
+
+                        <button
+                            className="mt-3 mx-3 bg-[#C4BDED] text-black px-4 py-2 rounded-lg self-end"
+                            onClick={() => setStep(2)}
+                        >
+                            Next →
+                        </button>
+                    </div> 
+                )}
+
+                {step === 2 && (
+                    <div className="flex flex-col">
+                        <div className="mt-6 mx-3 border border-gray-400 p-4 rounded-lg">
+                            <h2 className="text-lg font-bold">Add Question</h2>
+                            <input
+                                type="text"
+                                placeholder="Enter question"
+                                value={questionText}
+                                onChange={(e) => setQuestionText(e.target.value)}
+                                className="w-full p-2 border rounded-lg my-2"
+                            />
+                            <select
+                                value={questionType}
+                                onChange={(e) => setQuestionType(e.target.value)}
+                                className="w-full p-2 border rounded-lg"
+                            >
+                                <option value="text">Text</option>
+                                <option value="rating">Rating</option>
+                            </select>
+                            <button
+                                onClick={handleAddQuestion}
+                                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded justify-items-end"
+                            >
+                                Add Question
+                            </button>
+                        </div>
+                        <div className="flex justify-between">
+                            <button
+                                className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
+                                onClick={() => setStep(1)}
+                            >
+                                ← Back
+                            </button>
+                            <button
+                                className="mt-3 mx-3 bg-[#C4BDED] text-black px-4 py-2 rounded-lg self-end"
+                                onClick={() => setStep(3)}
+                            >
+                                Next →
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {step === 3 && (
+                    <div className="flex flex-col">
+                        <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
+                            <h2 className="text-lg font-bold">Add Something</h2>
+                            <textarea className="w-full p-2 border rounded-lg my-2" />
+                            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
+                                Submit
+                            </button>
+                        </div>
+                        <button
+                            className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
+                            onClick={() => setStep(2)}
+                        >
+                            ← Back
+                        </button>
+                    </div>
+                )}
+
+                
+                {/* <div className="mt-6 mx-8 border border-gray-400 ">
+                    <h2 className="text-lg font-funnel font-bold">Add Question</h2>
+                    <input
+                        type="text"
+                        placeholder="Enter question"
+                        value={questionText}
+                        onChange={(e) => setQuestionText(e.target.value)}
+                        className="w-full p-2 border rounded-lg my-2"
+                    />
+                    <select
+                        value={questionType}
+                        onChange={(e) => setQuestionType(e.target.value)}
+                        className="w-full p-2 border rounded-lg"
+                    >
+                        <option value="text">Text</option>
+                        <option value="rating">Rating</option>
+                    </select>
+                    <button
+                        onClick={handleAddQuestion}
+                        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded justify-items-end"
+                    >
+                        Add Question
+                    </button>
+                </div> */}
+                
             </div>
 
             {/* Column 2: Display Questions from Backend */}
-            <div className="w-2/3 bg-[#DCD6F7] p-4 rounded-xl shadow-xl">
+            <div className="w-2/3 bg-white p-4 rounded-xl shadow-xl">
                 <h2 className="text-lg font-funnel font-bold">Questions Preview</h2>
                 <div className="px-6 py-6 mt-6 mx-8 rounded-xl bg-white shadow-inner-xl h-[450px] overflow-y-auto">
                 {questions.length === 0 ? (

@@ -119,6 +119,10 @@ class Form(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Consent(models.Model):
+    form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    consent_text = models.TextField()
 
 class Question(models.Model):
     TEXT = 'text'

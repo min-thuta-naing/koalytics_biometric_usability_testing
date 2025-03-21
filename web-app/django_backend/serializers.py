@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import User, Hobby, Project, Form, Question, Answer
+from .models import User, Hobby, Project, Form, Question, Answer, Consent
 
 from .models import UsabilityTestRecordingV4
 from .models import UsabilityTesting
@@ -35,6 +35,11 @@ class FormSerializer(serializers.ModelSerializer):
     class Meta:
         model = Form
         fields = ['id', 'title']
+
+class ConsentSerializer(serializers.ModelSerializer): 
+    class Meta: 
+        model = Consent 
+        fields = ['id', 'form', 'consent_text']
 
 
 class QuestionSerializer(serializers.ModelSerializer):
