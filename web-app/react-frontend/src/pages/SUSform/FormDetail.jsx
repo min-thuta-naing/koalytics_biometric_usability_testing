@@ -272,10 +272,9 @@ const FormDetail = () => {
   if (!form) return <p>Loading...</p>;
 
   return (
-    <div className="bg-[#F0EEED] h-screen">
-      <div className="p-8 border-b border-gray-400">
-        <p className="font-funnel font-3xl">{form.id}</p>
-        <p className="font-funnel font-3xl">{form.title}</p>
+    <div className=" bg-[#F0EEED] h-screen">
+      <div className=" p-8 border-b border-gray-400">
+        <p className="font-funnel text-3xl">{form.id} - {form.title} </p>
       </div>
 
       {/* Toggle between Create Questions and View Results */}
