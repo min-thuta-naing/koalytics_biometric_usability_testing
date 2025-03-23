@@ -41,7 +41,6 @@ class ConsentSerializer(serializers.ModelSerializer):
         model = Consent 
         fields = ['id', 'form', 'consent_text']
 
-
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question

@@ -19,8 +19,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
-from .models import UsabilityTestRecordingV4, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, Answer, UsabilityTesting
-from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting
+from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 
@@ -480,6 +480,40 @@ def delete_form(request, form_id):
 #             return JsonResponse({"error": str(e)}, status=400)
 
 #     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+# if the consent form does not exist, create one 
+# if the consent form exists, updates it instead of creating a new one
+@api_view(['POST'])
+def create_or_update_consent(request, form_id):
+    form = get_object_or_404(Form, id=form_id)
+
+    # Check if a Consent already exists for this form
+    consent, created = Consent.objects.get_or_create(form=form)
+
+    # Update the existing consent instead of creating a new one
+    serializer = ConsentSerializer(consent, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_consent(request, form_id):
+    try:
+        consent = Consent.objects.get(form_id=form_id)
+        serializer = ConsentSerializer(consent)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Consent.DoesNotExist:
+        return Response({"detail": "Consent not found."}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_consent(request, form_id, consent_id):
+    consent = get_object_or_404(Consent, id=consent_id, form_id=form_id)
+    consent.delete()
+    return Response({'message': 'Consent deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['POST'])
