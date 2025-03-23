@@ -197,6 +197,7 @@ const FormDetail = () => {
   const { formId } = useParams(); // Get form ID from URL
   const [form, setForm] = useState(null);
   const [error, setError] = useState("");
+  const [markdown, setMarkdown] = useState("");
   const [questionText, setQuestionText] = useState("");
   const [questionType, setQuestionType] = useState("text");
   const [questions, setQuestions] = useState([]);
@@ -237,6 +238,34 @@ const FormDetail = () => {
 
     fetchQuestions();
   }, [formId]);
+
+  const handleAddConsent = async () => {
+    if (!markdown.trim()) {
+        alert("Consent text cannot be empty.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/create-or-update-consent/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ consent_text: markdown }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to save consent.");
+        }
+
+        alert("Consent saved successfully!");
+    } catch (error) {
+        console.error("Error saving consent:", error);
+        alert("Failed to save consent.");
+    }
+  };
+
+  
 
   // Send a single question to backend
   const handleAddQuestion = async () => {
@@ -297,6 +326,9 @@ const FormDetail = () => {
       {view === "create" ? (
         <CreateQuestions
           formId={formId}
+          markdown={markdown}
+          setMarkdown={setMarkdown}
+          handleAddConsent={handleAddConsent} 
           questions={questions}
           setQuestions={setQuestions}
           questionText={questionText}

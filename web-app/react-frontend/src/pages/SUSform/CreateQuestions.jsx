@@ -6,7 +6,7 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
 
-const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQuestionText, questionType, setQuestionType, handleAddQuestion, onSave }) => {
+const CreateQuestions = ({ formId,markdown, setMarkdown, handleAddConsent, questions, setQuestions, questionText, setQuestionText, questionType, setQuestionType, handleAddQuestion, onSave }) => {
 
     // for the progress bar steps 
     const [step, setStep] = useState(1);
@@ -14,7 +14,7 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
     const previews = ["Consent Preview", "Questions Preview", "Share"];
 
     // for the markdown text
-    const [markdown, setMarkdown] = useState("");
+    //const [markdown, setMarkdown] = useState("");
     const textareaRef = useRef(null);
     
 
@@ -66,7 +66,7 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
     return (
         <div className="flex gap-8 p-4 mx-10 bg-[#F0EEED]">
             {/* Column 1: Add Question */}
-            <div className="w-1/3 h-[700px] bg-white p-4 rounded-xl shadow-xl relative">
+            <div className="w-1/3 h-[700px] bg-white p-4 rounded-xl shadow-xl relative flex flex-col">
                 {/* Progress bar */}
                 <div className="flex items-center justify-between mb-6 relative">
                     {steps.map((label, index) => (
@@ -83,7 +83,7 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
                         {/* Connecting line (only between circles) */}
                         {index !== 0 && (
                             <div
-                            className={`absolute h-1 w-full top-5 -left-1/2 ${
+                                className={`absolute h-1 w-full top-5 -left-1/2 ${
                                 step > index ? "bg-[#DCD6F7]" : "bg-gray-200"
                             }`}
                             />
@@ -95,8 +95,7 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
                     ))}
                 </div>
 
-
-
+                <div className="flex-grow overflow-y-auto p-4">
                 {step === 1 && (
                     <div className="flex flex-col">
                         <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
@@ -110,9 +109,9 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
                                 <button onClick={() => insertFormatting("## ", "\n")} className="px-2 py-1 border rounded font-funnel text-xs">Heading 2</button>
                                 <button onClick={() => insertFormatting("**", "**")} className="px-2 py-1 border rounded font-funnel text-xs">Bold</button>
                                 <button onClick={() => insertFormatting("_", "_")} className="px-2 py-1 border rounded font-funnel text-xs">Italic</button>
-                                <button onClick={() => insertFormatting("<u>", "</u>")} className="px-2 py-1 border rounded font-funnel text-xs">Underline</button>
                             </div>
                             <div className="mt-2 mb-2 space-x-2 flex flex-wrap">
+                                <button onClick={() => insertFormatting("<u>", "</u>")} className="px-2 py-1 border rounded font-funnel text-xs">Underline</button>
                                 <button onClick={() => insertFormatting("- ", "\n")} className="px-2 py-1 border rounded font-funnel text-xs">List</button>
                                 <button onClick={() => insertFormatting("\n \n")} className="px-2 py-1 border rounded font-funnel text-xs">Next Line</button>
                                 <button onClick={() => insertFormatting("\n ---")} className="px-2 py-1 border rounded font-funnel text-xs">Partition</button>
@@ -130,19 +129,19 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
                             <div className="flex justify-end"> 
                                 <button
                                     className="mt-3 bg-[#C4BDED] text-black  px-2 py-2 rounded-lg self-end"
-                                    onClick={() => onSave(markdown)}
+                                    onClick={handleAddConsent}
                                 >
                                     Save Consent
                                 </button>
                             </div>
                         </div>
 
-                        <button
+                        {/* <button
                             className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-end"
                             onClick={() => setStep(2)}
                         >
                             Next →
-                        </button>
+                        </button> */}
                         
                     </div>
                 )}
@@ -173,7 +172,7 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
                                 Add Question
                             </button>
                         </div>
-                        <div className="flex justify-between">
+                        {/* <div className="flex justify-between">
                             <button
                                 className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
                                 onClick={() => setStep(1)}
@@ -186,7 +185,7 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
                             >
                                 Next →
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 )}
 
@@ -199,14 +198,38 @@ const CreateQuestions = ({ formId, questions, setQuestions, questionText, setQue
                                 Submit
                             </button>
                         </div>
-                        <button
+                        {/* <button
                             className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
                             onClick={() => setStep(2)}
                         >
                             ← Back
-                        </button>
+                        </button> */}
                     </div>
                 )}
+                </div>
+
+
+                <div className={`p-4 mt-auto flex w-full ${step > 1 ? "justify-between" : "justify-end"}`}>
+                    {step > 1 && (
+                        <button
+                            className="bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg"
+                            onClick={() => setStep(step - 1)}
+                        >
+                            ← Back
+                        </button>
+                    )}
+                    {step < 3 && (
+                        <button
+                            className="bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg"
+                            onClick={() => setStep(step + 1)}
+                        >
+                            Next →
+                        </button>
+                    )}
+                </div>
+
+
+
             </div>
 
             {/* Column 2: Display Questions from Backend */}

@@ -121,7 +121,7 @@ class Form(models.Model):
         return self.title
     
 class Consent(models.Model):
-    form = models.ForeignKey(Form, on_delete=models.CASCADE)
+    form = models.OneToOneField(Form, on_delete=models.CASCADE)  # one consent per one form
     consent_text = models.TextField()
 
 class Question(models.Model):

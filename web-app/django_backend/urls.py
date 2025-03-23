@@ -85,6 +85,11 @@ urlpatterns = [
     path('forms/<int:form_id>/questions/list/', views.get_questions, name="get_questions"),
     path("forms/<int:form_id>/questions/<int:question_id>/", views.delete_question, name="delete_question"),
 
+    path('forms/<int:form_id>/create-or-update-consent/', views.create_or_update_consent, name="create_or_update_consent"),
+    path('forms/<int:form_id>/consent/', views.get_consent, name="get_consent"),
+    path("forms/<int:form_id>/consent/<int:consent_id>/", views.delete_consent, name="delete_consent"),
+
+
     path('questions/<int:question_id>/answers/', views.create_answer, name='create-answer'),
     path('forms/<int:form_id>/answers/', views.get_form_answers, name='get-form-answers'),
 
