@@ -1,6 +1,8 @@
 // ViewResults.js
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+
 
 const ViewResults = () => {
     const { formId } = useParams();
@@ -30,8 +32,51 @@ const ViewResults = () => {
         groupedResults[answer.participant_email][answer.question] = answer.answer_text;
     });
 
+    const totalParticipants = Object.keys(groupedResults).length;
+
+    const ratingQuestions = questions.filter(q => q.question_type === "rating");
+    
+    const chartData = ratingQuestions.map(q => {
+        const ratingCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+        results.forEach(answer => {
+            if (answer.question === q.id) {
+                const rating = parseInt(answer.answer_text, 10);
+                if (ratingCounts[rating] !== undefined) {
+                    ratingCounts[rating]++;
+                }
+            }
+        });
+        return { question: q.question_text, data: Object.entries(ratingCounts).map(([key, value]) => ({ rating: key, count: value })) };
+    });
+
     return (
         <div className="p-8">
+
+            <div className="p-6 bg-white font-funnel shadow-lg rounded-lg text-center mb-8">
+                <h2 className="text-4xl font-bold">{totalParticipants}</h2>
+                <p className="text-lg">participants answered</p>
+            </div>
+
+            {chartData.length > 0 && (
+                <div className="mt-8">
+                    <h3 className="text-xl font-bold text-center mb-4">Rating Distributions</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {chartData.map(({ question, data }) => (
+                            <div key={question} className="p-4 bg-white shadow rounded-lg">
+                                <h4 className="text-lg font-semibold text-center mb-2">{question}</h4>
+                                <ResponsiveContainer width="100%" height={250}>
+                                    <BarChart data={data}>
+                                        <XAxis dataKey="rating" />
+                                        <YAxis allowDecimals={false} />
+                                        <Tooltip />
+                                        <Bar dataKey="count" fill="#8884d8" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
             <h2 className="text-2xl font-bold text-center mb-4">Results</h2>
 
             {results.length === 0 ? (
@@ -44,7 +89,7 @@ const ViewResults = () => {
                                 <th className="border p-2">No.</th>
                                 <th className="border p-2">Email</th>
                                 {questions.map(q => (
-                                    <th key={q.id} className="border p-2">{q.question_text}</th>
+                                    <th key={q.id} className="border p-2">{q.question_text}-{q.question_type}</th>
                                 ))}
                             </tr>
                         </thead>
