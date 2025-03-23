@@ -34,7 +34,7 @@ class ProjectSerializer (serializers.ModelSerializer):
 class FormSerializer(serializers.ModelSerializer):
     class Meta:
         model = Form
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'is_shared']
 
 class ConsentSerializer(serializers.ModelSerializer): 
     class Meta: 

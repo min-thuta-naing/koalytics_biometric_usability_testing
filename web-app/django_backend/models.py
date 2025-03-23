@@ -116,6 +116,7 @@ class Interest(models.Model):
 # for forms
 class Form(models.Model): 
     title = models.CharField(max_length=200)
+    is_shared = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

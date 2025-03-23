@@ -221,6 +221,26 @@ const FormDetail = () => {
     fetchFormDetails();
   }, [formId]);
 
+
+  const handleShareForm = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/share/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to share form.');
+      }
+  
+      alert('Form shared successfully!');
+    } catch (error) {
+      alert('Error sharing form: ' + error.message);
+    }
+  };
+
   // Fetch questions for the form
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -304,6 +324,12 @@ const FormDetail = () => {
     <div className=" bg-[#F0EEED] h-screen">
       <div className=" p-8 border-b border-gray-400">
         <p className="font-funnel text-3xl">{form.id} - {form.title} </p>
+        <button
+          onClick={handleShareForm}
+          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+          Share Form
+        </button>
       </div>
 
       {/* Toggle between Create Questions and View Results */}

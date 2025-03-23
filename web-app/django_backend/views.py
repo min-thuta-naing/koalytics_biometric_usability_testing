@@ -12,7 +12,7 @@ import cv2
 from django.conf import settings
 from django.shortcuts import render 
 
-
+from rest_framework.views import APIView
 # import for sign up & log in 
 import json
 from django.http import HttpResponse, JsonResponse
@@ -423,6 +423,17 @@ def form_detail(request, form_id):
     
     serializer = FormSerializer(form)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def ShareFormView(request, form_id):
+    try:
+        form = Form.objects.get(id=form_id)
+        form.is_shared = True
+        form.save()
+        return Response({"message": "Form shared successfully!"}, status=200)
+    except Form.DoesNotExist:
+        return Response({"error": "Form not found."}, status=404)
+        
 
 #for updating form 
 @csrf_exempt
@@ -916,15 +927,26 @@ def get_all_projects(request):
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
 #get all forms for a specific project to display in the choosetest page for participant 
+# def get_project_forms(request, project_id):
+#     if request.method == "GET":
+#         try:
+#             project = Project.objects.get(id=project_id)
+#             forms = list(project.forms.values("id", "title"))  # Get forms related to this project
+#             return JsonResponse(forms, safe=False)
+#         except Project.DoesNotExist:
+#             return JsonResponse({"error": "Project not found."}, status=404)
+#     return JsonResponse({"error": "Invalid request method."}, status=405)
+
+@api_view(['GET'])
 def get_project_forms(request, project_id):
-    if request.method == "GET":
-        try:
-            project = Project.objects.get(id=project_id)
-            forms = list(project.forms.values("id", "title"))  # Get forms related to this project
-            return JsonResponse(forms, safe=False)
-        except Project.DoesNotExist:
-            return JsonResponse({"error": "Project not found."}, status=404)
-    return JsonResponse({"error": "Invalid request method."}, status=405)
+    try:
+        project = Project.objects.get(id=project_id)  
+        forms = project.forms.filter(is_shared=True)  # ✅ Correct way to filter ManyToManyField
+        serializer = FormSerializer(forms, many=True)  
+        return Response(serializer.data, status=200)  
+    except Project.DoesNotExist:
+        return Response({"error": "Project not found."}, status=404)
+
 
 def get_project_usabilitytesting(request, project_id):
     if request.method == "GET":
