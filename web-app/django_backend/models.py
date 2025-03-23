@@ -158,9 +158,9 @@ class UsabilityTesting(models.Model):
 
 class UsabilityTestRecordingV4(models.Model):
     usability_testing = models.ForeignKey(UsabilityTesting, on_delete=models.CASCADE)
+    participant_email = models.ForeignKey(User, on_delete=models.CASCADE )
     video = models.FileField(upload_to='recordings/')
     #created_at = models.DateTimeField(auto_now_add=True)
-    participant_email = models.ForeignKey(User, on_delete=models.CASCADE )
 
 
 

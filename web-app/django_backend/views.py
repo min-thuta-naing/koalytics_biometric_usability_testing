@@ -597,13 +597,41 @@ def delete_question(request, form_id, question_id):
     
 #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# @api_view(['POST'])
+# def create_answer(request, question_id):
+#     """Create a new answer for a specific question."""
+#     question = get_object_or_404(Question, id=question_id)
+
+#     # Extract user email from request (Frontend should send it)
+#     participant_email = request.data.get("participant_email")  
+#     if not participant_email:
+#         return Response({"error": "User email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Fetch user based on email
+#     user = User.objects.filter(email=participant_email).first()
+#     if not user:
+#         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+#     # Prepare data and save answer
+#     data = request.data.copy()
+#     data["question"] = question.id
+#     data["participant_email"] = user.id
+
+#     serializer = AnswerSerializer(data=data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['POST'])
 def create_answer(request, question_id):
     """Create a new answer for a specific question."""
     question = get_object_or_404(Question, id=question_id)
 
     # Extract user email from request (Frontend should send it)
-    user_email = request.data.get("participant_email")  
+    user_email = request.data.get("participant_email")
     if not user_email:
         return Response({"error": "User email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -612,19 +640,22 @@ def create_answer(request, question_id):
         user = User.objects.get(email=user_email)
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    
-    # Prepare data and save answer
-    data = request.data.copy()
-    data["question"] = question.id
-    data["participant_email"] = user.id
 
-    serializer = AnswerSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    # Extract answer text from request
+    answer_text = request.data.get("answer_text")
+    if not answer_text:
+        return Response({"error": "Answer text is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # Create the Answer object explicitly
+    answer = Answer.objects.create(
+        question=question,
+        participant_email=user,  # Assign the User object directly
+        answer_text=answer_text
+    )
 
+    # Serialize the created answer for the response
+    serializer = AnswerSerializer(answer)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
 def get_form_answers(request, form_id):
