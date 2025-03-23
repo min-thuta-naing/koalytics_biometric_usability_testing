@@ -65,6 +65,7 @@ urlpatterns = [
     path('api/save_criteria_interest/<int:project_id>/', save_critieria_interest, name='save-criteria-interest'),
 
     path('projects/<int:project_id>/form/', views.create_form, name='create_form'),
+    path('forms/<int:form_id>/share/', views.ShareFormView, name='share-form-view'),
     path('projects/<int:project_id>/forms/', views.get_form, name='get_forms'),
     path('forms/<int:form_id>/', views.form_detail, name='form_detail'),
     path('forms/update/<int:form_id>/', views.update_form, name='update_form'),
