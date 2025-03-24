@@ -170,15 +170,18 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { X } from "lucide-react";
-
+import TestingResults from "./TestingResults";
+import CreatePermission from "./CreatePermission";
 
 const UsabilityTestingDetail = () => {
     const { usabilityTestingId } = useParams();
     const [usabilityTesting, setUsabilityTesting] = useState(null);
-    const [recordings, setRecordings] = useState([]);
+    const [markdown, setMarkdown] = useState("");
+    // const [recordings, setRecordings] = useState([]);
     const [error, setError] = useState("");
-    const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-    const [selectedVideo, setSelectedVideo] = useState(null);
+    // const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+    // const [selectedVideo, setSelectedVideo] = useState(null);
+    const [view, setView] = useState("create");
 
     // Fetch usability testing details and recordings
     useEffect(() => {
@@ -193,30 +196,57 @@ const UsabilityTestingDetail = () => {
             }
         };
 
-        const fetchRecordings = async () => {
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/usability-testing/${usabilityTestingId}/recordings/`);
-                if (!response.ok) throw new Error("Failed to fetch recordings.");
-                const data = await response.json();
-                setRecordings(data);
-            } catch (err) {
-                setError(err.message);
-            }
-        };
+        // const fetchRecordings = async () => {
+        //     try {
+        //         const response = await fetch(`http://127.0.0.1:8000/usability-testing/${usabilityTestingId}/recordings/`);
+        //         if (!response.ok) throw new Error("Failed to fetch recordings.");
+        //         const data = await response.json();
+        //         setRecordings(data);
+        //     } catch (err) {
+        //         setError(err.message);
+        //     }
+        // };
 
         fetchDetails();
-        fetchRecordings();
+        // fetchRecordings();
     }, [usabilityTestingId]);
 
-    const openVideoModal = (videoUrl) => {
-        setSelectedVideo(videoUrl);
-        setIsVideoModalOpen(true);
-    };
 
-    const closeVideoModal = () => {
-        setIsVideoModalOpen(false);
-        setSelectedVideo(null);
-    };
+    const handleAddConsent = async () => {
+        if (!markdown.trim()) {
+            alert("Consent text cannot be empty.");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/usability-testing/${usabilityTestingId}/create-or-update-testingconsent/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ consent_text: markdown }),
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to save consent.");
+            }
+    
+            alert("Consent saved successfully!");
+        } catch (error) {
+            console.error("Error saving consent:", error);
+            alert("Failed to save consent.");
+        }
+      };
+
+    // const openVideoModal = (videoUrl) => {
+    //     setSelectedVideo(videoUrl);
+    //     setIsVideoModalOpen(true);
+    // };
+
+    // const closeVideoModal = () => {
+    //     setIsVideoModalOpen(false);
+    //     setSelectedVideo(null);
+    // };
 
     if (error) return <p className="text-red-500">{error}</p>;
     if (!usabilityTesting) return <p>Loading...</p>;
@@ -234,7 +264,35 @@ const UsabilityTestingDetail = () => {
                 <p className="font-funnel font-3xl">Figma Embed Code: {usabilityTesting.figma_embed_code}</p>
             </div>
 
-            {/* Display table of recordings */}
+            {/* Toggle between Create Questions and View Results */}
+            <div className="flex justify-center mt-8 mb-4">
+                <button
+                    onClick={() => setView("create")}
+                    className={`px-6 py-2 mr-4 rounded-3xl ${view === "create" ? "bg-[#ACA3E3] font-funnel text-sm text-black" : "font-funnel text-sm border border-[#ACA3E3]"}`}
+                >
+                    Create Consent and Permission
+                </button>
+                <button
+                    onClick={() => setView("results")}
+                    className={`px-6 py-2 rounded-3xl ${view === "results" ? "bg-[#ACA3E3] font-funnel text-sm text-black" : "font-funnel text-sm border border-[#ACA3E3]"}`}
+                >
+                    View Results
+                </button>
+            </div>
+
+            {/* Conditionally render based on selected view */}
+            {view === "create" ? (
+                <CreatePermission
+                    usabilityTestingId={usabilityTestingId}
+                    markdown={markdown}
+                    setMarkdown={setMarkdown}
+                    handleAddConsent={handleAddConsent} 
+                />
+            ) : (
+                <TestingResults/>
+            )}
+
+            {/* Display table of recordings
             <div className="p-8">
                 <table className="min-w-full table-auto border-collapse">
                     <thead>
@@ -263,16 +321,10 @@ const UsabilityTestingDetail = () => {
                 </table>
             </div>
 
-            {/* Modal for Video */}
             {isVideoModalOpen && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-4 rounded-lg w-3/4 max-w-4xl">
-                        {/* <button
-                            className="absolute top-2 bg-white right-2 text-xl font-bold"
-                            onClick={closeVideoModal}
-                        >
-                            X
-                        </button> */}
+                       
                         <button
                             className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-200 transition"
                             onClick={closeVideoModal}
@@ -288,7 +340,7 @@ const UsabilityTestingDetail = () => {
                         </video>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

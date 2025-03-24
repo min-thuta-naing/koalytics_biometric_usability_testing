@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import User, Hobby, Project, Form, Question, Answer, Consent
+from .models import User, Hobby, Project, Form, Question, Answer, Consent, TestingConsent
 
 from .models import UsabilityTestRecordingV4
 from .models import UsabilityTesting
@@ -59,6 +59,10 @@ class UsabilityTestingSerializer(serializers.ModelSerializer):
         model = UsabilityTesting #model name 
         fields = ['id', 'title', 'task', 'duration', 'website_link', 'figma_embed_code'] #fields inside that mdoels 
 
+class TestingConsentSerializer(serializers.ModelSerializer): 
+    class Meta: 
+        model = TestingConsent
+        fields = ['id', 'usability_testing', 'consent_text']
 
 class UsabilityTestRecordingV4Serializer(serializers.ModelSerializer):
     participant_email = serializers.EmailField(source="participant_email.email", read_only=True)

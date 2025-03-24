@@ -154,7 +154,9 @@ class UsabilityTesting(models.Model):
     website_link = models.URLField(max_length=500, blank=True, null=True)  # URL field for the website link
     figma_embed_code = models.TextField(blank=True, null=True)  # Field to store the Figma embed code
 
-    
+class TestingConsent(models.Model):
+    usability_testing = models.OneToOneField(UsabilityTesting, on_delete=models.CASCADE)  # one consent per one form
+    consent_text = models.TextField()
 
 class UsabilityTestRecordingV4(models.Model):
     usability_testing = models.ForeignKey(UsabilityTesting, on_delete=models.CASCADE)

@@ -80,7 +80,8 @@ urlpatterns = [
     path('usability-testing/<int:usability_testing_id>/recordings/', views.get_recordings_for_usability_testing, name='get_recordings_for_usability_testing'),
     path('video/<str:video_name>/', lambda request, video_name: print(f"Video requested: {video_name}") or views.video_view(request, video_name), name='video-view'),
 
-
+    path('usability-testing/<int:usability_testing_id>/create-or-update-testingconsent/', views.create_or_update_testingconsent, name="create_or_update_testingconsent"),
+    path('usability-testing/<int:usability_testing_id>/testingconsent/', views.get_testingconsent, name="get_testingconsent"),
 
     path('forms/<int:form_id>/questions/', views.create_question, name="create_question"),
     path('forms/<int:form_id>/questions/list/', views.get_questions, name="get_questions"),
