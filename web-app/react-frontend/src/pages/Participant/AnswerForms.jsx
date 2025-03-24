@@ -107,12 +107,21 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
 const AnswerForm = () => {
     const { formId } = useParams();
     const [questions, setQuestions] = useState([]);
+    const [consentText, setConsentText] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [answers, setAnswers] = useState({});
     const userEmail = localStorage.getItem("userEmail"); // Get logged-in user email
+    const [showPopup, setShowPopup] = useState(true); 
+    const [checkboxChecked, setCheckboxChecked] = useState(false);
+    const [scrolledToBottom, setScrolledToBottom] = useState(false);
 
 
     const userData = localStorage.getItem("user");
@@ -124,7 +133,28 @@ const AnswerForm = () => {
         console.log("User not found in localStorage!");
     }
 
-
+    //fetch the consent 
+    useEffect(() => {
+        const fetchConsent = async () => {
+            try {
+                const response = await fetch(`/forms/${formId}/consent/`);
+                if (!response.ok) {
+                    throw new Error('Consent not found');
+                }
+                const data = await response.json();
+                console.log('Consent data:', data); // Log the consent data to ensure it's correct
+                setConsentText(data.consent_text); // Assuming 'consent_text' is in the response
+            } catch (error) {
+                console.error('Error fetching consent:', error); // Log any errors
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+    
+        fetchConsent();
+    }, [formId]);
+    
     //fetch the question list 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/forms/${formId}/questions/list/`)
@@ -132,6 +162,21 @@ const AnswerForm = () => {
             .then(data => setQuestions(data))
             .catch(error => console.error("Error fetching questions:", error));
     }, [formId]);
+
+
+    // Function to handle checkbox change
+    const handleCheckboxChange = () => {
+        setCheckboxChecked(!checkboxChecked);
+    };
+
+    // Function to handle scroll event
+    const handleScroll = (e) => {
+        const scrollableDiv = e.target;
+        setScrolledToBottom(
+            scrollableDiv.scrollHeight - scrollableDiv.scrollTop === scrollableDiv.clientHeight
+        );
+    };
+
 
     // handle answer input change 
     const handleAnswerChange = (questionId, value) => {
@@ -187,6 +232,60 @@ const AnswerForm = () => {
 
     return (
         <div className="min-h-screen bg-[#F0EEED] p-8 flex flex-col items-center">
+
+            {/* Popup */}
+            {showPopup && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center w-full max-w-2xl">
+                        <h2 className="text-lg font-funnel font-bold mb-4">Welcome to the Survey</h2>
+                        <p className="font-funnel">Please take a moment to read the following consent forms</p>
+                        <div className="max-h-96 overflow-y-auto p-4 bg-gray-100 rounded-lg my-4 text-left" onScroll={handleScroll}>
+                            <ReactMarkdown
+                                children={consentText}
+                                rehypePlugins={[rehypeRaw]} // Allows raw HTML within the markdown
+                                remarkPlugins={[remarkGfm]} // Allows GitHub Flavored Markdown (tables, strikethrough, etc.)
+                                components={{
+                                    // Add Tailwind classes to rendered elements
+                                    h1: ({ node, ...props }) => <h1 className="text-3xl font-bold my-4" {...props} />,
+                                    h2: ({ node, ...props }) => <h2 className="text-2xl font-bold my-3" {...props} />,
+                                    ul: ({ node, ...props }) => <ul className="list-disc list-inside my-2" {...props} />,
+                                    li: ({ node, ...props }) => <li className="my-1" {...props} />,
+                                }}
+                            />
+                        </div>
+
+                        {/* Checkbox and consent message */}
+                        <div className="my-4">
+                            <label className="flex items-center text-sm">
+                                <input
+                                    type="checkbox"
+                                    checked={checkboxChecked}
+                                    onChange={handleCheckboxChange}
+                                    className="mr-2"
+                                />
+                                I agree, I consent to answer the survey.
+                            </label>
+                        </div>
+
+                        {/* Close button */}
+                        <button
+                            onClick={() => setShowPopup(false)}
+                            disabled={!checkboxChecked || !scrolledToBottom} // Disable button until checkbox is checked and scrolled to bottom
+                            className={`mt-4 ${!checkboxChecked || !scrolledToBottom ? 'bg-gray-400' : 'bg-blue-600'} text-white px-4 py-2 rounded-lg`}
+                        >
+                            Close
+                        </button>
+
+                        {/* <button
+                            onClick={() => setShowPopup(false)}
+                            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
+                        >
+                            Close
+                        </button> */}
+                    </div>
+                </div>
+            )}
+
             <h1 className="text-xl font-bold mb-6">Answer the Questions</h1>
 
             <div className="w-full max-w-2xl flex flex-col gap-6">

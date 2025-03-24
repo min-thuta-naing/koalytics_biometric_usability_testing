@@ -197,6 +197,7 @@ const FormDetail = () => {
   const { formId } = useParams(); // Get form ID from URL
   const [form, setForm] = useState(null);
   const [error, setError] = useState("");
+  const [markdown, setMarkdown] = useState("");
   const [questionText, setQuestionText] = useState("");
   const [questionType, setQuestionType] = useState("text");
   const [questions, setQuestions] = useState([]);
@@ -220,6 +221,26 @@ const FormDetail = () => {
     fetchFormDetails();
   }, [formId]);
 
+
+  const handleShareForm = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/share/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to share form.');
+      }
+  
+      alert('Form shared successfully!');
+    } catch (error) {
+      alert('Error sharing form: ' + error.message);
+    }
+  };
+
   // Fetch questions for the form
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -237,6 +258,34 @@ const FormDetail = () => {
 
     fetchQuestions();
   }, [formId]);
+
+  const handleAddConsent = async () => {
+    if (!markdown.trim()) {
+        alert("Consent text cannot be empty.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/create-or-update-consent/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ consent_text: markdown }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to save consent.");
+        }
+
+        alert("Consent saved successfully!");
+    } catch (error) {
+        console.error("Error saving consent:", error);
+        alert("Failed to save consent.");
+    }
+  };
+
+  
 
   // Send a single question to backend
   const handleAddQuestion = async () => {
@@ -272,10 +321,15 @@ const FormDetail = () => {
   if (!form) return <p>Loading...</p>;
 
   return (
-    <div className="bg-[#F0EEED] h-screen">
-      <div className="p-8 border-b border-gray-400">
-        <p className="font-funnel font-3xl">{form.id}</p>
-        <p className="font-funnel font-3xl">{form.title}</p>
+    <div className=" bg-[#F0EEED] h-screen">
+      <div className=" p-8 border-b border-gray-400">
+        <p className="font-funnel text-3xl">{form.id} - {form.title} </p>
+        {/* <button
+          onClick={handleShareForm}
+          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+          Share Form
+        </button> */}
       </div>
 
       {/* Toggle between Create Questions and View Results */}
@@ -298,6 +352,10 @@ const FormDetail = () => {
       {view === "create" ? (
         <CreateQuestions
           formId={formId}
+          handleShareForm={handleShareForm}
+          markdown={markdown}
+          setMarkdown={setMarkdown}
+          handleAddConsent={handleAddConsent} 
           questions={questions}
           setQuestions={setQuestions}
           questionText={questionText}

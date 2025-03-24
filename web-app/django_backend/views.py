@@ -12,15 +12,15 @@ import cv2
 from django.conf import settings
 from django.shortcuts import render 
 
-
+from rest_framework.views import APIView
 # import for sign up & log in 
 import json
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
-from .models import UsabilityTestRecordingV4, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Question, Answer, UsabilityTesting
-from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent
+from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 
@@ -424,6 +424,17 @@ def form_detail(request, form_id):
     serializer = FormSerializer(form)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['POST'])
+def ShareFormView(request, form_id):
+    try:
+        form = Form.objects.get(id=form_id)
+        form.is_shared = True
+        form.save()
+        return Response({"message": "Form shared successfully!"}, status=200)
+    except Form.DoesNotExist:
+        return Response({"error": "Form not found."}, status=404)
+        
+
 #for updating form 
 @csrf_exempt
 def update_form(request, form_id):
@@ -480,6 +491,40 @@ def delete_form(request, form_id):
 #             return JsonResponse({"error": str(e)}, status=400)
 
 #     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+# if the consent form does not exist, create one 
+# if the consent form exists, updates it instead of creating a new one
+@api_view(['POST'])
+def create_or_update_consent(request, form_id):
+    form = get_object_or_404(Form, id=form_id)
+
+    # Check if a Consent already exists for this form
+    consent, created = Consent.objects.get_or_create(form=form)
+
+    # Update the existing consent instead of creating a new one
+    serializer = ConsentSerializer(consent, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_consent(request, form_id):
+    try:
+        consent = Consent.objects.get(form_id=form_id)
+        serializer = ConsentSerializer(consent)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Consent.DoesNotExist:
+        return Response({"detail": "Consent not found."}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_consent(request, form_id, consent_id):
+    consent = get_object_or_404(Consent, id=consent_id, form_id=form_id)
+    consent.delete()
+    return Response({'message': 'Consent deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['POST'])
@@ -552,13 +597,41 @@ def delete_question(request, form_id, question_id):
     
 #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# @api_view(['POST'])
+# def create_answer(request, question_id):
+#     """Create a new answer for a specific question."""
+#     question = get_object_or_404(Question, id=question_id)
+
+#     # Extract user email from request (Frontend should send it)
+#     participant_email = request.data.get("participant_email")  
+#     if not participant_email:
+#         return Response({"error": "User email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Fetch user based on email
+#     user = User.objects.filter(email=participant_email).first()
+#     if not user:
+#         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+#     # Prepare data and save answer
+#     data = request.data.copy()
+#     data["question"] = question.id
+#     data["participant_email"] = user.id
+
+#     serializer = AnswerSerializer(data=data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['POST'])
 def create_answer(request, question_id):
     """Create a new answer for a specific question."""
     question = get_object_or_404(Question, id=question_id)
 
     # Extract user email from request (Frontend should send it)
-    user_email = request.data.get("participant_email")  
+    user_email = request.data.get("participant_email")
     if not user_email:
         return Response({"error": "User email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -567,19 +640,22 @@ def create_answer(request, question_id):
         user = User.objects.get(email=user_email)
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    
-    # Prepare data and save answer
-    data = request.data.copy()
-    data["question"] = question.id
-    data["participant_email"] = user.id
 
-    serializer = AnswerSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    # Extract answer text from request
+    answer_text = request.data.get("answer_text")
+    if not answer_text:
+        return Response({"error": "Answer text is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # Create the Answer object explicitly
+    answer = Answer.objects.create(
+        question=question,
+        participant_email=user,  # Assign the User object directly
+        answer_text=answer_text
+    )
 
+    # Serialize the created answer for the response
+    serializer = AnswerSerializer(answer)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
 def get_form_answers(request, form_id):
@@ -648,6 +724,33 @@ def delete_usability_testing(request, usability_testing_id):
     usability_testing.delete()
     return Response({'message': 'Usability testing deleted successfully'}, status=status.HTTP_200_OK)
 
+
+@api_view(['POST'])
+def create_or_update_testingconsent(request, usability_testing_id):
+    # Fetch the UsabilityTesting instance
+    usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
+
+    # Ensure the correct field name is used when creating or fetching TestingConsent
+    consent, created = TestingConsent.objects.get_or_create(usability_testing=usability_testing)
+
+    # Update the existing consent instead of creating a new one
+    serializer = TestingConsentSerializer(consent, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_testingconsent(request, usability_testing_id):
+    try:
+        consent = TestingConsent.objects.get(usability_testing_id=usability_testing_id)
+        serializer = TestingConsentSerializer(consent)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Consent.DoesNotExist:
+        return Response({"detail": "Consent not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET"])
@@ -882,15 +985,26 @@ def get_all_projects(request):
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
 #get all forms for a specific project to display in the choosetest page for participant 
+# def get_project_forms(request, project_id):
+#     if request.method == "GET":
+#         try:
+#             project = Project.objects.get(id=project_id)
+#             forms = list(project.forms.values("id", "title"))  # Get forms related to this project
+#             return JsonResponse(forms, safe=False)
+#         except Project.DoesNotExist:
+#             return JsonResponse({"error": "Project not found."}, status=404)
+#     return JsonResponse({"error": "Invalid request method."}, status=405)
+
+@api_view(['GET'])
 def get_project_forms(request, project_id):
-    if request.method == "GET":
-        try:
-            project = Project.objects.get(id=project_id)
-            forms = list(project.forms.values("id", "title"))  # Get forms related to this project
-            return JsonResponse(forms, safe=False)
-        except Project.DoesNotExist:
-            return JsonResponse({"error": "Project not found."}, status=404)
-    return JsonResponse({"error": "Invalid request method."}, status=405)
+    try:
+        project = Project.objects.get(id=project_id)  
+        forms = project.forms.filter(is_shared=True)  # ✅ Correct way to filter ManyToManyField
+        serializer = FormSerializer(forms, many=True)  
+        return Response(serializer.data, status=200)  
+    except Project.DoesNotExist:
+        return Response({"error": "Project not found."}, status=404)
+
 
 def get_project_usabilitytesting(request, project_id):
     if request.method == "GET":

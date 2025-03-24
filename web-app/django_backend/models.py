@@ -116,9 +116,14 @@ class Interest(models.Model):
 # for forms
 class Form(models.Model): 
     title = models.CharField(max_length=200)
+    is_shared = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
+    
+class Consent(models.Model):
+    form = models.OneToOneField(Form, on_delete=models.CASCADE)  # one consent per one form
+    consent_text = models.TextField()
 
 class Question(models.Model):
     TEXT = 'text'
@@ -149,13 +154,15 @@ class UsabilityTesting(models.Model):
     website_link = models.URLField(max_length=500, blank=True, null=True)  # URL field for the website link
     figma_embed_code = models.TextField(blank=True, null=True)  # Field to store the Figma embed code
 
-    
+class TestingConsent(models.Model):
+    usability_testing = models.OneToOneField(UsabilityTesting, on_delete=models.CASCADE)  # one consent per one form
+    consent_text = models.TextField()
 
 class UsabilityTestRecordingV4(models.Model):
     usability_testing = models.ForeignKey(UsabilityTesting, on_delete=models.CASCADE)
+    participant_email = models.ForeignKey(User, on_delete=models.CASCADE )
     video = models.FileField(upload_to='recordings/')
     #created_at = models.DateTimeField(auto_now_add=True)
-    participant_email = models.ForeignKey(User, on_delete=models.CASCADE )
 
 
 

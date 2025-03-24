@@ -52,12 +52,19 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import React from 'react';
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
 const TestCalibration = () => {
   const { usabilityTestingId } = useParams();
   const [usabilityTesting, setUsabilityTesting] = useState(null);
   const [error, setError] = useState("");
+  const [showPopup, setShowPopup] = useState(true);
+  const [consentText, setConsentText] = useState('');
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
 
   useEffect(() => {
     const fetchUsabilityTestingDetails = async () => {
@@ -71,6 +78,32 @@ const TestCalibration = () => {
       }
     };
     fetchUsabilityTestingDetails();
+  }, [usabilityTestingId]);
+
+  // Function to handle checkbox change
+  const handleCheckboxChange = () => {
+    setCheckboxChecked(!checkboxChecked);
+  };
+
+  //fetch the consent 
+  useEffect(() => {
+    const fetchConsent = async () => {
+        try { 
+            const response = await fetch(`/usability-testing/${usabilityTestingId}/testingconsent/`);  
+            if (!response.ok) {
+                throw new Error('Consent not found');
+            }
+            const data = await response.json();
+            console.log('Consent data:', data); // Log the consent data to ensure it's correct
+            setConsentText(data.consent_text); // Assuming 'consent_text' is in the response
+        } catch (error) {
+            console.error('Error fetching consent:', error); // Log any errors
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchConsent();
   }, [usabilityTestingId]);
 
   const startRecording = async () => {
@@ -153,6 +186,59 @@ const TestCalibration = () => {
         </button>
         <p className="font-funnel font-3xl">Figma Embed Code: {usabilityTesting.figma_embed_code}</p>
       </div>
+      
+      {/* Popup */}
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center w-full max-w-2xl">
+                <h2 className="text-lg font-funnel font-bold mb-4">Welcome to the Usability Testing</h2>
+                <p className="font-funnel">Please take a moment to read the following consent forms</p>
+                <div className="max-h-96 overflow-y-auto p-4 bg-gray-100 rounded-lg my-4 text-left" >
+                    <ReactMarkdown
+                        children={consentText}
+                        rehypePlugins={[rehypeRaw]} // Allows raw HTML within the markdown
+                        remarkPlugins={[remarkGfm]} // Allows GitHub Flavored Markdown (tables, strikethrough, etc.)
+                        components={{
+                            // Add Tailwind classes to rendered elements
+                            h1: ({ node, ...props }) => <h1 className="text-3xl font-bold my-4" {...props} />,
+                            h2: ({ node, ...props }) => <h2 className="text-2xl font-bold my-3" {...props} />,
+                            ul: ({ node, ...props }) => <ul className="list-disc list-inside my-2" {...props} />,
+                            li: ({ node, ...props }) => <li className="my-1" {...props} />,
+                        }}
+                    />
+                </div>
+
+                {/* Checkbox and consent message */}
+                <div className="my-4">
+                    <label className="flex items-center text-sm">
+                        <input
+                            type="checkbox"
+                            checked={checkboxChecked}
+                            onChange={handleCheckboxChange}
+                            className="mr-2"
+                        />
+                        I agree, I consent to take the testing.
+                    </label>
+                </div>
+
+                {/* Close button */}
+                <button
+                    onClick={() => setShowPopup(false)}
+                    disabled={!checkboxChecked} // Disable button until checkbox is checked and scrolled to bottom
+                    className={`mt-4 ${!checkboxChecked ? 'bg-gray-400' : 'bg-blue-600'} text-white px-4 py-2 rounded-lg`}
+                >
+                    Close
+                </button>
+
+                {/* <button
+                    onClick={() => setShowPopup(false)}
+                    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
+                >
+                    Close
+                </button> */}
+            </div>
+        </div>
+      )}
     </div>
   );
 };
