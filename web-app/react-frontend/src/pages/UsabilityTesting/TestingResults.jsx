@@ -58,7 +58,7 @@ const TestingResults = () => {
             <div className="p-8">
                 <table className="min-w-full table-auto border-collapse">
                     <thead>
-                        <tr>
+                        <tr className="bg-[#ACA3E3]">
                             <th className="border px-4 py-2">Sir No.</th>
                             <th className="border px-4 py-2">Participant Email</th>
                             <th className="border px-4 py-2">Video</th>

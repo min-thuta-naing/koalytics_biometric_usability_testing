@@ -6,7 +6,7 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
 
-const CreateQuestions = ({ formId, markdown, setMarkdown, handleAddConsent, questions, setQuestions, questionText, setQuestionText, questionType, setQuestionType, handleAddQuestion, onSave }) => {
+const CreateQuestions = ({ formId, handleShareForm, markdown, setMarkdown, handleAddConsent, questions, setQuestions, questionText, setQuestionText, questionType, setQuestionType, handleAddQuestion, onSave }) => {
 
     // for the progress bar steps 
     const [step, setStep] = useState(1);
@@ -96,116 +96,118 @@ const CreateQuestions = ({ formId, markdown, setMarkdown, handleAddConsent, ques
                 </div>
 
                 <div className="flex-grow overflow-y-auto p-4">
-                {step === 1 && (
-                    <div className="flex flex-col">
-                        <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
-                            <h2 className="text-lg font-bold font-funnel">Add Consent</h2>
+                    {step === 1 && (
+                        <div className="flex flex-col">
+                            <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
+                                <h2 className="text-lg font-bold font-funnel">Add Consent</h2>
 
-                            <p className="mt-2 mb-2 font-funnel">Text Formatting</p>
+                                <p className="mt-2 mb-2 font-funnel">Text Formatting</p>
 
-                            {/* Formatting Buttons */}
-                            <div className="mt-2 space-x-2 flex flex-wrap">
-                                <button onClick={() => insertFormatting("# ", "\n")} className="px-2 py-1 border rounded font-funnel text-xs">Heading 1</button>
-                                <button onClick={() => insertFormatting("## ", "\n")} className="px-2 py-1 border rounded font-funnel text-xs">Heading 2</button>
-                                <button onClick={() => insertFormatting("**", "**")} className="px-2 py-1 border rounded font-funnel text-xs">Bold</button>
-                                <button onClick={() => insertFormatting("_", "_")} className="px-2 py-1 border rounded font-funnel text-xs">Italic</button>
+                                {/* Formatting Buttons */}
+                                <div className="mt-2 space-x-2 flex flex-wrap">
+                                    <button onClick={() => insertFormatting("# ", "\n")} className="px-2 py-1 border rounded font-funnel text-xs">Heading 1</button>
+                                    <button onClick={() => insertFormatting("## ", "\n")} className="px-2 py-1 border rounded font-funnel text-xs">Heading 2</button>
+                                    <button onClick={() => insertFormatting("**", "**")} className="px-2 py-1 border rounded font-funnel text-xs">Bold</button>
+                                    <button onClick={() => insertFormatting("_", "_")} className="px-2 py-1 border rounded font-funnel text-xs">Italic</button>
+                                </div>
+                                <div className="mt-2 mb-2 space-x-2 flex flex-wrap">
+                                    <button onClick={() => insertFormatting("<u>", "</u>")} className="px-2 py-1 border rounded font-funnel text-xs">Underline</button>
+                                    <button onClick={() => insertFormatting("- ", "\n")} className="px-2 py-1 border rounded font-funnel text-xs">List</button>
+                                    <button onClick={() => insertFormatting("\n \n")} className="px-2 py-1 border rounded font-funnel text-xs">Next Line</button>
+                                    <button onClick={() => insertFormatting("\n ---")} className="px-2 py-1 border rounded font-funnel text-xs">Partition</button>
+                                </div>
+
+                                {/* Markdown Editor */}
+                                <textarea
+                                    ref={textareaRef}
+                                    className="w-full p-2 border rounded-lg my-2"
+                                    rows="7"
+                                    value={markdown}
+                                    onChange={(e) => setMarkdown(e.target.value)}
+                                />
+                                {/* Save Button */}
+                                <div className="flex justify-end"> 
+                                    <button
+                                        className="mt-3 bg-[#C4BDED] text-black  px-2 py-2 rounded-lg self-end"
+                                        onClick={handleAddConsent}
+                                    >
+                                        Save Consent
+                                    </button>
+                                </div>
                             </div>
-                            <div className="mt-2 mb-2 space-x-2 flex flex-wrap">
-                                <button onClick={() => insertFormatting("<u>", "</u>")} className="px-2 py-1 border rounded font-funnel text-xs">Underline</button>
-                                <button onClick={() => insertFormatting("- ", "\n")} className="px-2 py-1 border rounded font-funnel text-xs">List</button>
-                                <button onClick={() => insertFormatting("\n \n")} className="px-2 py-1 border rounded font-funnel text-xs">Next Line</button>
-                                <button onClick={() => insertFormatting("\n ---")} className="px-2 py-1 border rounded font-funnel text-xs">Partition</button>
-                            </div>
 
-                            {/* Markdown Editor */}
-                            <textarea
-                                ref={textareaRef}
-                                className="w-full p-2 border rounded-lg my-2"
-                                rows="7"
-                                value={markdown}
-                                onChange={(e) => setMarkdown(e.target.value)}
-                            />
-                            {/* Save Button */}
-                            <div className="flex justify-end"> 
-                                <button
-                                    className="mt-3 bg-[#C4BDED] text-black  px-2 py-2 rounded-lg self-end"
-                                    onClick={handleAddConsent}
-                                >
-                                    Save Consent
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* <button
-                            className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-end"
-                            onClick={() => setStep(2)}
-                        >
-                            Next →
-                        </button> */}
-                        
-                    </div>
-                )}
-
-                {step === 2 && (
-                    <div className="flex flex-col">
-                        <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
-                            <h2 className="text-lg font-bold">Add Question</h2>
-                            <input
-                                type="text"
-                                placeholder="Enter question"
-                                value={questionText}
-                                onChange={(e) => setQuestionText(e.target.value)}
-                                className="w-full p-2 border rounded-lg my-2"
-                            />
-                            <select
-                                value={questionType}
-                                onChange={(e) => setQuestionType(e.target.value)}
-                                className="w-full p-2 border rounded-lg"
-                            >
-                                <option value="text">Text</option>
-                                <option value="rating">Rating</option>
-                            </select>
-                            <button
-                                onClick={handleAddQuestion}
-                                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded justify-items-end"
-                            >
-                                Add Question
-                            </button>
-                        </div>
-                        {/* <div className="flex justify-between">
-                            <button
-                                className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
-                                onClick={() => setStep(1)}
-                            >
-                                ← Back
-                            </button>
-                            <button
+                            {/* <button
                                 className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-end"
-                                onClick={() => setStep(3)}
+                                onClick={() => setStep(2)}
                             >
                                 Next →
-                            </button>
-                        </div> */}
-                    </div>
-                )}
-
-                {step === 3 && (
-                    <div className="flex flex-col">
-                        <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
-                            <h2 className="text-lg font-bold">Add Something</h2>
-                            <textarea className="w-full p-2 border rounded-lg my-2" />
-                            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-                                Submit
-                            </button>
+                            </button> */}
+                            
                         </div>
-                        {/* <button
-                            className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
-                            onClick={() => setStep(2)}
-                        >
-                            ← Back
-                        </button> */}
-                    </div>
-                )}
+                    )}
+
+                    {step === 2 && (
+                        <div className="flex flex-col">
+                            <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
+                                <h2 className="text-lg font-bold">Add Question</h2>
+                                <input
+                                    type="text"
+                                    placeholder="Enter question"
+                                    value={questionText}
+                                    onChange={(e) => setQuestionText(e.target.value)}
+                                    className="w-full p-2 border rounded-lg my-2"
+                                />
+                                <select
+                                    value={questionType}
+                                    onChange={(e) => setQuestionType(e.target.value)}
+                                    className="w-full p-2 border rounded-lg"
+                                >
+                                    <option value="text">Text</option>
+                                    <option value="rating">Rating</option>
+                                </select>
+                                <button
+                                    onClick={handleAddQuestion}
+                                    className="mt-2 bg-blue-500 text-white px-4 py-2 rounded justify-items-end"
+                                >
+                                    Add Question
+                                </button>
+                            </div>
+                            {/* <div className="flex justify-between">
+                                <button
+                                    className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
+                                    onClick={() => setStep(1)}
+                                >
+                                    ← Back
+                                </button>
+                                <button
+                                    className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-end"
+                                    onClick={() => setStep(3)}
+                                >
+                                    Next →
+                                </button>
+                            </div> */}
+                        </div>
+                    )}
+
+                    {step === 3 && (
+                        <div className="flex flex-col">
+                            <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
+                                <h2 className="text-lg font-bold">Add Something</h2>
+                                <button
+                                    onClick={handleShareForm}
+                                    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                >
+                                    Share Form
+                                </button>
+                            </div>
+                            {/* <button
+                                className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
+                                onClick={() => setStep(2)}
+                            >
+                                ← Back
+                            </button> */}
+                        </div>
+                    )}
                 </div>
 
 
