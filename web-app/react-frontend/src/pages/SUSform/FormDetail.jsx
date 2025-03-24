@@ -324,12 +324,12 @@ const FormDetail = () => {
     <div className=" bg-[#F0EEED] h-screen">
       <div className=" p-8 border-b border-gray-400">
         <p className="font-funnel text-3xl">{form.id} - {form.title} </p>
-        <button
+        {/* <button
           onClick={handleShareForm}
           className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
         >
           Share Form
-        </button>
+        </button> */}
       </div>
 
       {/* Toggle between Create Questions and View Results */}
@@ -352,6 +352,7 @@ const FormDetail = () => {
       {view === "create" ? (
         <CreateQuestions
           formId={formId}
+          handleShareForm={handleShareForm}
           markdown={markdown}
           setMarkdown={setMarkdown}
           handleAddConsent={handleAddConsent} 
