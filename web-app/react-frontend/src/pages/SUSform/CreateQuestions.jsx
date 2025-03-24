@@ -6,7 +6,7 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
 
-const CreateQuestions = ({ formId,markdown, setMarkdown, handleAddConsent, questions, setQuestions, questionText, setQuestionText, questionType, setQuestionType, handleAddQuestion, onSave }) => {
+const CreateQuestions = ({ formId, markdown, setMarkdown, handleAddConsent, questions, setQuestions, questionText, setQuestionText, questionType, setQuestionType, handleAddQuestion, onSave }) => {
 
     // for the progress bar steps 
     const [step, setStep] = useState(1);

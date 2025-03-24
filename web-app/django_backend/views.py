@@ -19,8 +19,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
-from .models import UsabilityTestRecordingV4, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting
-from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent
+from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 
@@ -724,6 +724,33 @@ def delete_usability_testing(request, usability_testing_id):
     usability_testing.delete()
     return Response({'message': 'Usability testing deleted successfully'}, status=status.HTTP_200_OK)
 
+
+@api_view(['POST'])
+def create_or_update_testingconsent(request, usability_testing_id):
+    # Fetch the UsabilityTesting instance
+    usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
+
+    # Ensure the correct field name is used when creating or fetching TestingConsent
+    consent, created = TestingConsent.objects.get_or_create(usability_testing=usability_testing)
+
+    # Update the existing consent instead of creating a new one
+    serializer = TestingConsentSerializer(consent, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_testingconsent(request, usability_testing_id):
+    try:
+        consent = TestingConsent.objects.get(usability_testing_id=usability_testing_id)
+        serializer = TestingConsentSerializer(consent)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Consent.DoesNotExist:
+        return Response({"detail": "Consent not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET"])
