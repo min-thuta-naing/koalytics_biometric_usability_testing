@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, Info, FolderOpenDot, LogOut, CircleUserRound } from "lucide-react";
 import ResearcherGuideline from "./ResearcherGuideline";
-import Projects from "./Projects";
+import ResearcherDashboard from "./ResearcherDashboard";
 import { Link, useNavigate } from "react-router-dom";
 import NewProjectPage from "./CreateProjects";
 
@@ -74,13 +74,13 @@ const SideandTopBar = () => {
  const renderContent = () => {
    switch (activePage) {
      case "projects":
-       return <Projects onNewProject={() => setActivePage("new-project")} />;
+       return <ResearcherDashboard onNewProject={() => setActivePage("new-project")} />;
      case "guideline":
        return <ResearcherGuideline />;
      case "new-project":
        return <NewProjectPage onCancel={() => setActivePage("projects")} />;
      default:
-       return <Projects />;
+       return <ResearcherDashboard />;
    }
  };
 

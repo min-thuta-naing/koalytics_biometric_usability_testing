@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateProjects from "./CreateProjects";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical,X } from "lucide-react";
 
-const Projects = () => {
+const ResearcherDashboard = () => {
     const [userId, setUserId] = useState(null);
     const [showProjectForm, setShowProjectForm] = useState(false);
     const [projects, setProjects] = useState([]);
@@ -149,12 +149,12 @@ const Projects = () => {
             {/* Project creation form  */}
             {showProjectForm && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-xl max-w-2xl w-full relative">
+                    <div className="bg-white p-8 rounded-lg shadow-xl max-w-5xl w-full relative">
                         <button
                             onClick={() => setShowProjectForm(false)}
-                            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+                            className="absolute top-4 right-4 text-gray-600 bg-white hover:bg-gray-200 rounded-full border border-gray-300 p-2"
                         >
-                            ✕
+                            <X className="w-5 h-5" />
                         </button>
                         <CreateProjects 
                             onCancel={() => setShowProjectForm(false)} 
@@ -168,4 +168,4 @@ const Projects = () => {
     );
 };
 
-export default Projects;
+export default ResearcherDashboard;
