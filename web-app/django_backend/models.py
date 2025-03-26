@@ -79,6 +79,7 @@ class Project(models.Model):
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     side_notes = models.TextField(blank=True, null=True)
+    context_text= models.TextField(blank=True, null=True)
 
     gender = models.ManyToManyField('Gender', related_name="projects", blank=True )
     age_group = models.ManyToManyField('AgeGroup', related_name="projects", blank=True )

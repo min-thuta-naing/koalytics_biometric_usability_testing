@@ -225,7 +225,7 @@ def login(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-# PROJECT RELATED METHODS (RESEARCER SIDE) ##########################################################
+# PROJECT RELATED METHODS (RESEARCER SIDE) ####################################################################################################################
 #for creating projects 
 @csrf_exempt
 def create_project(request, user_id):
