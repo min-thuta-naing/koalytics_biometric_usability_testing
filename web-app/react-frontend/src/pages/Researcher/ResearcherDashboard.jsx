@@ -46,7 +46,7 @@ const ResearcherDashboard = () => {
     // handle project creation ///////////////////////////////////////
     const handleProjectCreated = () => {
         fetchProjects(userId);
-        setShowProjectForm(false);
+        //setShowProjectForm(false);
     };
 
     // handle project deletion //////////////////////////////////////
@@ -146,16 +146,11 @@ const ResearcherDashboard = () => {
                 </div>
             )}
 
-            {/* Project creation form  */}
+            {/* Project creation form 
             {showProjectForm && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-8 rounded-lg shadow-xl max-w-5xl w-full relative">
-                        <button
-                            onClick={() => setShowProjectForm(false)}
-                            className="absolute top-4 right-4 text-gray-600 bg-white hover:bg-gray-200 rounded-full border border-gray-300 p-2"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
+                        
                         <CreateProjects 
                             onCancel={() => setShowProjectForm(false)} 
                             userId={userId} 
@@ -163,7 +158,23 @@ const ResearcherDashboard = () => {
                         />
                     </div>
                 </div>
+            )} */}
+            {showProjectForm && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white rounded-lg shadow-xl max-w-5xl w-full relative flex flex-col">
+                        {/* Project Creation Form Section */}
+                        <div>
+                            <CreateProjects 
+                                onCancel={() => setShowProjectForm(false)} 
+                                userId={userId} 
+                                onProjectCreated={handleProjectCreated}
+                            />
+                        </div>
+
+                    </div>
+                </div>
             )}
+
         </div>
     );
 };
