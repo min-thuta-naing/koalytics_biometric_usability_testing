@@ -322,7 +322,9 @@
 
 import React, { useState, useRef } from "react";
 import { X } from "lucide-react";
-import Editor from "./Editor";
+import Editor from "./SampleEditor";
+import WYSIWYGEditor from "./WYSIWYGEditor";
+import {getConsentTemplate} from "./templates";
 
 
 const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
@@ -469,8 +471,13 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                     <p className="text-base">You can modify the following consent template.</p>
                     <div className="flex flex-col gap-6 mt-10">
             
-                        <p className="text-sm font-bold">Text Formatting:</p>
-                        <Editor content={editorContent} setContent={setEditorContent} />
+                        {/* <Editor content={editorContent} setContent={setEditorContent} /> */}
+
+                        <WYSIWYGEditor 
+                            // content="<p>Start editing here...</p>"
+                            content={getConsentTemplate('biometric')}  
+                            onUpdate={(html) => console.log(html)} 
+                        />
                         {/* 
                         {editorContent !== "" && (
                             <>
