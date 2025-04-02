@@ -24,11 +24,10 @@ class UserSerializer(serializers.ModelSerializer):
         validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
     
-class ProjectSerializer (serializers.ModelSerializer):
-    
+class ProjectSerializer (serializers.ModelSerializer):               
     class Meta: 
         model = Project
-        fields = ["id", "name", "description", "organization", "max_participants", "start_date", "end_date", "side_notes"]
+        fields = ["id", "name", "description", "organization", "max_participants", "start_date", "end_date", "side_notes", "consent_text"]
 
 
 class FormSerializer(serializers.ModelSerializer):
