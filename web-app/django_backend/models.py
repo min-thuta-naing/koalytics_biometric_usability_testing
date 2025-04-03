@@ -70,7 +70,7 @@ class Industry (models.Model):
         return self.industry
     
     
-# for projects 
+# for projects #################################################################################################
 class Project(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
@@ -119,12 +119,15 @@ class SUSForm(models.Model):
     susform_description = models.TextField()
 
     def __str__(self):
-        return self.title
+        return self.susform_title
     
 class SUSQuestion(models.Model):
     susform = models.ForeignKey(SUSForm, on_delete=models.CASCADE)
     question_text = models.TextField()
 
+
+
+################################################################################################################
 
 # for forms
 class Form(models.Model): 

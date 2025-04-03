@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import CreateQuestions from "./CreateQuestions";
 import CreateSUSQuestion from "./CreateSUSQuestion"; 
 import ViewResults from "./ViewResults";
+import SUSQuesionPreview from "./SUSQuestionPreview";
 
 const FormDetail = () => {
   const {formId } = useParams(); // Get form ID from URL
@@ -17,7 +18,7 @@ const FormDetail = () => {
   useEffect(() => {
     const fetchFormDetails = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/`);
+        const response = await fetch(`http://127.0.0.1:8000/api/${formId}/form-details/`);
         if (!response.ok) {
           throw new Error("Failed to fetch form details.");
         }
@@ -109,23 +110,36 @@ const FormDetail = () => {
         <p className="font-funnel text-3xl">{form.id} - {form.title} </p>
       </div> */}
 
-      <div className="font-funnel border-b border-gray-300 flex justify-center bg-[#DCD6F7] fixed w-full top-0 z-10">
-        <div
-          onClick={() => setView("create")}
-          className={`px-6 py-3 cursor-pointer ${view === "create" ? "border-b-2 border-gray-800 bg-gradient-to-t from-[#C4BDED] to-transparent text-gray-800 font-semibold" : "text-gray-500" }`}
-        >
-          Create Questions
+      <div className="font-funnel border-b border-gray-300 flex flex-col justify-center bg-[#DCD6F7] fixed w-full top-0 z-10 shadow-lg">
+        <div className="py-2 px-5">
+          <p className="font-funnel font-bold text-base">{form.id} - {form.susform_title} </p>
         </div>
-        <div
-          onClick={() => setView("results")}
-          className={`px-6 py-3 cursor-pointer ${view === "results" ? "border-b-2 border-gray-800 bg-gradient-to-t from-[#C4BDED] to-transparent text-gray-800 font-semibold" : "text-gray-500" }`}
-        >
-          View Results
+        <div className="flex justify-center">
+          <div
+            onClick={() => setView("create")}
+            className={`px-6 py-3 cursor-pointer ${view === "create" ? "border-b-2 border-gray-800 text-gray-800 font-semibold" : "text-gray-500" }`}
+          >
+            Create Questions
+          </div>
+
+          <div
+            onClick={() => setView("preview")}
+            className={`px-6 py-3 cursor-pointer ${view === "preview" ? "border-b-2 border-gray-800 text-gray-800 font-semibold" : "text-gray-500" }`}
+          >
+            Preview
+          </div>
+
+          <div
+            onClick={() => setView("results")}
+            className={`px-6 py-3 cursor-pointer ${view === "results" ? "border-b-2 border-gray-800 text-gray-800 font-semibold" : "text-gray-500" }`}
+          >
+            View Results
+          </div>
         </div>
       </div>
 
       {/* pages displayed based on selected view */}
-      <div className="mt-[50px] flex-1 overflow-y-auto">
+      <div className="mt-[90px] flex-1 overflow-y-auto">
         {view === "create" ? (
           <CreateSUSQuestion
             form={form}
@@ -139,9 +153,11 @@ const FormDetail = () => {
             setQuestionType={setQuestionType}
             handleAddQuestion={handleAddQuestion}
           />
-        ) : (
+        ) : view === "preview" ? (
+          <SUSQuesionPreview />
+        ) : view === "results" ? (
           <ViewResults />
-        )}
+        ) : null}
       </div>
       
     </div>

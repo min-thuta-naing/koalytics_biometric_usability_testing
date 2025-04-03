@@ -1,7 +1,7 @@
 import { useEffect, useState,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Pencil, SquarePlus, EllipsisVertical } from 'lucide-react';
-import CreateSurveyForms from './CreateForms'; 
+import CreateSUSForms from './CreateForms'; 
 import EditProjectDetail from "./EditProjectDetail";
 import AddCriteriaForm from './AddCriteriaForm';
 import CreateUsabilityTesting from "./CreateUsabilityTesting";
@@ -31,9 +31,7 @@ const ProjectDashboard = () => {
     const [usabilityTestingsToDelete, setUsabilityTestingsToDelete] = useState(null); 
     const [showConfirmModalUT, setShowConfirmModalUT] = useState(false);
 
-
-
-    const [forms, setForms] = useState([]);
+    const [susforms, setSUSForms] = useState([]);
     const [usabilityTestings, setUsabilityTestings] = useState([]);
 
     const [selectedCriteria, setSelectedCriteria] = useState({
@@ -75,15 +73,15 @@ const ProjectDashboard = () => {
 
 ////////////////////////////////////////////// FETCH FORMS //////////////////////////////////////////////
     useEffect(() => {
-        fetchForms();
+        fetchSUSForms();
     }, [projectId]);
 
-    const fetchForms = async () => {
+    const fetchSUSForms = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/forms/`);
+            const response = await fetch(`http://127.0.0.1:8000/api/projects/${projectId}/get-susforms/`);
             if (response.ok) {
                 const data = await response.json();
-                setForms(data.forms);
+                setSUSForms(data.susforms);
             } else {
                 console.error("Failed to fetch forms");
             }
@@ -93,23 +91,23 @@ const ProjectDashboard = () => {
     };
 
 ////////////////////////////////////////////// FETCH Usability Testings //////////////////////////////////////////////
-useEffect(() => {
-    fetchUsabilityTesting();
-}, [projectId]);
+    useEffect(() => {
+        fetchUsabilityTesting();
+    }, [projectId]);
 
-const fetchUsabilityTesting = async () => {
-    try {
-        const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/usability-testings/`);
-        if (response.ok) {
-            const data = await response.json();
-            setUsabilityTestings(data.usability_testings);
-        } else {
-            console.error("Failed to fetch usability testings");
+    const fetchUsabilityTesting = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/usability-testings/`);
+            if (response.ok) {
+                const data = await response.json();
+                setUsabilityTestings(data.usability_testings);
+            } else {
+                console.error("Failed to fetch usability testings");
+            }
+        } catch (error) {
+            console.error("Error fetching usability testings:", error);
         }
-    } catch (error) {
-        console.error("Error fetching usability testings:", error);
-    }
-};
+    };
 
 ////////////////////////////////////////////// FETCH PROJECT //////////////////////////////////////////////
     // fetch project with fetchProject function and display the project in the project detail page with useEffect
@@ -143,14 +141,15 @@ const fetchUsabilityTesting = async () => {
     if (!project) return <p>Loading project details...</p>;
 
 
-////////////////////////////////////////////// HANDLE PROJECT EDITION //////////////////////////////////////////////
+////////////////////////////////////////////// HANDLE EDIT PROJECT //////////////////////////////////////////////
     const handleProjectEdited = () => {
         fetchProject()
         setShowEditModal(false);
     };
 
+////////////////////////////////////////////// HANDLE CREATE + DELETE SUS FORM //////////////////////////////////////////////
     const handleFormCreated = () => {
-        fetchForms(projectId); 
+        fetchSUSForms(projectId); 
         setShowSurveyFormModal(false);
     }
 
@@ -163,7 +162,7 @@ const fetchUsabilityTesting = async () => {
         if (!formToDelete) return;
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/forms/delete/${formToDelete}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/forms/delete-susforms/${formToDelete}/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -172,7 +171,7 @@ const fetchUsabilityTesting = async () => {
             });
 
             if (response.ok) {
-                setForms(forms.filter((form) => form.id !== formToDelete));
+                setSUSForms(susforms.filter((susform) => susform.id !== formToDelete));
                 setShowConfirmModalForm(false);
                 setFormToDelete(null);
             } else {
@@ -234,8 +233,9 @@ const fetchUsabilityTesting = async () => {
 
 
             {/* scrollable content */}
-            <div className="mx-44 relative z-20 overflow-y-auto h-screen pt-[22vh]-30">
-                <h1 className="font-funnel font-bold text-5xl mx-10 my-5 p-8 text-white shadwo-xl">{project.name}</h1>
+            <div className="mx-44 relative z-20 overflow-y-auto h-screen pt-[22vh]-30 font-funnel">
+                <h1 className="font-bold text-5xl mx-10 my-5 p-8 text-white shadwo-xl">{project.name}</h1>
+
                 {/* project details */}
                 <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md" > 
                     <div className="flex justify-between items-center mb-4"> 
@@ -285,9 +285,8 @@ const fetchUsabilityTesting = async () => {
                             <SquarePlus />
                         </button>
                     </div>
-
                     <h2 className="text-xl font-semibold mb-6">Edit Project Criteria</h2>
-
+                    {/* Gender */}
                     <div className="mb-4">
                         <h3 className="font-medium">Gender:</h3>
                         <div className="flex gap-2">
@@ -330,39 +329,40 @@ const fetchUsabilityTesting = async () => {
                     />
                 )}
 
+                {/* sus questionnaire creation and list */}
                 <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md"> 
                     <div className="flex justify-between items-center border-b border-gray-300">
                         <div className="flex flex-col gap-2">
-                            <h1 className="font-semibold text-xl">Create a Survey Form</h1>
+                            <h1 className="font-semibold text-xl">Create SUS Questionnaire</h1>
                             <p>You can create forms using questions.</p>
                         </div>
                         <button
-                            className="bg-violet-400 text-black text-sm px-4 py-2 w-48 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
+                            className="bg-[#C4BDED] font-funnel text-black text-sm px-4 py-2 w-48 h-12 rounded-lg shadow-lg hover:bg-[#ACA3E3]"
                             onClick={() => setShowSurveyFormModal(true)}
 
                         >
-                            Create Survey Form
+                            Create SUS Form
                         </button>
                     </div>
                     <div>
                         <p>Here are your current forms:</p>
-                        {forms.length === 0 ? (
+                        {susforms.length === 0 ? (
                             <p>No forms available.</p>
                         ) : (
                             <div className="flex flex-wrap gap-4 mt-4">
-                                {forms.map((form) => (
+                                {susforms.map((susform) => (
                                     <div 
-                                        key={form.id} 
+                                        key={susform.id} 
                                         className="p-4 border rounded-lg shadow-md bg-white w-64 relative"
                                     >
                                         <div className="absolute top-3 right-3">
-                                            <button onClick={() => setShowDropdown(showDropdown === form.id ? null : form.id)} className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                                            <button onClick={() => setShowDropdown(showDropdown === susform.id ? null : susform.id)} className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
                                                 <EllipsisVertical size={20}/> 
                                             </button>
-                                            {showDropdown === form.id && (
+                                            {showDropdown === susform.id && (
                                                 <div className="absolute right-0 mt-2 bg-white border rounded shadow-md">
                                                     <button
-                                                        onClick={() => handleDeleteForm(form.id)}
+                                                        onClick={() => handleDeleteForm(susform.id)}
                                                         className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100"
                                                     >
                                                         Delete
@@ -370,9 +370,9 @@ const fetchUsabilityTesting = async () => {
                                                 </div>
                                             )}
                                         </div>
-                                        <div onClick={()=> navigate(`/form/${form.id}`)}> 
-                                            <h3 className="text-lg font-semibold">{form.id}</h3>
-                                            <h3 className="text-lg font-semibold">{form.title}</h3>
+                                        <div onClick={()=> navigate(`/form/${susform.id}`)}> 
+                                            <h3 className="text-lg font-semibold">{susform.id}</h3>
+                                            <h3 className="text-lg font-semibold">{susform.susform_title}</h3>
                                         </div>
                                     </div>
                                 ))}
@@ -380,7 +380,36 @@ const fetchUsabilityTesting = async () => {
                         )}
                     </div>
                 </div>
+                {showSurveyFormModal && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
+                        <div className="bg-white rounded-lg shadow-xl max-w-xl w-full relative flex flex-col">
+                            <CreateSUSForms 
+                                onClose={() => setShowSurveyFormModal(false)} 
+                                projectId={projectId} 
+                                onFormCreated = {handleFormCreated}
+                            />
+                        </div>
+                    </div>
+                )}
+                {/* Delete Confirmation Pop up */}
+                {showConfirmModalForm && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg">
+                            <p className="text-lg font-semibold">Are you sure you want to delete this form?</p>
+                            <div className="flex justify-end gap-4 mt-4">
+                                <button onClick={() => setShowConfirmModalForm(false)} className="px-4 py-2 bg-gray-300 rounded-lg">
+                                    Cancel
+                                </button>
+                                <button onClick={confirmDeleteForm} className="px-4 py-2 bg-red-500 text-white rounded-lg">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
+
+                {/* usability testing creation and list  */}
                 <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md">
                     <div className="flex justify-between items-center border-b border-gray-300">
                         <div className="flex flex-col gap-2">
@@ -388,7 +417,7 @@ const fetchUsabilityTesting = async () => {
                             <p>You can create usability testings.</p>
                         </div>
                         <button
-                            className="bg-violet-400 text-black text-sm px-4 py-2 w-48 h-12 rounded-lg hover:bg-violet-500 border border-gray-400"
+                            className="bg-[#C4BDED] font-funnel text-black text-sm px-4 py-2 w-48 h-12 rounded-lg shadow-lg hover:bg-[#ACA3E3]"
                             onClick={() => setShowUsabilityTestingModal(true)}
                         >
                             Create Usability Testing
@@ -432,35 +461,12 @@ const fetchUsabilityTesting = async () => {
                         )}
                     </div>
                 </div>
-                {showSurveyFormModal && (
-                    <CreateSurveyForms 
-                        onClose={() => setShowSurveyFormModal(false)} 
-                        projectId={projectId} 
-                        onFormCreated = {handleFormCreated}
-                    />
-                )}
                 {showUsabilityTestingModal && (
                     <CreateUsabilityTesting 
                         onClose={() => setShowUsabilityTestingModal(false)} 
                         projectId={projectId} 
                         onUsabilityTestingCreated = {handleUsabilityTestingCreated}
                     />
-                )}
-                {/* Delete Confirmation Pop up */}
-                {showConfirmModalForm && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-white p-6 rounded-lg shadow-lg">
-                            <p className="text-lg font-semibold">Are you sure you want to delete this form?</p>
-                            <div className="flex justify-end gap-4 mt-4">
-                                <button onClick={() => setShowConfirmModalForm(false)} className="px-4 py-2 bg-gray-300 rounded-lg">
-                                    Cancel
-                                </button>
-                                <button onClick={confirmDeleteForm} className="px-4 py-2 bg-red-500 text-white rounded-lg">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
                 )}
                 {/* Delete Confirmation Pop up */}
                 {showConfirmModalUT && (
@@ -478,6 +484,7 @@ const fetchUsabilityTesting = async () => {
                         </div>
                     </div>
                 )}
+                
             </div>
         </div>
     );

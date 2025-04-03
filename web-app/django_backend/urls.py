@@ -65,6 +65,12 @@ urlpatterns = [
     path('api/save_criteria_age_group/<int:project_id>/', save_critieria_age_group, name='save-criteria-age-group'),
     path('api/save_criteria_interest/<int:project_id>/', save_critieria_interest, name='save-criteria-interest'),
 
+    # sus form related 
+    path('api/projects/<int:project_id>/create-susform/', views.create_susform, name="create_susform"),
+    path('api/projects/<int:project_id>/get-susforms/', views.get_susform, name='get_susforms'),
+    path('api/forms/delete-susforms/<int:susform_id>/', views.delete_susform, name='delete_susform'),
+    path('api/<int:susform_id>/form-details/', views.susform_detail, name='susform_detail'),
+
     path('projects/<int:project_id>/form/', views.create_form, name='create_form'),
     path('forms/<int:form_id>/share/', views.ShareFormView, name='share-form-view'),
     path('projects/<int:project_id>/forms/', views.get_form, name='get_forms'),
