@@ -55,7 +55,8 @@ urlpatterns = [
     path('api/save_position/<int:user_id>/', save_position, name='save_position'),
     path('api/save_industry/<int:user_id>/', save_industry, name='save_industry'), 
     
-    path('create_project/<int:user_id>/', create_project, name='create_project'),  # ✅ Add new route
+    # project related 
+    path('create_project/<int:user_id>/', create_project, name='create_project'),  
     path("api/update_project/<int:project_id>/", update_project, name="update_project"),
     path('api/project/<int:project_id>/', get_project, name='get_project'),
     path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"),

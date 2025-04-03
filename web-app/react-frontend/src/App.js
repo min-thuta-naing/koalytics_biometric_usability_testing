@@ -14,13 +14,14 @@ import Question4 from "./pages/Question4";
 import Question5 from "./pages/Question5";
 import LoginPage from "./pages/LoginPage";
 import NewProjectPage from "./pages/Researcher/CreateProjects";
-import CreateSUSQue from "./pages/SUSform/CreateSUSQue";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import ProjectDetail from "./pages/Researcher/ProjectDetail";
+import ProjectDashboard from "./pages/Researcher/ProjectDashboard";
 import FormDetail from "./pages/SUSform/FormDetail";
 import CreateQuestions from "./pages/SUSform/CreateQuestions";
+import CreateSUSQuestion from "./pages/SUSform/CreateSUSQuestion";
 import ViewResults from "./pages/SUSform/ViewResults";
 import Guide from "./pages/Guide";
+import Tempque from "./pages/SUSform/tempque";
 import AnswerForm from "./pages/Participant/AnswerForms";
 import ChooseTest from "./pages/Participant/ChooseTest";
 import UsabilityTestingDetail from "./pages/UsabilityTesting/UsabilityTestingDetail";
@@ -29,8 +30,6 @@ import TempoFacial from "./pages/Participant/TempoFacial";
 import BrowserInBrowser from "./pages/Participant/BrowserInBrowser";
 import MultiPointProgressBar from "./pages/SUSform/MultiPointProgressBar";
 
-// import Login from "./pages/LoginPage";
-// import Welcome from "./pages/WelcomePage";
 
 function App() {
   return (
@@ -46,11 +45,12 @@ function App() {
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/admin-dashboard" element={<AdminDashboard/>}/>
         <Route path="/new-project" element={<NewProjectPage />} />
-        <Route path="/create-susque" element={<CreateSUSQue />} />
         <Route path="/create" element={<CreateQuestions/>}/>
+        <Route path="/create-susque" element={<CreateSUSQuestion/>}/>
+        <Route path="/temp-que" element={<Tempque/>}/>
         <Route path="/guide" element={<Guide/>}/>
         <Route path="/results" element={<ViewResults/>}/>
-        <Route path="/project/:projectId" element={<ProjectDetail />} />
+        <Route path="/project/:projectId" element={<ProjectDashboard />} />
         <Route path="/researcher-dashboard" element={<SideandTopBar />} />
         <Route path="/form/:formId" element={<FormDetail />} />
         <Route path="/usability_testing/:usabilityTestingId" element={<UsabilityTestingDetail />} />
