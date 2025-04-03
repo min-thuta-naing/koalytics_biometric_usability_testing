@@ -19,8 +19,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
-from .models import UsabilityTestRecordingV4, User, Hobby, Project, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent
-from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent
+from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 
@@ -381,6 +381,62 @@ def delete_project(request, project_id):
 
 
 # FORM RELATED METHODS (RESEARCER SIDE) ##########################################################
+@api_view(['POST'])
+def create_susform(request, project_id):
+        try:
+            project = Project.objects.get(id=project_id)
+        except Project.DoesNotExist: 
+            return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.method == 'POST':
+            serializer = SUSFormSerializer(data=request.data)
+            if serializer.is_valid(): 
+                susform = serializer.save() 
+                project.susforms.add(susform)
+
+                return Response({'message': 'Form created successfully!', 'susform_id': susform.id}, status=status.HTTP_201_CREATED)
+            
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_susform(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        susforms = project.susforms.all()
+    except Project.DoesNotExist:
+        return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = SUSFormSerializer(susforms, many=True)
+    return Response({'susforms': serializer.data}, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+def delete_susform(request, susform_id):
+    try: 
+        susform = SUSForm.objects.get(id=susform_id)
+    except SUSForm.DoesNotExist: 
+        return Response({'error': 'Form is not found.'},  status=status.HTTP_404_NOT_FOUND)
+    
+    susform.delete()
+    return Response({'message': 'Form deleted successfully.'}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])   
+def susform_detail(request, susform_id):
+    try: 
+        susform = SUSForm.objects.get(id=susform_id)
+    except SUSForm.DoesNotExist: 
+        return Response({'error': 'Form is not found.'},  status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = SUSFormSerializer(susform)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# QUESTIONS RELATED METHODS (RESEARCER SIDE) ##########################################################
+
+
+
 @api_view(['POST'])
 def create_form(request, project_id):
         try:

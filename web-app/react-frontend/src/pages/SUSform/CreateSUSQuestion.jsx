@@ -1,183 +1,55 @@
 // CreateQuestions.js
 import { useState, useEffect, useRef } from "react";
-import {Trash2} from "lucide-react"; 
 
-const CreateSUSQuestion = ({ form, formId, handleShareForm, questions, setQuestions, questionText, setQuestionText, questionType, setQuestionType, handleAddQuestion, onSave }) => {
+const CreateSUSQuestion = ({ form, formId, handleShareForm, questions, setQuestions, questionText, setQuestionText, questionType, setQuestionType, handleAddQuestion }) => {
 
-    // for the progress bar steps 
-    const [step, setStep] = useState(1);
-    const steps = ["Add Consent", "Add Questions", "Share"];
-    const previews = ["Consent Preview", "Questions Preview", "Share"];
-
-    // Function to delete a question
-    const handleDeleteQuestion = async (questionId) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this question?");
-        if (!confirmDelete) return;
-
-        try {
-        const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/${questionId}/`, {
-            method: "DELETE",
-        });
-
-        if (!response.ok) {
-            throw new Error("Failed to delete the question.");
-        }
-
-        // Update state by removing the deleted question
-        setQuestions((prevQuestions) => prevQuestions.filter((q) => q.id !== questionId));
-
-        } catch (error) {
-        console.error("Error deleting question:", error);
-        }
-    };
-
+    const susQuestions = [
+        "I think that I would like to use this system frequently.",
+        "I found the system unnecessarily complex.",
+        "I thought the system was easy to use.",
+        "I think that I would need the support of a technical person to be able to use this system.",
+        "I found the various functions in this system were well integrated.",
+        "I thought there was too much inconsistency in this system.",
+        "I would imagine that most people would learn to use this system very quickly.",
+        "I found the system very cumbersome to use.",
+        "I felt very confident using the system.",
+        "I needed to learn a lot of things before I could get going with this system.",
+    ];
 
     return (
-        <div className="flex gap-8 p-4 mx-10 bg-[#F0EEED]">
-            {/* Column 1: Adding quetion panel*/}
-            <div className="w-2/4 h-[650px] bg-white p-4 rounded-lg shadow-xl relative flex flex-col">
-                {/* Progress bar */}
-                <div className="flex items-center justify-between mt-3 mb-6 relative">
-                    {steps.map((label, index) => (
-                        <div key={index} className="relative flex flex-col items-center w-1/3">
-                        {/* Circle */}
-                        <div
-                            className={`w-10 h-10 flex items-center justify-center rounded-full font-bold z-10 ${
-                            step >= index + 1 ? "bg-[#DCD6F7] text-black" : "bg-gray-200 text-gray-400"
-                            }`}
-                        >
-                            {index + 1}
+        <div className="flex h-screen overflow-hidden">
+            <div className="flex-grow overflow-y-auto">
+                <div className="mx-80 my-10 px-32">
+                    <div className="flex flex-col">
+                        <h2 className="mx-3 px-4 pt-3 text-lg font-bold font-funnel">SUS Form Information</h2>
+                        <div className="mt-3 mx-3 p-4 bg-white rounded-lg shadow-lg">
+                            <p className="mt-2 mb-2 font-funnel">Id: {form.id}</p>
+                            <p className="mt-2 mb-2 font-funnel">Title: {form.susform_title}</p>
+                            <p className="mt-2 mb-2 font-funnel">Description: {form.susform_description}</p>
                         </div>
-
-                        {/* Connecting line (only between circles) */}
-                        {index !== 0 && (
-                            <div
-                                className={`absolute h-1 w-full top-5 -left-1/2 ${
-                                step > index ? "bg-[#DCD6F7]" : "bg-gray-200"
-                            }`}
-                            />
-                        )}
-
-                        {/* Label */}
-                        <span className="text-sm mt-1">{label}</span>
+                    </div>
+        
+                    <div className="flex flex-col">
+                        <h2 className="mx-3 px-4 pt-3 text-lg font-bold font-funnel">10 SUS Questions</h2>
+                        <div className="mt-3 mx-3 p-4 font-funnel bg-white rounded-lg shadow-lg">
+                            <p className="mt-2 mb-4 ">Please add your system name in place of "the system" in the following ten SUS questions.</p>
+                            
+                            {susQuestions.map((question, index) => (
+                                <div key={index} className="flex items-center my-2">
+                                    <span className="font-semibold mr-5 min-w-[20px] text-right">{index + 1}.</span>
+                                    <textarea
+                                    defaultValue={question}
+                                    className="flex-grow p-2 border rounded-lg"
+                                    />
+                                </div>
+                            ))}
+            
+                            <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
+                            Add Question
+                            </button>
                         </div>
-                    ))}
+                    </div>
                 </div>
-
-                {/* 3 steps of column 1 */}
-                <div className="flex-grow overflow-y-auto p-4">
-                    {step === 1 && (
-                        <div className="flex flex-col">
-                            <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
-                                <h2 className="text-lg font-bold font-funnel">SUS Form Information</h2>
-
-                                <p className="mt-2 mb-2 font-funnel">Id: {form.id}</p>
-                                <p className="mt-2 mb-2 font-funnel">Title: {form.title}</p>
-
-
-                                {/* <button
-                                    className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-end"
-                                    onClick={() => setStep(2)}
-                                >
-                                    Next →
-                                </button> */}
-                                
-                            </div>                          
-                        </div>
-                    )}
-
-                    {step === 2 && (
-                        <div className="flex flex-col">
-                            <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
-                                <h2 className="text-lg font-bold">Add Question</h2>
-                                <input
-                                    type="text"
-                                    placeholder="Enter question"
-                                    value={questionText}
-                                    onChange={(e) => setQuestionText(e.target.value)}
-                                    className="w-full p-2 border rounded-lg my-2"
-                                />
-                                <select
-                                    value={questionType}
-                                    onChange={(e) => setQuestionType(e.target.value)}
-                                    className="w-full p-2 border rounded-lg"
-                                >
-                                    <option value="text">Text</option>
-                                    <option value="rating">Rating</option>
-                                </select>
-                                <button
-                                    onClick={handleAddQuestion}
-                                    className="mt-2 bg-blue-500 text-white px-4 py-2 rounded justify-items-end"
-                                >
-                                    Add Question
-                                </button>
-                            </div>
-                            {/* <div className="flex justify-between">
-                                <button
-                                    className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
-                                    onClick={() => setStep(1)}
-                                >
-                                    ← Back
-                                </button>
-                                <button
-                                    className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-end"
-                                    onClick={() => setStep(3)}
-                                >
-                                    Next →
-                                </button>
-                            </div> */}
-                        </div>
-                    )}
-
-                    {step === 3 && (
-                        <div className="flex flex-col">
-                            <div className="mt-3 mx-3 border border-gray-400 p-4 rounded-lg">
-                                <h2 className="text-lg font-bold">Add Something</h2>
-                                <button
-                                    onClick={handleShareForm}
-                                    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
-                                >
-                                    Share Form
-                                </button>
-                            </div>
-                            {/* <button
-                                className="mt-3 mx-3 bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg self-start"
-                                onClick={() => setStep(2)}
-                            >
-                                ← Back
-                            </button> */}
-                        </div>
-                    )}
-                </div>
-
-
-                <div className={`p-4 mt-auto flex w-full ${step > 1 ? "justify-between" : "justify-end"}`}>
-                    {step > 1 && (
-                        <button
-                            className="bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg"
-                            onClick={() => setStep(step - 1)}
-                        >
-                            ← Back
-                        </button>
-                    )}
-                    {step < 3 && (
-                        <button
-                            className="bg-transparent border border-[#C4BDED] text-black px-4 py-2 rounded-lg"
-                            onClick={() => setStep(step + 1)}
-                        >
-                            Next →
-                        </button>
-                    )}
-                </div>
-
-
-
-            </div>
-
-            {/* Column 2: Display Questions from Backend */}
-            <div className="w-2/4 h-[650px] bg-white p-4 rounded-lg shadow-xl">
-
-
             </div>
         </div>
     );

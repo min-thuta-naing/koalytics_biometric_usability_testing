@@ -81,7 +81,6 @@ const ResearcherDashboard = () => {
 
     return (
         <div>
-
             {/* New project creation button */}
             <div className="flex justify-between items-center py-3 px-12 border-b border-gray-400">
                 <div className="flex flex-col gap-2">
@@ -90,7 +89,7 @@ const ResearcherDashboard = () => {
                 </div>
                 <button
                     onClick={() => setShowProjectForm(true)}
-                    className="bg-[#C4BDED] font-funnel text-black text-sm px-4 py-2 w-40 h-12 rounded-lg hover:bg-[#ACA3E3]"
+                    className="bg-[#C4BDED] font-funnel text-black text-sm px-4 py-2 w-40 h-12 rounded-lg shadow-lg hover:bg-[#ACA3E3]"
                 >
                     Create New Project
                 </button>
