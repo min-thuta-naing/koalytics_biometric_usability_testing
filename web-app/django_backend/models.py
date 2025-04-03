@@ -87,32 +87,44 @@ class Project(models.Model):
 
     #Many to many relationship with Form table 
     forms = models.ManyToManyField('Form', related_name="projects", blank=True)
+    susforms = models.ManyToManyField('SUSForm', related_name="projects", blank=True)
 
     usability_testings = models.ManyToManyField('UsabilityTesting', related_name="projects", blank=True)
 
     def __str__(self):
         return self.name
     
-# for genders
+# for criteria (genders, age groups, interest)
 class Gender(models.Model):
     gender = models.CharField(max_length=200)
 
     def __str__(self):
         return self.gender
     
-# for age groups
 class AgeGroup(models.Model):
     age_group = models.CharField(max_length=200)
 
     def __str__(self):
         return self.age_group
 
-# for interest
 class Interest(models.Model):
     interest = models.CharField(max_length=200)
 
     def __str__(self):
         return self.interest
+    
+# for sus forms and its sus questions
+class SUSForm(models.Model): 
+    susform_title = models.CharField(max_length=200)
+    susform_description = models.TextField()
+
+    def __str__(self):
+        return self.title
+    
+class SUSQuestion(models.Model):
+    susform = models.ForeignKey(SUSForm, on_delete=models.CASCADE)
+    question_text = models.TextField()
+
 
 # for forms
 class Form(models.Model): 

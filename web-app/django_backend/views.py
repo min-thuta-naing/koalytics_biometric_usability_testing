@@ -227,50 +227,46 @@ def login(request):
 
 # PROJECT RELATED METHODS (RESEARCER SIDE) ####################################################################################################################
 #for creating projects 
-@csrf_exempt
+@api_view(['POST'])
 def create_project(request, user_id):
-    if request.method == 'POST':
-        try:
-            # Ensure user exists
-            user = User.objects.get(id=user_id)
+    try:
+        # Ensure user exists
+        user = User.objects.get(id=user_id)
 
-            # Parse request body
-            data = json.loads(request.body.decode('utf-8'))
-            project_name = data.get('name')
-            project_description = data.get('description')
-            organization = data.get('organization')
-            max_participants = data.get('max_participants')  
-            start_date = data.get('start_date')              
-            end_date = data.get('end_date')                  
-            side_notes = data.get('side_notes')             
+        # extration of data from request 
+        data = request.data
+        project_name = data.get('name')
+        project_description = data.get('description')
+        organization = data.get('organization')
+        max_participants = data.get('max_participants')  
+        start_date = data.get('start_date')              
+        end_date = data.get('end_date')                  
+        side_notes = data.get('side_notes')             
 
-            # Validate required fields
-            if not project_name or not project_description:
-                return JsonResponse({'error': 'Project name and description are required.'}, status=400)
+        # Validate required fields
+        if not project_name or not project_description:
+            return Response({'error': 'Project name and description are required.'}, status=400)
 
-            # Create project and associate with user
-            # project = Project.objects.create(name=project_name, description=project_description)
-            project = Project.objects.create(
-                name=project_name,
-                description=project_description,
-                organization=organization,
-                max_participants=max_participants,
-                start_date=start_date,
-                end_date=end_date,
-                side_notes=side_notes
-            )
-            user.projects.add(project)
+        # Create project and associate with user
+        project = Project.objects.create(
+            name=project_name,
+            description=project_description,
+            organization=organization,
+            max_participants=max_participants,
+            start_date=start_date,
+            end_date=end_date,
+            side_notes=side_notes
+        )
+        user.projects.add(project)
 
-            return JsonResponse({'message': 'Project created successfully!', 'project_id': project.id}, status=201)
+        return Response({'message': 'Project created successfully!', 'project_id': project.id}, status=status.HTTP_201_CREATED)
 
-        except User.DoesNotExist:
-            return JsonResponse({'error': 'User not found.'}, status=404)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
 
 # editing the project info 
 @csrf_exempt

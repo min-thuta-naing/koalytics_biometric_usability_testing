@@ -457,6 +457,13 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                                 required
                             />
                         </div>
+
+                        {error && (
+                            <div className="text-red-500 font-funnel mb-4 p-2 bg-red-50 rounded-md">
+                                {error}
+                            </div>
+                        )}
+
                     </form>
                 </div>
             )
@@ -474,7 +481,6 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                         {/* <Editor content={editorContent} setContent={setEditorContent} /> */}
 
                         <WYSIWYGEditor 
-                            // content="<p>Start editing here...</p>"
                             content={getConsentTemplate('biometric')}  
                             onUpdate={(html) => console.log(html)} 
                         />
@@ -530,7 +536,51 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         }
     ];
 
-    const handleNext = () => {
+
+
+    const validateFields = () => {
+
+        // validate if the user don't fill all the fields
+        if (!projectName.trim()) {
+            setError("Project name is required");
+            return false;
+        }
+        if (!projectDescription.trim()) {
+            setError("Project description is required");
+            return false;
+        }
+        if (!organization) {
+            setError("Organization is required");
+            return false;
+        }
+        if (!maxParticipants) {
+            setError("Participant number is required");
+            return false;
+        }
+        if (!startDate) {
+            setError("Start date is required");
+            return false;
+        }
+        if (!endDate) {
+            setError("End date is required");
+            return false;
+        }
+        if (!sideNotes.trim()) {
+            setError("Side notes are required");
+            return false;
+        }
+        
+        // validation if the start data is later than end date
+        if (new Date(startDate) > new Date(endDate)) {
+            setError("End date must be after start date");
+            return false;
+        }
+        
+        setError("");
+        return true;
+    };
+
+    const handleNext = (e) => {
         if (currentStep < steps.length ) { 
             setCurrentStep(currentStep + 1);
         }
@@ -545,6 +595,10 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+
+        if (!validateFields()) {
+            return; // Don't proceed if validation fails
+        }
 
         if (!userId) {
             setError("User not found. Please log in.");
@@ -634,7 +688,6 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
 
                 {/* Main Form Section */}
                 <div className="w-3/4 p-6 px-12 font-funnel overflow-y-auto">
-                    {error && <div className="text-red-500 mb-4">{error}</div>}
                     
                     <div className="mb-8">
                         {steps[currentStep - 1].content}
@@ -651,10 +704,12 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                                 Back
                             </button>
                             
+                            
+                                
                             <button
                                 type="button"
-                                //onClick={currentStep === 2 ? handleSubmit : handleNext}
-                                onClick={handleNext}
+                                onClick={currentStep === 2 ? handleSubmit : handleNext}
+                                //onClick={handleNext}
                                 className={`px-4 py-2 ${currentStep === 2 ? 'bg-violet-500 hover:bg-violet-600' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-md`}
                             >
                                 {currentStep === 2 ? 'Continue' : 'Next'}
