@@ -71,6 +71,9 @@ urlpatterns = [
     path('api/forms/delete-susforms/<int:susform_id>/', views.delete_susform, name='delete_susform'),
     path('api/<int:susform_id>/form-details/', views.susform_detail, name='susform_detail'),
 
+    # sus questins related 
+    path('api/<int:form_id>/sus-questions/', views.create_or_update_sus_questions, name='create_or_update_sus_questions'),
+
     path('projects/<int:project_id>/form/', views.create_form, name='create_form'),
     path('forms/<int:form_id>/share/', views.ShareFormView, name='share-form-view'),
     path('projects/<int:project_id>/forms/', views.get_form, name='get_forms'),
