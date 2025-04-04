@@ -515,7 +515,7 @@ def create_or_update_susanswer(request, question_id):
         serializer = SUSQAnswerSerializer(answer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-# ✅ display answers from the sus question on ViewResults.jsx page
+# ✅ display answers from the sus question + sus score on ViewResults.jsx page
 @api_view(['GET'])
 def get_sus_answers_results(request, form_id):
     """Get the answers of all participants for a given SUS form, displaying answers in a table format."""
@@ -543,6 +543,54 @@ def get_sus_answers_results(request, form_id):
         response_data.append(participant_data)
     
     return Response(response_data, status=status.HTTP_200_OK)
+
+
+# ✅ display answers from the sus question + sus score on ViewResults.jsx page
+# @api_view(['GET'])
+# def get_sus_answers_results(request, form_id):
+#     """Get answers and SUS score for each participant."""
+#     form = get_object_or_404(SUSForm, id=form_id)
+#     questions = list(SUSQuestion.objects.filter(susform=form))  # maintain order
+#     answers = SUSQAnswer.objects.filter(susquestion__susform=form).select_related('participant_email', 'susquestion')
+
+#     # Order questions as they appear, not by ID
+#     question_order = [q.id for q in questions]  # True order
+#     question_index = {qid: idx for idx, qid in enumerate(question_order)}  # idx used to check odd/even
+
+#     # Group answers per participant
+#     grouped_answers = defaultdict(lambda: {qid: None for qid in question_order})
+#     for answer in answers:
+#         email = answer.participant_email.email
+#         grouped_answers[email][answer.susquestion.id] = answer.answer
+
+#     # Build response with SUS score
+#     response_data = []
+#     for email, ans_dict in grouped_answers.items():
+#         participant_data = {'participant_email': email}
+#         X = 0
+#         Y = 0
+
+#         for qid in question_order:
+#             index = question_index[qid]
+#             answer_val = ans_dict.get(qid)
+#             participant_data[f'Q{qid}'] = answer_val
+
+#             if answer_val is not None:
+#                 if index % 2 == 0:  # 0-based index => Q1 is odd => index 0
+#                     X += answer_val - 1
+#                 else:
+#                     Y += 5 - answer_val
+
+#         sus_score = (X + Y) * 2.5
+#         participant_data['sus_score'] = round(sus_score, 2)
+#         response_data.append(participant_data)
+
+#     return Response(response_data, status=status.HTTP_200_OK)
+
+
+
+
+
 
 
 @api_view(['POST'])
