@@ -10,7 +10,6 @@ const FormDetail = () => {
   const [form, setForm] = useState(null);
   const [error, setError] = useState("");
   const [questionText, setQuestionText] = useState("");
-  const [questionType, setQuestionType] = useState("text");
   const [questions, setQuestions] = useState([]);
   const [view, setView] = useState("create"); // "create" or "results"
 
@@ -33,73 +32,73 @@ const FormDetail = () => {
   }, [formId]);
 
 
-  const handleShareForm = async () => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/share/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  // const handleShareForm = async () => {
+  //   try {
+  //     const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/share/`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
   
-      if (!response.ok) {
-        throw new Error('Failed to share form.');
-      }
+  //     if (!response.ok) {
+  //       throw new Error('Failed to share form.');
+  //     }
   
-      alert('Form shared successfully!');
-    } catch (error) {
-      alert('Error sharing form: ' + error.message);
-    }
-  };
+  //     alert('Form shared successfully!');
+  //   } catch (error) {
+  //     alert('Error sharing form: ' + error.message);
+  //   }
+  // };
 
   // Fetch questions for the form
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/list/`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch questions.");
-        }
-        const data = await response.json();
-        setQuestions(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchQuestions = async () => {
+  //     try {
+  //       const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/list/`);
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch questions.");
+  //       }
+  //       const data = await response.json();
+  //       setQuestions(data);
+  //     } catch (err) {
+  //       setError(err.message);
+  //     }
+  //   };
 
-    fetchQuestions();
-  }, [formId]);
+  //   fetchQuestions();
+  // }, [formId]);
 
 
   // Send a single question to backend
-  const handleAddQuestion = async () => {
-    if (!questionText.trim()) return alert("Question text cannot be empty!");
+  // const handleAddQuestion = async () => {
+  //   if (!questionText.trim()) return alert("Question text cannot be empty!");
 
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          question_text: questionText,
-          question_type: questionType,
-        }),
-      });
+  //   try {
+  //     const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         question_text: questionText,
+  //         question_type: questionType,
+  //       }),
+  //     });
 
-      if (!response.ok) {
-        const errorMessage = await response.json();
-        throw new Error(errorMessage.error || "Failed to save question.");
-      }
+  //     if (!response.ok) {
+  //       const errorMessage = await response.json();
+  //       throw new Error(errorMessage.error || "Failed to save question.");
+  //     }
 
-      const newQuestion = await response.json();
-      setQuestions((prevQuestions) => [...prevQuestions, newQuestion]); // Append new question
-      setQuestionText(""); // Clear input
+  //     const newQuestion = await response.json();
+  //     setQuestions((prevQuestions) => [...prevQuestions, newQuestion]); // Append new question
+  //     setQuestionText(""); // Clear input
 
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  //   } catch (err) {
+  //     setError(err.message);
+  //   }
+  // };
 
   if (error) return <p className="text-red-500">{error}</p>;
   if (!form) return <p>Loading...</p>;
@@ -144,14 +143,12 @@ const FormDetail = () => {
           <CreateSUSQuestion
             form={form}
             formId={formId}
-            handleShareForm={handleShareForm}
-            questions={questions}
-            setQuestions={setQuestions}
-            questionText={questionText}
-            setQuestionText={setQuestionText}
-            questionType={questionType}
-            setQuestionType={setQuestionType}
-            handleAddQuestion={handleAddQuestion}
+            // handleShareForm={handleShareForm}
+            // questions={questions}
+            // setQuestions={setQuestions}
+            // questionText={questionText}
+            // setQuestionText={setQuestionText}
+            // handleAddQuestion={handleAddQuestion}
           />
         ) : view === "preview" ? (
           <SUSQuesionPreview />

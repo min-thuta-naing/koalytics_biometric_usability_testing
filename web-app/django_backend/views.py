@@ -19,7 +19,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
-from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion
 from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -437,22 +437,36 @@ def susform_detail(request, susform_id):
 
 
 # QUESTIONS RELATED METHODS (RESEARCER SIDE) ##########################################################
-# ✅ create question 
+# ✅ create or update question 
 @api_view(['POST'])
-def create_question(request, form_id):
-    """Create a new question for a specific form."""
-    form = get_object_or_404(Form, id=form_id)
+def create_or_update_sus_questions(request, form_id):
+    try:
+        form = SUSForm.objects.get(id=form_id)
+    except SUSForm.DoesNotExist:
+        return Response({"error": "Form not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    # Ensure 'form' is included before saving
-    data = request.data.copy()  
-    data['form'] = form.id  
+    questions_data = request.data.get("questions", [])
 
-    serializer = QuestionSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()  # The form is already included in data
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if len(questions_data) != 10:
+        return Response({"error": "Exactly 10 questions are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    existing_questions = SUSQuestion.objects.filter(susform=form).order_by("id")
+
+    if existing_questions.exists():
+        # Update existing questions
+        for i, question in enumerate(existing_questions):
+            question.question_text = questions_data[i]
+            question.save()
+        return Response({"message": "Questions updated successfully."}, status=status.HTTP_200_OK)
+    else:
+        # Create new questions
+        for question_text in questions_data:
+            SUSQuestion.objects.create(susform=form, question_text=question_text)
+        return Response({"message": "Questions created successfully."}, status=status.HTTP_201_CREATED)
+
+
+
+
 
 
 
