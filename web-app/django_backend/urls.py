@@ -73,6 +73,11 @@ urlpatterns = [
 
     # sus questins related 
     path('api/<int:form_id>/sus-questions/', views.create_or_update_sus_questions, name='create_or_update_sus_questions'),
+    path('api/<int:form_id>/sus-questions/list/', views.get_sus_questions, name="get_sus_questions"),
+
+
+    # sus answers related 
+    #path('questions/<int:question_id>/answers/', views.create_susanswer, name='create-answer'),
 
     path('projects/<int:project_id>/form/', views.create_form, name='create_form'),
     path('forms/<int:form_id>/share/', views.ShareFormView, name='share-form-view'),
@@ -105,6 +110,7 @@ urlpatterns = [
     path('questions/<int:question_id>/answers/', views.create_answer, name='create-answer'),
     path('forms/<int:form_id>/answers/', views.get_form_answers, name='get-form-answers'),
 
+    # participant side 
     path("api/projects/", get_all_projects, name="get_all_project"), 
     path("api/projects/<int:project_id>/related_forms/", get_project_forms, name="get_project_forms"),
     path("api/projects/<int:project_id>/related_usability_testing/", get_project_usabilitytesting, name="get_project_usabilitytesting"),

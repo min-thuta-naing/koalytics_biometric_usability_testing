@@ -127,6 +127,12 @@ class SUSQuestion(models.Model):
     susform = models.ForeignKey(SUSForm, on_delete=models.CASCADE)
     question_text = models.TextField()
 
+# ✅ sus answer
+class SUSAnswer(models.Model):
+    susquestion = models.ForeignKey(SUSQuestion, on_delete=models.CASCADE)
+    participant_email = models.ForeignKey(User, on_delete=models.CASCADE)
+    answer_text = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True, blank=True)
 
 
 ################################################################################################################

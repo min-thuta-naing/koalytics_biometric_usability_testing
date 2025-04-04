@@ -60,7 +60,7 @@ const ChooseTest = () => {
                                     style={{ backgroundImage: "url('/static/images/sus_pic.png')" }}
                                     onClick={() => navigate(`/related-form/${form.id}`)}
                                 >
-                                    <h2 className="font-semibold text-lg">{form.title}</h2>
+                                    <h2 className="font-semibold text-lg">{form.susform_title}</h2>
                                 </div>
                             ))
                         ) : (
