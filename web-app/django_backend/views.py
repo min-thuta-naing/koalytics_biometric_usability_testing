@@ -227,6 +227,7 @@ def login(request):
 
 # PROJECT RELATED METHODS (RESEARCER SIDE) ####################################################################################################################
 #for creating projects 
+# ✅
 @api_view(['POST'])
 def create_project(request, user_id):
     try:
@@ -269,6 +270,7 @@ def create_project(request, user_id):
 
 
 # editing the project info 
+# ✅
 @csrf_exempt
 def update_project(request, project_id):
     if request.method == "PATCH":
@@ -381,6 +383,7 @@ def delete_project(request, project_id):
 
 
 # FORM RELATED METHODS (RESEARCER SIDE) ##########################################################
+# ✅ creating sus form 
 @api_view(['POST'])
 def create_susform(request, project_id):
         try:
@@ -398,7 +401,7 @@ def create_susform(request, project_id):
             
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+# ✅ getting sus form list 
 @api_view(['GET'])
 def get_susform(request, project_id):
     try:
@@ -410,7 +413,7 @@ def get_susform(request, project_id):
     serializer = SUSFormSerializer(susforms, many=True)
     return Response({'susforms': serializer.data}, status=status.HTTP_200_OK)
 
-
+# ✅ delete the sus forms 
 @api_view(['DELETE'])
 def delete_susform(request, susform_id):
     try: 
@@ -421,7 +424,7 @@ def delete_susform(request, susform_id):
     susform.delete()
     return Response({'message': 'Form deleted successfully.'}, status=status.HTTP_200_OK)
 
-
+# ✅ get the detail of each sus form 
 @api_view(['GET'])   
 def susform_detail(request, susform_id):
     try: 
@@ -434,6 +437,22 @@ def susform_detail(request, susform_id):
 
 
 # QUESTIONS RELATED METHODS (RESEARCER SIDE) ##########################################################
+# ✅ create question 
+@api_view(['POST'])
+def create_question(request, form_id):
+    """Create a new question for a specific form."""
+    form = get_object_or_404(Form, id=form_id)
+
+    # Ensure 'form' is included before saving
+    data = request.data.copy()  
+    data['form'] = form.id  
+
+    serializer = QuestionSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()  # The form is already included in data
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

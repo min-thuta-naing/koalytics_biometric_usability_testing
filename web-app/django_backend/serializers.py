@@ -23,7 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
-    
+
+# ✅  
 class ProjectSerializer (serializers.ModelSerializer):               
     class Meta: 
         model = Project
@@ -35,11 +36,13 @@ class FormSerializer(serializers.ModelSerializer):
         model = Form
         fields = ['id', 'title', 'is_shared']
 
+# ✅
 class SUSFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = SUSForm
         fields = ['id', 'susform_title', 'susform_description']
 
+# ✅
 class SUSQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SUSQuestion
