@@ -4,99 +4,134 @@
 // const AnswerForm = () => {
 //     const { formId } = useParams();
 //     const [questions, setQuestions] = useState([]);
-
-//     useEffect(() => {
-//         fetch(`http://127.0.0.1:8000/api/forms/${formId}/questions/list/`) // Update with actual backend URL
-//             .then(response => response.json())
-//             .then(data => setQuestions(data))
-//             .catch(error => console.error("Error fetching questions:", error));
-//     }, [formId]);
-
-//     return (
-//         <div className="min-h-screen bg-[#F0EEED] p-8">
-//             <h1 className="text-xl font-bold mb-6">Form Questions</h1>
-//             <div className="grid grid-cols-2 gap-6">
-//                 {questions.map(q => (
-//                     <div key={q.id} className="bg-white p-6 rounded-lg shadow-md border border-gray-400">
-//                         <h3 className="font-semibold">{q.question_text}</h3>
-//                         <p className="text-gray-500 mt-2">Type: {q.question_type}</p>
-//                     </div>
-//                 ))}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default AnswerForm;
-
-// import { useState, useEffect } from "react";
-// import { useParams } from "react-router-dom";
-
-// const AnswerForm = () => {
-//     const { formId } = useParams();
-//     const [questions, setQuestions] = useState([]);
+//     const [loading, setLoading] = useState(true);
+//     const [error, setError] = useState(null);
 //     const [answers, setAnswers] = useState({});
+//     const userEmail = localStorage.getItem("userEmail"); // Get logged-in user email
+//     const [showPopup, setShowPopup] = useState(true); 
+//     const [checkboxChecked, setCheckboxChecked] = useState(false);
 
+
+//     const userData = localStorage.getItem("user");
+//     if (userData) {
+//         const parsedUser = JSON.parse(userData); // Convert JSON string to object
+//         const userEmail = parsedUser.email; // Extract the email
+//         console.log("Extracted email:", userEmail);
+//     } else {
+//         console.log("User not found in localStorage!");
+//     }
+    
+//     //fetch the question list 
 //     useEffect(() => {
-//         fetch(`http://127.0.0.1:8000/api/forms/${formId}/questions/list/`) // Update with actual backend URL
+//         fetch(`http://127.0.0.1:8000/api/${formId}/sus-questions/list/`)
 //             .then(response => response.json())
 //             .then(data => setQuestions(data))
 //             .catch(error => console.error("Error fetching questions:", error));
 //     }, [formId]);
 
-//     // Handle answer changes
+
+//     // handle answer input change 
 //     const handleAnswerChange = (questionId, value) => {
 //         setAnswers(prev => ({ ...prev, [questionId]: value }));
 //     };
 
+//     // Submit Answers
+//     const submitAnswers = async () => {
+//         const userData = localStorage.getItem("user");
+    
+//         if (!userData) {
+//             console.error("User data not found in localStorage!");
+//             alert("Error: You are not logged in.");
+//             return;
+//         }
+    
+//         const parsedUser = JSON.parse(userData);
+//         const userEmail = parsedUser.email; // Extract email
+    
+//         if (!userEmail) {
+//             console.error("User email is missing in stored data!");
+//             alert("Error: Could not retrieve user email.");
+//             return;
+//         }
+    
+//         console.log("Submitting answers for user:", userEmail); // Debugging
+    
+//         for (const questionId in answers) {
+//             const answerData = {
+//                 participant_email: userEmail,
+//                 answer_text: answers[questionId]
+//             };
+    
+//             try {
+//                 const response = await fetch(`http://127.0.0.1:8000/questions/${questionId}/answers/`, {
+//                     method: "POST",
+//                     headers: {
+//                         "Content-Type": "application/json"
+//                     },
+//                     body: JSON.stringify(answerData)
+//                 });
+    
+//                 const data = await response.json();
+//                 console.log("Answer submitted:", data);
+//             } catch (error) {
+//                 console.error("Error submitting answer:", error);
+//             }
+//         }
+    
+//         alert("Answers submitted successfully!");
+//     };
+    
+
 //     return (
-//         <div className="min-h-screen bg-[#F0EEED] p-8 flex flex-col items-center">
-//             <h1 className="text-xl font-bold mb-6">Answer the Questions</h1>
-
-//             <div className="w-full max-w-2xl flex flex-col gap-6">
-//                 {questions.map(q => (
-//                     <div key={q.id} className="bg-white p-6 rounded-lg shadow-md border border-gray-400 w-full">
-//                         <h3 className="font-semibold">{q.question_text}</h3>
-
-//                         {/* Text Question */}
-//                         {q.question_type === "text" && (
-//                             <input
-//                                 type="text"
-//                                 className="w-full mt-3 p-2 border border-gray-400 rounded-lg"
-//                                 placeholder="Your answer..."
-//                                 value={answers[q.id] || ""}
-//                                 onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-//                             />
-//                         )}
-
-//                         {/* Rating Question */}
-//                         {q.question_type === "rating" && (
-//                             <div className="mt-3 flex flex-col items-center">
-//                                 <div className="flex justify-between w-full">
-//                                     {[1, 2, 3, 4, 5].map((num) => (
-//                                         <button
-//                                             key={num}
-//                                             onClick={() => handleAnswerChange(q.id, num)}
-//                                             className={`w-12 h-12 flex items-center justify-center border rounded-full text-lg ${
-//                                                 answers[q.id] === num ? "bg-blue-500 text-white" : "border-gray-500"
-//                                             }`}
-//                                         >
-//                                             {num}
-//                                         </button>
-//                                     ))}
-//                                 </div>
-//                                 {/* Labels under rating scale */}
-//                                 <div className="flex justify-between text-center text-xs text-gray-600 mt-2 w-full">
-//                                     <span>Strongly Disagree</span>
-//                                     <span>Somewhat Disagree</span>
-//                                     <span>Neutral</span>
-//                                     <span>Somewhat Agree</span>
-//                                     <span>Strongly Agree</span>
-//                                 </div>
+//         <div className="fixed inset-0 bg-[#F0EEED]"> {/* Fixed background covering whole screen */}
+//             <div className="h-screen w-full flex flex-col items-center pt-8 font-funnel overflow-hidden">
+//                 {/* Fixed header */}
+//                 <div className="w-full max-w-2xl px-4">
+//                     <h1 className="text-xl font-bold mb-4">System Usability Scale (SUS) Questionnaire</h1>
+//                 </div>
+            
+//                 {/* Scrollable questions container */}
+//                 <div className="w-full max-w-2xl flex-1 overflow-y-auto px-4">
+//                     <h2 className="text-lg font-semibold mb-3">Answer the following ten questions.</h2>
+//                     <div className="bg-white rounded-lg shadow-md border border-gray-400 p-6 mb-6">
+//                     {questions.map((q, index) => (
+//                         <div key={q.id} className="mb-10 last:mb-0"> {/* Increased margin-bottom from mb-8 to mb-10 */}
+//                         <div className="flex items-start mb-4"> {/* Added flex container for number and question */}
+//                             <span className="font-semibold mr-3 text-gray-700">{index + 1}.</span> {/* Question number */}
+//                             <h3 className="font-semibold">{q.question_text}</h3>
+//                         </div>
+                        
+//                         <div className="flex justify-between w-full">
+//                             {[1, 2, 3, 4, 5].map((num) => (
+//                             <div key={num} className="flex flex-col items-center w-1/5">
+//                                 <button
+//                                 onClick={() => handleAnswerChange(q.id, num)}
+//                                 className={`w-10 h-10 flex items-center justify-center border rounded-full text-lg ${
+//                                     answers[q.id] === num ? "bg-[#ACA3E3] text-black" : "border-gray-500"
+//                                 }`}
+//                                 >
+//                                 {num}
+//                                 </button>
+//                                 <span className="text-xs mt-1 text-gray-600 text-center">
+//                                 {num === 1 && "Strongly Disagree"}
+//                                 {num === 2 && "Somewhat Disagree"}
+//                                 {num === 3 && "Neutral"}
+//                                 {num === 4 && "Somewhat Agree"}
+//                                 {num === 5 && "Strongly Agree"}
+//                                 </span>
 //                             </div>
-//                         )}
+//                             ))}
+//                         </div>
+//                         </div>
+//                     ))}
 //                     </div>
-//                 ))}
+//                     <button
+//                     onClick={submitAnswers}
+//                     className="w-full bg-[#C4BDED] text-black px-6 py-3 rounded-lg shadow-md hover:bg-[#ACA3E3]"
+//                     >
+//                     Submit Answers
+//                     </button>
+//                 </div>
 //             </div>
 //         </div>
 //     );
@@ -109,147 +144,141 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const AnswerForm = () => {
-    const { formId } = useParams();
-    const [questions, setQuestions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [answers, setAnswers] = useState({});
-    const userEmail = localStorage.getItem("userEmail"); // Get logged-in user email
-    const [showPopup, setShowPopup] = useState(true); 
-    const [checkboxChecked, setCheckboxChecked] = useState(false);
+  const { formId } = useParams();
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [answers, setAnswers] = useState({});
+  const [userEmail, setUserEmail] = useState("");
+  const [showPopup, setShowPopup] = useState(true);
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
 
-
+  // Fetch the user email from localStorage or session
+  useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
-        const parsedUser = JSON.parse(userData); // Convert JSON string to object
-        const userEmail = parsedUser.email; // Extract the email
-        console.log("Extracted email:", userEmail);
+      const parsedUser = JSON.parse(userData);
+      setUserEmail(parsedUser.email); // Extract the email
     } else {
-        console.log("User not found in localStorage!");
+      console.error("User not found in localStorage!");
     }
-    
-    //fetch the question list 
-    useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/${formId}/sus-questions/list/`)
-            .then(response => response.json())
-            .then(data => setQuestions(data))
-            .catch(error => console.error("Error fetching questions:", error));
-    }, [formId]);
+  }, []);
 
+  // Fetch questions list
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/api/${formId}/sus-questions/list/`)
+      .then((response) => response.json())
+      .then((data) => {
+        setQuestions(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
+  }, [formId]);
 
-    // handle answer input change 
-    const handleAnswerChange = (questionId, value) => {
-        setAnswers(prev => ({ ...prev, [questionId]: value }));
-    };
+  // Handle answer input change
+  const handleAnswerChange = (questionId, value) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: value }));
+  };
 
-    // Submit Answers
-    const submitAnswers = async () => {
-        const userData = localStorage.getItem("user");
-    
-        if (!userData) {
-            console.error("User data not found in localStorage!");
-            alert("Error: You are not logged in.");
-            return;
+  // Submit answers to the backend
+  const submitAnswers = async () => {
+    if (!userEmail) {
+      console.error("User email is missing!");
+      alert("Error: You are not logged in.");
+      return;
+    }
+
+    console.log("Submitting answers for user:", userEmail);
+
+    for (const questionId in answers) {
+      const answerData = {
+        participant_email: userEmail,
+        answer_text: answers[questionId], // Send the answer value
+      };
+
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/questions/${questionId}/answers/`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(answerData),
+          }
+        );
+
+        const data = await response.json();
+        if (response.ok) {
+          console.log("Answer submitted/updated:", data);
+        } else {
+          console.error("Error submitting answer:", data);
         }
-    
-        const parsedUser = JSON.parse(userData);
-        const userEmail = parsedUser.email; // Extract email
-    
-        if (!userEmail) {
-            console.error("User email is missing in stored data!");
-            alert("Error: Could not retrieve user email.");
-            return;
-        }
-    
-        console.log("Submitting answers for user:", userEmail); // Debugging
-    
-        for (const questionId in answers) {
-            const answerData = {
-                participant_email: userEmail,
-                answer_text: answers[questionId]
-            };
-    
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/questions/${questionId}/answers/`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(answerData)
-                });
-    
-                const data = await response.json();
-                console.log("Answer submitted:", data);
-            } catch (error) {
-                console.error("Error submitting answer:", error);
-            }
-        }
-    
-        alert("Answers submitted successfully!");
-    };
-    
+      } catch (error) {
+        console.error("Error submitting answer:", error);
+      }
+    }
 
-    return (
-        <div className="min-h-screen bg-[#F0EEED] p-8 flex flex-col items-center">
+    alert("Answers submitted/updated successfully!");
+  };
 
-            <h1 className="text-xl font-bold mb-6">Answer the Questions</h1>
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error loading questions!</div>;
 
-            <div className="w-full max-w-2xl flex flex-col gap-6">
-                {questions.map(q => (
-                    <div key={q.id} className="bg-white p-6 rounded-lg shadow-md border border-gray-400 w-full">
-                        <h3 className="font-semibold">{q.question_text}</h3>
+  return (
+    <div className="fixed inset-0 bg-[#F0EEED]">
+        <div className="h-screen w-full flex flex-col items-center pt-8 font-funnel overflow-hidden">
+            <div className="w-full max-w-2xl px-4">
+            <h1 className="text-xl font-bold mb-4">System Usability Scale (SUS) Questionnaire</h1>
+            </div>
 
-                        {/* Text Question */}
-                        {q.question_type === "text" && (
-                            <input
-                                type="text"
-                                className="w-full mt-3 p-2 border border-gray-400 rounded-lg"
-                                placeholder="Your answer..."
-                                value={answers[q.id] || ""}
-                                onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                            />
-                        )}
-
-                        {/* Rating Question */}
-                        {q.question_type === "rating" && (
-                            <div className="mt-3 flex flex-col items-center w-full">
-                                <div className="flex justify-between w-full">
-                                    {[1, 2, 3, 4, 5].map((num) => (
-                                        <div key={num} className="flex flex-col items-center w-1/5">
-                                            {/* Circle Button */}
-                                            <button
-                                                onClick={() => handleAnswerChange(q.id, num)}
-                                                className={`w-10 h-10 flex items-center justify-center border rounded-full text-lg ${
-                                                    answers[q.id] === num ? "bg-blue-500 text-white" : "border-gray-500"
-                                                }`}
-                                            >
-                                                {num}
-                                            </button>
-                                            {/* Labels */}
-                                            <span className="text-xs mt-1 text-gray-600 text-center">
-                                                {num === 1 && "Strongly Disagree"}
-                                                {num === 2 && "Somewhat Disagree"}
-                                                {num === 3 && "Neutral"}
-                                                {num === 4 && "Somewhat Agree"}
-                                                {num === 5 && "Strongly Agree"}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+            <div className="w-full max-w-2xl flex-1 overflow-y-auto px-4 pb-8">
+            <h2 className="text-lg font-semibold mb-3">Answer the following ten questions.</h2>
+            <div className="bg-white rounded-lg shadow-md border border-gray-400 p-6 mb-6">
+                {questions.map((q, index) => (
+                <div key={q.id} className="mb-10 last:mb-0">
+                    <div className="flex items-start mb-4">
+                    <span className="font-semibold mr-3 text-gray-700">{index + 1}.</span>
+                    <h3 className="font-semibold">{q.question_text}</h3>
                     </div>
+
+                    <div className="flex justify-between w-full">
+                    {[1, 2, 3, 4, 5].map((num) => (
+                        <div key={num} className="flex flex-col items-center w-1/5">
+                        <button
+                            onClick={() => handleAnswerChange(q.id, num)}
+                            className={`w-10 h-10 flex items-center justify-center border rounded-full text-lg ${
+                            answers[q.id] === num ? "bg-[#ACA3E3] text-black" : "border-gray-500"
+                            }`}
+                        >
+                            {num}
+                        </button>
+                        <span className="text-xs mt-1 text-gray-600 text-center">
+                            {num === 1 && "Strongly Disagree"}
+                            {num === 2 && "Somewhat Disagree"}
+                            {num === 3 && "Neutral"}
+                            {num === 4 && "Somewhat Agree"}
+                            {num === 5 && "Strongly Agree"}
+                        </span>
+                        </div>
+                    ))}
+                    </div>
+                </div>
                 ))}
             </div>
-            <button
-                onClick={submitAnswers}
-                className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-700"
-            >
-                Submit Answers
-            </button>
-
+                <button
+                    onClick={submitAnswers}
+                    className="w-full bg-[#C4BDED] text-black px-6 py-3 rounded-lg shadow-md hover:bg-[#ACA3E3]"
+                >
+                    Submit Answers
+                </button>
+            </div>
         </div>
-    );
+    </div>
+  );
 };
 
 export default AnswerForm;
