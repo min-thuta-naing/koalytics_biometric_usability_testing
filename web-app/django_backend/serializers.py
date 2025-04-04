@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import User, Hobby, Project, Form, Question, Answer, Consent, TestingConsent, SUSForm, SUSQuestion
+from .models import User, Hobby, Project, Form, Question, Answer, Consent, TestingConsent, SUSForm, SUSQuestion, SUSQAnswer
 
 from .models import UsabilityTestRecordingV4
 from .models import UsabilityTesting
@@ -49,13 +49,12 @@ class SUSQuestionSerializer(serializers.ModelSerializer):
         fields = ['id', 'susform', 'question_text']
 
 # ✅
-class SUSAnswerSerializer(serializers.ModelSerializer):
+class SUSQAnswerSerializer(serializers.ModelSerializer):
     participant_email = serializers.EmailField(source="participant_email.email", read_only=True)
 
     class Meta:
-        model = Answer
-        fields = ['id', 'susquestion', 'participant_email', 'answer_text', 'submitted_at']
-
+        model = SUSQAnswer
+        fields = ['id', 'susquestion', 'participant_email', 'answer']
 
 
 class ConsentSerializer(serializers.ModelSerializer): 

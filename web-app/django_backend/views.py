@@ -19,11 +19,11 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
-from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion
-from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer, SUSQuestionSerializer
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion, SUSQAnswer
+from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer, SUSQuestionSerializer, SUSQAnswerSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
-
+from collections import defaultdict
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -464,16 +464,85 @@ def create_or_update_sus_questions(request, form_id):
             SUSQuestion.objects.create(susform=form, question_text=question_text)
         return Response({"message": "Questions created successfully."}, status=status.HTTP_201_CREATED)
 
-
+# ✅ display question on the participant side 
 @api_view(['GET'])
 def get_sus_questions(request, form_id):
-    """Retrieve all questions for a specific form."""
-    questions = SUSQuestion.objects.filter(form_id=form_id)
-    serializer = SUSQuestionSerializer(questions, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    try:
+        questions = SUSQuestion.objects.filter(susform_id=form_id)  # ✅ Fixed
+        serializer = SUSQuestionSerializer(questions, many=True)
+        return Response(serializer.data, status=200)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
 
+# ✅ display question on the participant side 
+@api_view(['POST'])
+def create_or_update_susanswer(request, question_id):
+    """Create or update an answer for a specific question."""
+    question = get_object_or_404(SUSQuestion, id=question_id)
 
+    # Extract user email from request (Frontend should send it)
+    user_email = request.data.get("participant_email")
+    if not user_email:
+        return Response({"error": "User email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Fetch user based on email
+    try:
+        user = User.objects.get(email=user_email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Extract answer text from request
+    answer_text = request.data.get("answer_text")
+    if not answer_text:
+        return Response({"error": "Answer text is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Check if the user has already answered this question
+    existing_answer = SUSQAnswer.objects.filter(susquestion=question, participant_email=user).first()
+    
+    if existing_answer:
+        # If an answer exists, update it
+        existing_answer.answer = answer_text
+        existing_answer.save()
+        serializer = SUSQAnswerSerializer(existing_answer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        # If no answer exists, create a new one
+        answer = SUSQAnswer.objects.create(
+            susquestion=question,
+            participant_email=user,
+            answer=answer_text
+        )
+        serializer = SUSQAnswerSerializer(answer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+# ✅ display answers from the sus question on ViewResults.jsx page
+@api_view(['GET'])
+def get_sus_answers_results(request, form_id):
+    """Get the answers of all participants for a given SUS form, displaying answers in a table format."""
+    form = get_object_or_404(SUSForm, id=form_id)
+    
+    # Get all the questions for the form
+    questions = SUSQuestion.objects.filter(susform=form)
+    
+    # Fetch all answers for the form
+    answers = SUSQAnswer.objects.filter(susquestion__susform=form)
+    
+    # Group answers by participant
+    grouped_answers = defaultdict(lambda: {q.id: None for q in questions})  # Default to empty answers for each question
+    for answer in answers:
+        grouped_answers[answer.participant_email.email][answer.susquestion.id] = answer.answer
+    
+    # Prepare response data
+    response_data = []
+    for participant_email, answers in grouped_answers.items():
+        participant_data = {
+            'participant_email': participant_email,
+        }
+        for question in questions:
+            participant_data[f'Q{question.id}'] = answers.get(question.id)
+        response_data.append(participant_data)
+    
+    return Response(response_data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

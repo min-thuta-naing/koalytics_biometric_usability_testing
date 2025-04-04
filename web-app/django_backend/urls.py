@@ -77,7 +77,9 @@ urlpatterns = [
 
 
     # sus answers related 
-    #path('questions/<int:question_id>/answers/', views.create_susanswer, name='create-answer'),
+    path('api/questions/<int:question_id>/answers/', views.create_or_update_susanswer, name='create-answer'),
+    path('api/<int:form_id>/sus-answers/results/', views.get_sus_answers_results, name="get_sus_answers_results"),
+
 
     path('projects/<int:project_id>/form/', views.create_form, name='create_form'),
     path('forms/<int:form_id>/share/', views.ShareFormView, name='share-form-view'),
