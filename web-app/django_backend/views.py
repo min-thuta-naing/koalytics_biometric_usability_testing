@@ -20,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
 from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion
-from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer
+from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer, SUSQuestionSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 
@@ -465,6 +465,12 @@ def create_or_update_sus_questions(request, form_id):
         return Response({"message": "Questions created successfully."}, status=status.HTTP_201_CREATED)
 
 
+@api_view(['GET'])
+def get_sus_questions(request, form_id):
+    """Retrieve all questions for a specific form."""
+    questions = SUSQuestion.objects.filter(form_id=form_id)
+    serializer = SUSQuestionSerializer(questions, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
@@ -1061,7 +1067,7 @@ def emotion_detection(request):
 
 
 
-# PROJECT RELATED MEHTODS (PARTICIPANT SIDE) ##########################################
+# PROJECT RELATED MEHTODS (PARTICIPANT SIDE) ####################################################################################################################
 #get all projects on the homepage for participant 
 def get_all_projects(request):
     if request.method == "GET":
@@ -1080,12 +1086,13 @@ def get_all_projects(request):
 #             return JsonResponse({"error": "Project not found."}, status=404)
 #     return JsonResponse({"error": "Invalid request method."}, status=405)
 
+# ✅ display project's forms 
 @api_view(['GET'])
 def get_project_forms(request, project_id):
     try:
-        project = Project.objects.get(id=project_id)  
-        forms = project.forms.filter(is_shared=True)  # ✅ Correct way to filter ManyToManyField
-        serializer = FormSerializer(forms, many=True)  
+        project = Project.objects.get(id=project_id) 
+        forms = list(project.susforms.values("id", "susform_title", "susform_description")) 
+        serializer = SUSFormSerializer(forms, many=True)  
         return Response(serializer.data, status=200)  
     except Project.DoesNotExist:
         return Response({"error": "Project not found."}, status=404)

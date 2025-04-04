@@ -48,6 +48,16 @@ class SUSQuestionSerializer(serializers.ModelSerializer):
         model = SUSQuestion
         fields = ['id', 'susform', 'question_text']
 
+# ✅
+class SUSAnswerSerializer(serializers.ModelSerializer):
+    participant_email = serializers.EmailField(source="participant_email.email", read_only=True)
+
+    class Meta:
+        model = Answer
+        fields = ['id', 'susquestion', 'participant_email', 'answer_text', 'submitted_at']
+
+
+
 class ConsentSerializer(serializers.ModelSerializer): 
     class Meta: 
         model = Consent 
