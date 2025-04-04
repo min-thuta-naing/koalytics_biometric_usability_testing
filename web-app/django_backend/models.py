@@ -71,6 +71,7 @@ class Industry (models.Model):
     
     
 # for projects #################################################################################################
+# ✅ project model 
 class Project(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
@@ -94,7 +95,7 @@ class Project(models.Model):
     def __str__(self):
         return self.name
     
-# for criteria (genders, age groups, interest)
+# ✅ for criteria (genders, age groups, interest)
 class Gender(models.Model):
     gender = models.CharField(max_length=200)
 
@@ -113,14 +114,15 @@ class Interest(models.Model):
     def __str__(self):
         return self.interest
     
-# for sus forms and its sus questions
+# ✅ for sus forms 
 class SUSForm(models.Model): 
     susform_title = models.CharField(max_length=200)
     susform_description = models.TextField()
 
     def __str__(self):
         return self.susform_title
-    
+
+# ✅ sus questions  
 class SUSQuestion(models.Model):
     susform = models.ForeignKey(SUSForm, on_delete=models.CASCADE)
     question_text = models.TextField()
