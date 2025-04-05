@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 def index(request):
     return render (request, 'index.html')
 
-# AUTENTICATION RELATED METHODS ##########################################################
+# AUTENTICATION RELATED METHODS ###################################################################################################################
 # for sign up 
 @csrf_exempt
 def signup(request):
@@ -191,7 +191,7 @@ def save_industry (request, user_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# User Login
+# for login
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
@@ -227,47 +227,6 @@ def login(request):
 
 # PROJECT RELATED METHODS (RESEARCER SIDE) ####################################################################################################################
 # ✅ for creating projects
-# @api_view(['POST'])
-# def create_project(request, user_id):
-#     try:
-#         # Ensure user exists
-#         user = User.objects.get(id=user_id)
-
-#         # extration of data from request 
-#         data = request.data
-#         project_name = data.get('name')
-#         project_description = data.get('description')
-#         organization = data.get('organization')
-#         max_participants = data.get('max_participants')  
-#         start_date = data.get('start_date')              
-#         end_date = data.get('end_date')                  
-#         side_notes = data.get('side_notes') 
-#         consent_text = data.get('consent_text', '')              
-
-#         # Validate required fields
-#         if not project_name or not project_description:
-#             return Response({'error': 'Project name and description are required.'}, status=400)
-
-#         # Create project and associate with user
-#         project = Project.objects.create(
-#             name=project_name,
-#             description=project_description,
-#             organization=organization,
-#             max_participants=max_participants,
-#             start_date=start_date,
-#             end_date=end_date,
-#             side_notes=side_notes,
-#             consent_text=consent_text
-#         )
-#         user.projects.add(project)
-
-#         return Response({'message': 'Project created successfully!', 'project_id': project.id}, status=status.HTTP_201_CREATED)
-
-#     except User.DoesNotExist:
-#         return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
-#     except Exception as e:
-#         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 @api_view(['POST'])
 def create_project(request, user_id):
     try:
@@ -338,6 +297,7 @@ def update_project(request, project_id):
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
+# ✅ saving project criteria 
 @csrf_exempt
 def save_critieria_gender (request, project_id):
     if request.method == 'POST': 
@@ -396,7 +356,7 @@ def save_critieria_interest (request, project_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# for viewing each project 
+# ✅ for viewing each project in the ProjectDashboard.jsx 
 def get_project(request, project_id):
     try:
         project = Project.objects.get(id=project_id)
@@ -415,14 +375,6 @@ def get_project(request, project_id):
         return JsonResponse({"error": "Project not found"}, status=404)
     
 # ✅ for deleting the projects (when delete the proj, it will detele its related susforms, questions and answers and usability testings)
-# @csrf_exempt
-# def delete_project(request, project_id):
-#     if request.method == "DELETE":
-#         project = get_object_or_404(Project, id=project_id)
-#         project.delete()
-#         return JsonResponse({"message": "Project deleted successfully"}, status=200)
-    
-#     return JsonResponse({"error": "Method not allowed"}, status=405)
 @csrf_exempt
 def delete_project(request, project_id):
     if request.method == "DELETE":
@@ -440,23 +392,6 @@ def delete_project(request, project_id):
         return JsonResponse({"message": "Project and related forms deleted successfully"}, status=200)
     
     return JsonResponse({"error": "Method not allowed"}, status=405)
-
-
-# ✅ saving project consent 
-@api_view(['POST'])
-def create_project_consent(request, project_id):
-    consent_text = request.data.get('consent_text')
-
-    if not consent_text:
-        return Response({'error': 'Consent text is required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        project = Project.objects.get(id=project_id)
-        project.consent_text = consent_text
-        project.save()
-        return Response({'message': 'Consent text saved successfully.'}, status=status.HTTP_200_OK)
-    except Project.DoesNotExist:
-        return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
 # FORM RELATED METHODS (RESEARCER SIDE) ##########################################################
@@ -622,51 +557,6 @@ def get_sus_answers_results(request, form_id):
     return Response(response_data, status=status.HTTP_200_OK)
 
 
-# ✅ display answers from the sus question + sus score on ViewResults.jsx page
-# @api_view(['GET'])
-# def get_sus_answers_results(request, form_id):
-#     """Get answers and SUS score for each participant."""
-#     form = get_object_or_404(SUSForm, id=form_id)
-#     questions = list(SUSQuestion.objects.filter(susform=form))  # maintain order
-#     answers = SUSQAnswer.objects.filter(susquestion__susform=form).select_related('participant_email', 'susquestion')
-
-#     # Order questions as they appear, not by ID
-#     question_order = [q.id for q in questions]  # True order
-#     question_index = {qid: idx for idx, qid in enumerate(question_order)}  # idx used to check odd/even
-
-#     # Group answers per participant
-#     grouped_answers = defaultdict(lambda: {qid: None for qid in question_order})
-#     for answer in answers:
-#         email = answer.participant_email.email
-#         grouped_answers[email][answer.susquestion.id] = answer.answer
-
-#     # Build response with SUS score
-#     response_data = []
-#     for email, ans_dict in grouped_answers.items():
-#         participant_data = {'participant_email': email}
-#         X = 0
-#         Y = 0
-
-#         for qid in question_order:
-#             index = question_index[qid]
-#             answer_val = ans_dict.get(qid)
-#             participant_data[f'Q{qid}'] = answer_val
-
-#             if answer_val is not None:
-#                 if index % 2 == 0:  # 0-based index => Q1 is odd => index 0
-#                     X += answer_val - 1
-#                 else:
-#                     Y += 5 - answer_val
-
-#         sus_score = (X + Y) * 2.5
-#         participant_data['sus_score'] = round(sus_score, 2)
-#         response_data.append(participant_data)
-
-#     return Response(response_data, status=status.HTTP_200_OK)
-
-
-
-
 
 
 
@@ -747,37 +637,6 @@ def delete_form(request, form_id):
     return Response({'message': 'Form deleted successfully.'}, status=status.HTTP_200_OK)
 
 
-# @csrf_exempt
-# def create_question(request, form_id):
-#     if request.method == "POST":
-#         try:
-#             data = json.loads(request.body)
-
-#             # Ensure required fields exist
-#             if "question_text" not in data or "question_type" not in data:
-#                 return JsonResponse({"error": "Missing question_text or question_type"}, status=400)
-
-#             form = Form.objects.get(id=form_id)
-#             question = Question.objects.create(
-#                 form=form,
-#                 question_text=data["question_text"],
-#                 question_type=data["question_type"]
-#             )
-
-#             return JsonResponse({
-#                 "id": question.id,
-#                 "question_text": question.question_text,
-#                 "question_type": question.question_type
-#             }, status=201)
-
-#         except Form.DoesNotExist:
-#             return JsonResponse({"error": "Form not found"}, status=404)
-#         except Exception as e:
-#             return JsonResponse({"error": str(e)}, status=400)
-
-#     return JsonResponse({"error": "Invalid request method"}, status=405)
-
-
 # if the consent form does not exist, create one 
 # if the consent form exists, updates it instead of creating a new one
 @api_view(['POST'])
@@ -829,14 +688,6 @@ def create_question(request, form_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# @csrf_exempt
-# def get_questions(request, form_id):
-#     if request.method == "GET":
-#         questions = list(Question.objects.filter(form_id=form_id).values("id", "question_text", "question_type"))
-#         return JsonResponse(questions, safe=False, status=200)
-
-#     return JsonResponse({"error": "Invalid request method."}, status=405)
-
 @api_view(['GET'])
 def get_questions(request, form_id):
     """Retrieve all questions for a specific form."""
@@ -844,70 +695,12 @@ def get_questions(request, form_id):
     serializer = QuestionSerializer(questions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-# @csrf_exempt
-# def delete_question(request, form_id, question_id):
-#     if request.method == "DELETE":
-#         try:
-#             question = Question.objects.get(id=question_id, form_id=form_id)
-#             question.delete()
-#             return JsonResponse({"message": "Question deleted successfully"}, status=204)
-#         except Question.DoesNotExist:
-#             return JsonResponse({"error": "Question not found"}, status=404)
-#         except Exception as e:
-#             return JsonResponse({"error": str(e)}, status=400)
-
-#     return JsonResponse({"error": "Invalid request method"}, status=405)
 @api_view(['DELETE'])
 def delete_question(request, form_id, question_id):
     """Delete a specific question from a form."""
     question = get_object_or_404(Question, id=question_id, form_id=form_id)
     question.delete()
     return Response({'message': 'Question deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
-
-
-
-# @api_view(['POST'])
-# def create_answer(request, question_id):
-#     """Create a new answer for a specific question."""
-#     question = get_object_or_404(Question, id=question_id)
-
-#     # Ensure 'question' is included before saving
-#     data = request.data.copy()
-#     data['question'] = question.id  
-
-#     serializer = AnswerSerializer(data=data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# @api_view(['POST'])
-# def create_answer(request, question_id):
-#     """Create a new answer for a specific question."""
-#     question = get_object_or_404(Question, id=question_id)
-
-#     # Extract user email from request (Frontend should send it)
-#     participant_email = request.data.get("participant_email")  
-#     if not participant_email:
-#         return Response({"error": "User email is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-#     # Fetch user based on email
-#     user = User.objects.filter(email=participant_email).first()
-#     if not user:
-#         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    
-#     # Prepare data and save answer
-#     data = request.data.copy()
-#     data["question"] = question.id
-#     data["participant_email"] = user.id
-
-#     serializer = AnswerSerializer(data=data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -953,7 +746,7 @@ def get_form_answers(request, form_id):
 
 
 # USABILITY TESTING RELATED METHODS (RESEARCER SIDE) ##########################################################
-#for creating usability testings
+# for creating usability testings
 @api_view(['POST'])
 def create_usability_testing(request, project_id):
     try:
@@ -1046,34 +839,6 @@ def check_recording(request, usability_testing_id):
     return Response({"hasRecording": has_recording})
 
 
-# @api_view(["POST"])
-# def save_recording(request):
-#     parser_classes = (MultiPartParser, FormParser)
-    
-#     usability_testing_id = request.data.get("usability_testing_id")
-#     video_file = request.FILES.get("video")
-#     user = request.user
-
-#     if UsabilityTestRecordingV4.objects.filter(user=user, usability_testing_id=usability_testing_id).exists():
-#         raise ValidationError("You can only upload one recording per usability test.")
-
-#     logger.info(f"Received recording for Usability Test ID: {usability_testing_id}")
-
-#     if not video_file:
-#         logger.error("No video file provided.")
-#         return Response({"error": "No video file provided"}, status=400)
-
-#     # Save the video file
-#     usability_testing = UsabilityTesting.objects.get(id=usability_testing_id)
-#     recording = UsabilityTestRecordingV4.objects.create(
-#         usability_testing=usability_testing, video=video_file, user=user
-#     )
-
-#     logger.info(f"Recording saved successfully with ID: {recording.id}")
-
-#     return Response(UsabilityTestRecordingV4Serializer(recording).data, status=201)
-
-
 @api_view(["POST"])
 def save_recording(request):
     parser_classes = (MultiPartParser, FormParser)
@@ -1133,78 +898,6 @@ def video_view(request, video_name):
         return HttpResponse("Video not found", status=404)
     
 
-
-# @api_view(['POST'])
-# def emotion_detection(request):
-#     if request.method == 'POST':
-#         # Get the base64 image from the frontend
-#         image_data = request.data.get('image').split(',')[1]  # Remove the base64 prefix
-#         image_bytes = base64.b64decode(image_data)
-        
-#         # Convert the bytes to an OpenCV image
-#         image = Image.open(BytesIO(image_bytes))
-#         image = np.array(image)
-#         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # Convert to BGR format for OpenCV
-
-#         # Use MediaPipe Face Mesh for detailed facial landmarks
-#         mp_face_mesh = mp.solutions.face_mesh
-#         face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, min_detection_confidence=0.5)
-#         results = face_mesh.process(image)
-
-#         landmarks_data = []
-#         bounding_box = None
-#         emotion = 'No emotion detected'
-#         connections = []  # To store landmark connections for drawing
-
-#         # Predefined indices for specific facial regions (eyes, mouth, etc.)
-#         FACE_REGIONS = {
-#             'face_boundary': mp_face_mesh.FACEMESH_FACE_OVAL,
-#             'left_eye': mp_face_mesh.FACEMESH_LEFT_EYE,
-#             'right_eye': mp_face_mesh.FACEMESH_RIGHT_EYE,
-#             'left_eyebrow': mp_face_mesh.FACEMESH_LEFT_EYEBROW,
-#             'right_eyebrow': mp_face_mesh.FACEMESH_RIGHT_EYEBROW,
-#             'mouth': mp_face_mesh.FACEMESH_LIPS,
-#             'nose': mp_face_mesh.FACEMESH_NOSE,
-#         }
-
-#         if results.multi_face_landmarks:
-#             for face_landmarks in results.multi_face_landmarks:
-#                 ih, iw, _ = image.shape
-#                 min_x = iw
-#                 min_y = ih
-#                 max_x = 0
-#                 max_y = 0
-
-#                 # Process each landmark and calculate bounding box
-#                 for lm in face_landmarks.landmark:
-#                     x, y = int(lm.x * iw), int(lm.y * ih)
-#                     landmarks_data.append({'x': x, 'y': y})
-#                     min_x = min(min_x, x)
-#                     min_y = min(min_y, y)
-#                     max_x = max(max_x, x)
-#                     max_y = max(max_y, y)
-
-#                 # Create the bounding box
-#                 bounding_box = {'x': min_x, 'y': min_y, 'width': max_x - min_x, 'height': max_y - min_y}
-
-#                 # Add connections for each region
-#                 for region, indices in FACE_REGIONS.items():
-#                     for start_idx, end_idx in indices:
-#                         connections.append({'start': start_idx, 'end': end_idx})
-
-#             # Perform emotion analysis using DeepFace (optional)
-#             try:
-#                 analysis = DeepFace.analyze(image, actions=['emotion'], enforce_detection=False)
-#                 emotion = analysis[0]['dominant_emotion']
-#                 emotion_probabilities = analysis[0]['emotion']  # Add probabilities
-#             except Exception as e:
-#                 emotion = 'Unable to detect emotion'
-#                 emotion_probabilities = {}
-
-#         return JsonResponse({'emotion': emotion, 'landmarks': landmarks_data, 'bounding_box': bounding_box, 'connections': connections, 'emotion_probabilities': emotion_probabilities})
-
-#     return JsonResponse({'error': 'Invalid request'}, status=400)
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -1259,28 +952,18 @@ def emotion_detection(request):
         logger.error(f"Emotion detection error: {e}")
         return JsonResponse({'error': str(e)}, status=500)
 
-
-
-# PROJECT RELATED MEHTODS (PARTICIPANT SIDE) ####################################################################################################################
-#get all projects on the homepage for participant 
+#########################################################################################################################################################################################################################################################
+#########################################################################################################################################################################################################################################################
+#########################################################################################################################################################################################################################################################
+######################################################################################### PROJECT RELATED MEHTODS (PARTICIPANT SIDE) ####################################################################################################################
+# ✅ get all projects on the homepage for participant 
 def get_all_projects(request):
     if request.method == "GET":
-        projects = list(Project.objects.values("id", "name", "description", "organization", "start_date", "end_date"))
+        projects = list(Project.objects.values("id", "name", "description", "organization", "start_date", "end_date", "side_notes", "consent_text"))
         return JsonResponse(projects, safe=False)
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
-#get all forms for a specific project to display in the choosetest page for participant 
-# def get_project_forms(request, project_id):
-#     if request.method == "GET":
-#         try:
-#             project = Project.objects.get(id=project_id)
-#             forms = list(project.forms.values("id", "title"))  # Get forms related to this project
-#             return JsonResponse(forms, safe=False)
-#         except Project.DoesNotExist:
-#             return JsonResponse({"error": "Project not found."}, status=404)
-#     return JsonResponse({"error": "Invalid request method."}, status=405)
-
-# ✅ display project's forms 
+# ✅ display project's forms to display in the ChooseTest.jsx
 @api_view(['GET'])
 def get_project_forms(request, project_id):
     try:
@@ -1291,7 +974,23 @@ def get_project_forms(request, project_id):
     except Project.DoesNotExist:
         return Response({"error": "Project not found."}, status=404)
 
+# ✅ to display the consent in the choosetest.jsx 
+@api_view(['GET'])
+def get_project_details(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        data = {
+            "id": project.id,
+            "name": project.name,
+            "consent_text": project.consent_text,
+        }
+        return Response(data, status=200)
+    except Project.DoesNotExist:
+        return Response({"error": "Project not found."}, status=404)
 
+
+
+# ✅ display project's usability testing to display in the ChooseTest.jsx       
 def get_project_usabilitytesting(request, project_id):
     if request.method == "GET":
         try:
@@ -1306,18 +1005,14 @@ def get_project_usabilitytesting(request, project_id):
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
 
-#for retrieving all forms for participant to display in the homepage
+# ✅ for retrieving all forms for participant to display in the homepage (OLD CODE - to be deleted ❌ )
 def get_all_forms(request):
     if request.method == "GET":
         forms = list(Form.objects.values("id", "title"))
         return JsonResponse(forms, safe=False)
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
-
-
-
-
-# Get user by ID to display in MyAccount page
+# ✅ Get user by ID to display in MyAccount page
 @csrf_exempt
 def get_user(request, user_id):
     try:
@@ -1347,6 +1042,10 @@ def get_user(request, user_id):
         return JsonResponse({"error": "User not found"}, status=404)
 
 
+#########################################################################################################################################################################################################################################################
+#########################################################################################################################################################################################################################################################
+#########################################################################################################################################################################################################################################################
+######################################################################################### ADMIN RELATED MEHTODS (ADMIN SIDE) ####################################################################################################################
 # Fetch All Users for Admin Dashboard
 @csrf_exempt
 def get_all_users(request):
