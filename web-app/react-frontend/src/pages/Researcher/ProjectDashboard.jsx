@@ -1,6 +1,6 @@
 import { useEffect, useState,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Pencil, SquarePlus, EllipsisVertical } from 'lucide-react';
+import { Pencil, SquarePlus, EllipsisVertical, ClipboardType, FlaskConical } from 'lucide-react';
 import CreateSUSForms from './CreateForms'; 
 import EditProjectDetail from "./EditProjectDetail";
 import AddCriteriaForm from './AddCriteriaForm';
@@ -216,6 +216,47 @@ const ProjectDashboard = () => {
         }
     };
 
+    const DetailCard = ({ icon, label, value }) => (
+        <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <div className="text-sm text-gray-500 flex items-center gap-2 mb-1">
+                <span className="text-lg">{icon}</span>
+                <span>{label}</span>
+            </div>
+            <p className="text-base font-medium text-gray-800 break-words">{value}</p>
+        </div>
+    );
+    const formatDate = (dateStr) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateStr).toLocaleDateString('en-US', options);
+    };
+
+    const CriteriaCard = ({ label, options, icon }) => (
+        <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <div className="text-sm text-gray-500 flex items-center gap-2 mb-2">
+                <span className="text-lg">{icon}</span>
+                <span>{label}</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+                {options.length > 0 ? (
+                    options.map((option) => (
+                        <span
+                            key={option}
+                            className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-medium"
+                        >
+                            {option}
+                        </span>
+                    ))
+                ) : (
+                    <span className="text-gray-400 italic">No criteria set</span>
+                )}
+            </div>
+        </div>
+    );
+    
+    
+    
+    
+
 
     return (
         <div className="bg-[#F0EEED] h-screen overflow-hidden">
@@ -236,24 +277,40 @@ const ProjectDashboard = () => {
             <div className="mx-44 relative z-20 overflow-y-auto h-screen pt-[22vh]-30 font-funnel">
                 <h1 className="font-bold text-5xl mx-10 my-5 p-8 text-white shadwo-xl">{project.name}</h1>
 
-                {/* project details */}
-                <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md" > 
-                    <div className="flex justify-between items-center mb-4"> 
-                        <h2 className="text-xl font-semibold mb-4">Project Details</h2>
+                {/* Project Details */}
+                <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                    <div className="flex justify-between items-center mb-8">
+                        <h2 className="text-2xl font-semibold text-gray-800">📁 Project Overview</h2>
                         <button
-                            className="bg-teal-600 text-white p-2 rounded-full hover:bg-teal-700"
+                            className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
                             onClick={() => setShowEditModal(true)}
                         >
-                            <Pencil />
+                            <Pencil className="w-4 h-4" />
+                            <span>Edit</span>
                         </button>
                     </div>
-                    <p><strong>Project Name:</strong> {project.name}</p>
-                    <p><strong>Project Description:</strong> {project.description}</p>
-                    <p><strong>Organization:</strong> {project.organization}</p>
-                    <p><strong>Maximum Participant:</strong> {project.max_participants}</p>
-                    <p><strong>Project Start Date:</strong> {project.start_date}</p>
-                    <p><strong>Project End Date:</strong> {project.end_date}</p>
-                    <p><strong>Side Note:</strong> {project.side_notes}</p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
+                        <DetailCard icon="📝" label="Project Name" value={project.name} />
+                        <DetailCard icon="🏢" label="Organization" value={project.organization} />
+                        <DetailCard
+                            icon="📅"
+                            label="Project Duration"
+                            value={
+                                <>
+                                    <span className="block"><strong>Start:</strong> {formatDate(project.start_date)}</span>
+                                    <span className="block"><strong>End:</strong> {formatDate(project.end_date)}</span>
+                                </>
+                            }
+                        />
+                        <DetailCard icon="👥" label="Max Participants" value={project.max_participants} />
+                        <div className="sm:col-span-2">
+                            <DetailCard icon="💬" label="Description" value={project.description} />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <DetailCard icon="🗒️" label="Side Note" value={project.side_notes || "—"} />
+                        </div>
+                    </div>
                 </div>
                 {showEditModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -275,48 +332,25 @@ const ProjectDashboard = () => {
                 )}
 
                 {/* project criteria */}
-                <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md" > 
-                    <div className="flex justify-between items-center mb-4"> 
-                        <h2 className="text-xl font-semibold mb-4">Project Criteria</h2>
+                <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                    <div className="flex justify-between items-center border-b pb-4 mb-6">
+                        <h2 className="text-2xl font-semibold text-gray-800">🎯 Project Criteria</h2>
                         <button
-                            className="bg-teal-600 text-white p-2 rounded-full hover:bg-teal-700"
+                            className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
                             onClick={() => setShowAddCriteriaModal(true)}
                         >
-                            <SquarePlus />
+                            <SquarePlus className="w-4 h-4" />
+                            <span>Add</span>
                         </button>
                     </div>
-                    <h2 className="text-xl font-semibold mb-6">Edit Project Criteria</h2>
-                    {/* Gender */}
-                    <div className="mb-4">
-                        <h3 className="font-medium">Gender:</h3>
-                        <div className="flex gap-2">
-                            {selectedCriteria.gender.map((option) => (
-                                <span key={option} className="bg-gray-200 px-2 py-1 rounded">
-                                    {option}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                    {/* Age Group */}
-                    <div className="mb-4">
-                        <h3 className="font-medium">Age Group:</h3>
-                        <div className="flex gap-2">
-                            {selectedCriteria.ageGroup.map((option) => (
-                                <span key={option} className="bg-gray-200 px-2 py-1 rounded">
-                                    {option}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                    {/* Interest */}
-                    <div className="mb-4">
-                        <h3 className="font-medium">Interest:</h3>
-                        <div className="flex gap-2">
-                            {selectedCriteria.interest.map((option) => (
-                                <span key={option} className="bg-gray-200 px-2 py-1 rounded">
-                                    {option}
-                                </span>
-                            ))}
+
+                    <h3 className="text-xl font-medium text-gray-700 mb-6">Edit Project Criteria</h3>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
+                        <CriteriaCard label="Gender" options={selectedCriteria.gender} icon="🚻" />
+                        <CriteriaCard label="Age Group" options={selectedCriteria.ageGroup} icon="👶👦🧓" />
+                        <div className="sm:col-span-2">
+                            <CriteriaCard label="Interest" options={selectedCriteria.interest} icon="✨" />
                         </div>
                     </div>
                 </div>
@@ -330,7 +364,7 @@ const ProjectDashboard = () => {
                 )}
 
                 {/* sus questionnaire creation and list */}
-                <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md"> 
+                {/* <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md"> 
                     <div className="flex justify-between items-center border-b border-gray-300">
                         <div className="flex flex-col gap-2">
                             <h1 className="font-semibold text-xl">Create SUS Questionnaire</h1>
@@ -379,6 +413,74 @@ const ProjectDashboard = () => {
                             </div>
                         )}
                     </div>
+                </div> */}
+                <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                    {/* Header */}
+                    <div className="flex justify-between items-center border-b pb-6 mb-6">
+                        <div>
+                            <h1 className="text-2xl font-semibold text-gray-800">📋 Create SUS Questionnaire</h1>
+                            <p className="text-gray-500 mt-1">You can create forms using questions.</p>
+                        </div>
+                        <button
+                            className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
+                            onClick={() => setShowSurveyFormModal(true)}
+                        >
+                            <ClipboardType className="w-4 h-4" />
+                            <span>Create SUS Form</span>
+                        </button>
+                    </div>
+
+                    {/* Form List */}
+                    <div>
+                        <p className="text-gray-700 font-medium mb-2">Current Forms:</p>
+
+                        {susforms.length === 0 ? (
+                            <p className="text-gray-400 italic">No forms available.</p>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-4">
+                                {susforms.map((susform) => (
+                                    <div
+                                        key={susform.id}
+                                        className="relative p-5 bg-[#DCD6F7] border border-[#C4BDED] rounded-xl shadow-sm hover:shadow-md transition cursor-pointer group"
+                                        onClick={() => navigate(`/form/${susform.id}`)}
+                                    >
+                                        {/* Dropdown */}
+                                        <div className="absolute top-3 right-3">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setShowDropdown(showDropdown === susform.id ? null : susform.id);
+                                                }}
+                                                className="p-2 rounded-full bg-[#C4BDED] hover:bg-[#ACA3E3]"
+                                            >
+                                                <EllipsisVertical size={20} />
+                                            </button>
+
+                                            {showDropdown === susform.id && (
+                                                <div
+                                                    className="absolute right-0 mt-2 bg-white border rounded shadow-md z-10"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <button
+                                                        onClick={() => handleDeleteForm(susform.id)}
+                                                        className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100 text-left"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="mt-2">
+                                            <h3 className="text-md font-semibold text-gray-800 truncate">{susform.susform_title}</h3>
+                                            <p className="text-sm text-gray-500 mt-1">Form ID: {susform.id}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
                 {showSurveyFormModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
@@ -410,7 +512,7 @@ const ProjectDashboard = () => {
 
 
                 {/* usability testing creation and list  */}
-                <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md">
+                {/* <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md">
                     <div className="flex justify-between items-center border-b border-gray-300">
                         <div className="flex flex-col gap-2">
                             <h1 className="font-semibold text-xl">Create Usability Testings</h1>
@@ -454,6 +556,74 @@ const ProjectDashboard = () => {
                                         <div onClick={()=> navigate(`/usability_testing/${usabilityTesting.id}`)}> 
                                             <h3 className="text-lg font-semibold">{usabilityTesting.id}</h3>
                                             <h3 className="text-lg font-semibold">{usabilityTesting.title}</h3>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div> */}
+                <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                    {/* Header */}
+                    <div className="flex justify-between items-center border-b pb-6 mb-6">
+                        <div>
+                            <h1 className="text-2xl font-semibold text-gray-800">🧪 Create Usability Testings</h1>
+                            <p className="text-gray-500 mt-1">You can create and manage usability tests here.</p>
+                        </div>
+                        <button
+                            className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
+                            onClick={() => setShowUsabilityTestingModal(true)}
+                        >
+                            <FlaskConical className="w-4 h-4" />
+                            <span>Create Usability Testing</span>
+                        </button>
+                    </div>
+
+                    {/* Testing List */}
+                    <div>
+                        <p className="text-gray-700 font-medium mb-2">Current Usability Testings:</p>
+
+                        {usabilityTestings.length === 0 ? (
+                            <p className="text-gray-400 italic">No usability testings available.</p>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-4">
+                                {usabilityTestings.map((usabilityTesting) => (
+                                    <div
+                                        key={usabilityTesting.id}
+                                        className="relative p-5 bg-[#DCD6F7] border border-[#C4BDED] rounded-xl shadow-sm hover:shadow-md transition cursor-pointer group"
+                                        onClick={() => navigate(`/usability_testing/${usabilityTesting.id}`)}
+                                    >
+                                        {/* Dropdown */}
+                                        <div className="absolute top-3 right-3 z-10">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setShowDropdown(showDropdown === usabilityTesting.id ? null : usabilityTesting.id);
+                                                }}
+                                                className="p-2 rounded-full bg-[#C4BDED] hover:bg-[#ACA3E3]"
+                                            >
+                                                <EllipsisVertical size={20} />
+                                            </button>
+
+                                            {showDropdown === usabilityTesting.id && (
+                                                <div
+                                                    className="absolute right-0 mt-2 bg-white border rounded shadow-md z-20"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <button
+                                                        onClick={() => handleDeleteUsabilityTesting(usabilityTesting.id)}
+                                                        className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100 text-left"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Card Content */}
+                                        <div className="mt-2">
+                                            <h3 className="text-md font-semibold text-gray-800 truncate">{usabilityTesting.title}</h3>
+                                            <p className="text-sm text-gray-500 mt-1">Test ID: {usabilityTesting.id}</p>
                                         </div>
                                     </div>
                                 ))}
