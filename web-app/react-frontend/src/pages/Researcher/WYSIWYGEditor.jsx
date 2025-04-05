@@ -242,8 +242,11 @@ const WYSIWYGEditor = ({ content, onUpdate }) => {
         ],
         content: content,
         onUpdate: ({ editor }) => {
+            const html = editor.getHTML();
+            console.log("Editor content updated:", html); //debugging
             if (onUpdate) {
-                onUpdate(editor.getHTML());
+                // onUpdate(editor.getHTML());
+                onUpdate(html);
             }
         },
         editorProps: {
@@ -252,6 +255,14 @@ const WYSIWYGEditor = ({ content, onUpdate }) => {
             },
         },
     });
+
+    // Add effect to handle external content changes
+    React.useEffect(() => {
+        if (editor && content !== editor.getHTML()) {
+            console.log("Syncing external content changes"); // Debug log
+            editor.commands.setContent(content);
+        }
+    }, [content, editor]);
 
     return (
         <div className="tiptap-editor-container">

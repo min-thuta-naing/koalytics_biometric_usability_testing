@@ -227,44 +227,90 @@ def login(request):
 
 # PROJECT RELATED METHODS (RESEARCER SIDE) ####################################################################################################################
 # ✅ for creating projects
+# @api_view(['POST'])
+# def create_project(request, user_id):
+#     try:
+#         # Ensure user exists
+#         user = User.objects.get(id=user_id)
+
+#         # extration of data from request 
+#         data = request.data
+#         project_name = data.get('name')
+#         project_description = data.get('description')
+#         organization = data.get('organization')
+#         max_participants = data.get('max_participants')  
+#         start_date = data.get('start_date')              
+#         end_date = data.get('end_date')                  
+#         side_notes = data.get('side_notes') 
+#         consent_text = data.get('consent_text', '')              
+
+#         # Validate required fields
+#         if not project_name or not project_description:
+#             return Response({'error': 'Project name and description are required.'}, status=400)
+
+#         # Create project and associate with user
+#         project = Project.objects.create(
+#             name=project_name,
+#             description=project_description,
+#             organization=organization,
+#             max_participants=max_participants,
+#             start_date=start_date,
+#             end_date=end_date,
+#             side_notes=side_notes,
+#             consent_text=consent_text
+#         )
+#         user.projects.add(project)
+
+#         return Response({'message': 'Project created successfully!', 'project_id': project.id}, status=status.HTTP_201_CREATED)
+
+#     except User.DoesNotExist:
+#         return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+#     except Exception as e:
+#         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 @api_view(['POST'])
 def create_project(request, user_id):
     try:
-        # Ensure user exists
         user = User.objects.get(id=user_id)
-
-        # extration of data from request 
         data = request.data
+        
+        print("Received data:", data)  # Debug log
+
+        # Required fields
         project_name = data.get('name')
         project_description = data.get('description')
-        organization = data.get('organization')
-        max_participants = data.get('max_participants')  
-        start_date = data.get('start_date')              
-        end_date = data.get('end_date')                  
-        side_notes = data.get('side_notes')             
+        consent_text = data.get('consent_text', '')  # Default to empty string
+        
+        print("Consent text received:", consent_text)  # Debug log
 
-        # Validate required fields
         if not project_name or not project_description:
             return Response({'error': 'Project name and description are required.'}, status=400)
 
-        # Create project and associate with user
         project = Project.objects.create(
             name=project_name,
             description=project_description,
-            organization=organization,
-            max_participants=max_participants,
-            start_date=start_date,
-            end_date=end_date,
-            side_notes=side_notes
+            organization=data.get('organization'),
+            max_participants=data.get('max_participants'),
+            start_date=data.get('start_date'),
+            end_date=data.get('end_date'),
+            side_notes=data.get('side_notes'),
+            consent_text=consent_text  # Make sure this is included
         )
+        
         user.projects.add(project)
+        print("Project created with consent:", project.consent_text)  # Debug log
 
-        return Response({'message': 'Project created successfully!', 'project_id': project.id}, status=status.HTTP_201_CREATED)
+        return Response({
+            'message': 'Project created successfully!', 
+            'project_id': project.id,
+            'has_consent': bool(project.consent_text)  # Debug info
+        }, status=status.HTTP_201_CREATED)
 
     except User.DoesNotExist:
-        return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'User not found.'}, status=404)
     except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print("Error creating project:", str(e))  # Debug log
+        return Response({'error': str(e)}, status=500)
 
 
 # ✅ editing the project info 
@@ -368,13 +414,30 @@ def get_project(request, project_id):
     except Project.DoesNotExist:
         return JsonResponse({"error": "Project not found"}, status=404)
     
-# for deleting the projects 
+# ✅ for deleting the projects (when delete the proj, it will detele its related susforms, questions and answers and usability testings)
+# @csrf_exempt
+# def delete_project(request, project_id):
+#     if request.method == "DELETE":
+#         project = get_object_or_404(Project, id=project_id)
+#         project.delete()
+#         return JsonResponse({"message": "Project deleted successfully"}, status=200)
+    
+#     return JsonResponse({"error": "Method not allowed"}, status=405)
 @csrf_exempt
 def delete_project(request, project_id):
     if request.method == "DELETE":
         project = get_object_or_404(Project, id=project_id)
+
+        # Manually delete related susforms (if no other project uses them)
+        for susform in project.susforms.all():
+            susform.delete()
+
+        # Same for usability_testings, forms, etc.
+        for ut in project.usability_testings.all():
+            ut.delete()
+
         project.delete()
-        return JsonResponse({"message": "Project deleted successfully"}, status=200)
+        return JsonResponse({"message": "Project and related forms deleted successfully"}, status=200)
     
     return JsonResponse({"error": "Method not allowed"}, status=405)
 

@@ -341,6 +341,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
     const [editorContent, setEditorContent] = React.useState(
         "<p><strong>Hello World,</strong></p><p>This Is a Demo Use of The Editor</p><p></p><p>Try Your Self like<u> UnderLine</u></p><p>or <s>Strike</s></p><p><strong>Bold is Gold</strong></p><p><em>Italic Is Elite</em></p><p><em><mark>Or You Want To Highlight</mark></em></p><p>Did I told You About Justify</p><p style='text-align: right'>Left</p><p>right</p><p style='text-align: center'>or even center</p><p>try The Link &amp; visit <a target='_blank' rel='noopener noreferrer nofollow' class='link link' href='https://github.com/mahmoud-bebars'>My GitHub</a></p><p style='text-align: center'></p>"
     );
+    const [consentContent, setConsentContent] = useState(getConsentTemplate('biometric'));
 
     const steps = [
         {
@@ -478,11 +479,16 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                     <p className="text-base">You can modify the following consent template.</p>
                     <div className="flex flex-col gap-6 mt-10">
             
-                        {/* <Editor content={editorContent} setContent={setEditorContent} /> */}
-
-                        <WYSIWYGEditor 
+                        {/* <WYSIWYGEditor 
                             content={getConsentTemplate('biometric')}  
                             onUpdate={(html) => console.log(html)} 
+                        /> */}
+                        <WYSIWYGEditor
+                            content={consentContent}  
+                            onUpdate={(html) => {
+                                console.log("Consent content updated:", html); // Debug log
+                                setConsentContent(html);
+                            }} 
                         />
 
                         {error && (
@@ -517,8 +523,6 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
             )
         }
     ];
-
-
 
     const validateFields = () => {
         // Reset error first
@@ -611,13 +615,15 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         setError("");
 
         if (!validateFields()) {
-            return; // Don't proceed if validation fails
+            return; // don't proceed to the next step if validation fails
         }
 
         if (!userId) {
             setError("User not found. Please log in.");
             return;
         }
+
+        console.log("Submitting with consent:", consentContent);
 
         try {
             const response = await fetch(`http://127.0.0.1:8000/create_project/${userId}/`, {
@@ -633,6 +639,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                     start_date: startDate,
                     end_date: endDate,
                     side_notes: sideNotes,
+                    consent_text: consentContent || "",
                 }),
             });
 
@@ -641,12 +648,16 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                 throw new Error(data.message || "Failed to create project.");
             }
 
+            const data = await response.json();
+            console.log("API Success:", data); // Debug log
+
             // On successful submission:
             setIsSubmitted(true);
             setCurrentStep(4); // Go to thank you page
             onProjectCreated();
             
         } catch (err) {
+            console.error("Submission Error:", err); // Debug log
             setError(err.message);
         }
     };
