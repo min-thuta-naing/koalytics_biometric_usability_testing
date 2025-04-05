@@ -484,30 +484,12 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                             content={getConsentTemplate('biometric')}  
                             onUpdate={(html) => console.log(html)} 
                         />
-                        {/* 
-                        {editorContent !== "" && (
-                            <>
-                            <p className="text-xl text-center font-bold">Preview</p>
-                            <div
-                                onClick={() => console.log(editorContent)}
-                                className="bg-white w-full max-w-lg p-3 rounded-lg shadow-lg cursor-pointer"
-                                dangerouslySetInnerHTML={{ __html: editorContent }}
-                            />
-                            <p className="text-sm text-center text-gray-400 underline font-normal">
-                                Click onthe Container to console The output HTML
-                            </p>
-                            </>
-                        )} */}
-            
-                        {/* Save Button */}
-                        <div className="flex justify-end"> 
-                            <button
-                            className="mt-3 bg-[#C4BDED] text-black px-2 py-2 rounded-lg self-end"
-                            // onClick={handleAddConsent}
-                            >
-                            Save Consent
-                            </button>
-                        </div>
+
+                        {error && (
+                            <div className="text-red-500 font-funnel mb-4 p-2 bg-red-50 rounded-md">
+                                {error}
+                            </div>
+                        )}
                     </div>
                 </div>
             )
@@ -539,48 +521,80 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
 
 
     const validateFields = () => {
-
-        // validate if the user don't fill all the fields
+        // Reset error first
+        setError("");
+        let isValid = true;
+        const requiredErrors = [];
+        const otherErrors = [];
+    
+        // Check required fields
         if (!projectName.trim()) {
-            setError("Project name is required");
-            return false;
+            requiredErrors.push("Project name");
+            isValid = false;
         }
         if (!projectDescription.trim()) {
-            setError("Project description is required");
-            return false;
+            requiredErrors.push("Project description");
+            isValid = false;
         }
         if (!organization) {
-            setError("Organization is required");
-            return false;
+            requiredErrors.push("Organization");
+            isValid = false;
         }
         if (!maxParticipants) {
-            setError("Participant number is required");
-            return false;
+            requiredErrors.push("Participant number");
+            isValid = false;
+        } else if (isNaN(maxParticipants) || parseInt(maxParticipants) <= 0) {
+            otherErrors.push("Participant number must be a positive number");
+            isValid = false;
         }
         if (!startDate) {
-            setError("Start date is required");
-            return false;
+            requiredErrors.push("Start date");
+            isValid = false;
         }
         if (!endDate) {
-            setError("End date is required");
-            return false;
+            requiredErrors.push("End date");
+            isValid = false;
+        } else if (startDate && new Date(startDate) > new Date(endDate)) {
+            otherErrors.push("End date must be after start date");
+            isValid = false;
         }
         if (!sideNotes.trim()) {
-            setError("Side notes are required");
-            return false;
+            requiredErrors.push("Side notes");
+            isValid = false;
+        }
+    
+        // Format error messages
+        let errorMessage = "";
+        if (requiredErrors.length > 0) {
+            errorMessage = requiredErrors.join(", ");
+            // Add "are required" or "is required" based on number of errors
+            errorMessage += requiredErrors.length > 1 ? " are required." : " is required.";
         }
         
-        // validation if the start data is later than end date
-        if (new Date(startDate) > new Date(endDate)) {
-            setError("End date must be after start date");
-            return false;
+        // Add other validation errors
+        if (otherErrors.length > 0) {
+            if (errorMessage) errorMessage += " ";
+            errorMessage += otherErrors.join(". ");
         }
-        
-        setError("");
-        return true;
+    
+        if (errorMessage) {
+            setError(errorMessage);
+        }
+    
+        return isValid;
     };
 
     const handleNext = (e) => {
+        if (currentStep === 2) {
+            // Only validate when we're on the Project Details step
+            const isValid = validateFields();
+            if (!isValid) {
+                return; // Don't proceed if validation fails
+            }
+            // Clear any previous errors if validation passes
+            setError("");
+        }
+
         if (currentStep < steps.length ) { 
             setCurrentStep(currentStep + 1);
         }
@@ -629,7 +643,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
 
             // On successful submission:
             setIsSubmitted(true);
-            setCurrentStep(3); // Go to thank you page
+            setCurrentStep(4); // Go to thank you page
             onProjectCreated();
             
         } catch (err) {
@@ -677,7 +691,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                                     <h3 className={`font-funnel font-semibold ${currentStep >= step.id ? 'text-gray-900' : 'text-gray-500'}`}>
                                         {step.title}
                                     </h3>
-                                    <p className={`font-funnel text-sm mt-1 ${currentStep >= step.id ? 'text-gray-500' : 'text-gray-400'}`}>
+                                    <p className={`font-funnel text-sm mt-1 ${currentStep >= step.id ? 'text-gray-500' : 'text-black'}`}>
                                         {step.description}
                                     </p>
                                 </div>
@@ -703,16 +717,15 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                             >
                                 Back
                             </button>
-                            
-                            
-                                
+
+         
                             <button
                                 type="button"
-                                onClick={currentStep === 2 ? handleSubmit : handleNext}
+                                onClick={currentStep === 3 ? handleSubmit : handleNext}
                                 //onClick={handleNext}
-                                className={`px-4 py-2 ${currentStep === 2 ? 'bg-violet-500 hover:bg-violet-600' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-md`}
+                                className={`px-4 py-2 ${currentStep === 2 ? 'bg-[#C4BDED] hover:bg-[#ACA3E3]' : 'bg-[#C4BDED] hover:bg-[#ACA3E3]'} text-black rounded-md`}
                             >
-                                {currentStep === 2 ? 'Continue' : 'Next'}
+                                {currentStep === 3 ? 'Submit' : 'Next'}
                             </button>
                         </div>
                     )}
