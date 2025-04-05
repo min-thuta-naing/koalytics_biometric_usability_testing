@@ -60,6 +60,7 @@ urlpatterns = [
     path("api/update_project/<int:project_id>/", update_project, name="update_project"),
     path('api/project/<int:project_id>/', get_project, name='get_project'),
     path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"),
+    path('api/projects/<int:project_id>/save-consent/', views.create_project_consent, name='create_project_consent'),
 
     path('api/save_criteria_gender/<int:project_id>/', save_critieria_gender, name='save-criteria-gender'),
     path('api/save_criteria_age_group/<int:project_id>/', save_critieria_age_group, name='save-criteria-age-group'),

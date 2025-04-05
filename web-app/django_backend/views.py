@@ -226,8 +226,7 @@ def login(request):
 
 
 # PROJECT RELATED METHODS (RESEARCER SIDE) ####################################################################################################################
-#for creating projects 
-# ✅
+# ✅ for creating projects
 @api_view(['POST'])
 def create_project(request, user_id):
     try:
@@ -268,9 +267,7 @@ def create_project(request, user_id):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
-# editing the project info 
-# ✅
+# ✅ editing the project info 
 @csrf_exempt
 def update_project(request, project_id):
     if request.method == "PATCH":
@@ -380,6 +377,23 @@ def delete_project(request, project_id):
         return JsonResponse({"message": "Project deleted successfully"}, status=200)
     
     return JsonResponse({"error": "Method not allowed"}, status=405)
+
+
+# ✅ saving project consent 
+@api_view(['POST'])
+def create_project_consent(request, project_id):
+    consent_text = request.data.get('consent_text')
+
+    if not consent_text:
+        return Response({'error': 'Consent text is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        project = Project.objects.get(id=project_id)
+        project.consent_text = consent_text
+        project.save()
+        return Response({'message': 'Consent text saved successfully.'}, status=status.HTTP_200_OK)
+    except Project.DoesNotExist:
+        return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
 # FORM RELATED METHODS (RESEARCER SIDE) ##########################################################
