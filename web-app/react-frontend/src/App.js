@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import SignUp from "./pages/SignupPage";
 import './index.css'; // Ensure this is already here
 import LandingPage from "./pages/LandingPage";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/Participant/HomePage";
 import SideandTopBar from "./pages/Researcher/SideandTopBar";
 import MyAccount from "./pages/MyAccount";
 import AboutUs from "./pages/AboutUs";
