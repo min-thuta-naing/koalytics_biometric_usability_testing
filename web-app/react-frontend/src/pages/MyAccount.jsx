@@ -11,18 +11,29 @@ const MyAccount = () => {
         "/static/images/user3.png",
         "/static/images/user4.png",
         "/static/images/user5.png",
-        "/static/images/user5.png"
     ];
 
     useEffect(() => {
         try {
             const storedUser = localStorage.getItem("user");
-            if (!storedUser) throw new Error("User not found. Please log in.");
+            if (!storedUser) {
+                // Check if there's any signup data that might not be in the expected format
+                const signupData = localStorage.getItem("signupData");
+                if (signupData) {
+                    const user = JSON.parse(signupData);
+                    setUserData(user);
+                } else {
+                    throw new Error("User not found. Please log in.");
+                }
+            } else {
+                const user = JSON.parse(storedUser);
+                // For new users, we might not have an id yet, but we can still show the account page
+                if (!user.id) {
+                    console.warn("User ID missing - this might be a new user");
+                }
+                setUserData(user);
+            }
 
-            const user = JSON.parse(storedUser);
-            if (!user?.id) throw new Error("User ID missing. Please log in.");
-
-            setUserData(user);
             const savedProfilePic = localStorage.getItem("profilePic");
             if (savedProfilePic) {
                 setSelectedImage(savedProfilePic);
@@ -33,11 +44,9 @@ const MyAccount = () => {
         }
     }, []);
 
-
     const handleProfileImageSelect = (image) => {
         setSelectedImage(image);
     };
- 
  
     const handleConfirmProfileImage = () => {
         localStorage.setItem("profilePic", selectedImage);
@@ -49,13 +58,12 @@ const MyAccount = () => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                localStorage.setItem("profilePicture", reader.result); // Save image URL
+                localStorage.setItem("profilePicture", reader.result);
             };
             reader.readAsDataURL(file);
         }
     };
 
-    
     if (error) {
         return <p className="text-red-500">Error: {error}</p>;
     }
