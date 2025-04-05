@@ -100,8 +100,26 @@ const FormDetail = () => {
   //   }
   // };
 
-  if (error) return <p className="text-red-500">{error}</p>;
-  if (!form) return <p>Loading...</p>;
+  if (!form) {
+    return (
+        <div className="flex justify-center items-center h-screen bg-gray-100">
+            <div className="text-center">
+            <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
+                <p className="mt-4 text-xl font-funnel font-semibold text-gray-700">Loading SUS form details. Please wait ... </p>
+            </div>
+        </div>
+    );
+  }
+  if (error) {
+      return (
+          <div className="flex justify-center items-center h-screen bg-gray-100">
+              <div className="text-center">
+              <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
+                  <div className="mt-4 text-xl font-funnel font-semibold text-gray-700">{error}</div>
+              </div>
+          </div>
+      );
+  }
 
   return (
     <div className=" bg-[#F0EEED] h-screen flex flex-col">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { X } from "lucide-react";
 
 const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated }) => {
 
@@ -61,70 +62,89 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full relative">
-                <button
-                    className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
-                    onClick={onClose}
-                >
-                    ✕
-                </button>
-                <h2 className="text-xl font-semibold mb-6">Create Usability Testing</h2>
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
 
-                {error && <p className="text-red-500 mb-4">{error}</p>}
-                {success && <p className="text-green-500 mb-4">{success}</p>}
-
-                <form onSubmit={handleSubmit}>
-                    <label className="block mb-2">Title:</label>
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="w-full p-2 mb-4 rounded border"
-                        required
-                    />
-
-                    <label className="block mb-2">Task:</label>
-                    <textarea
-                        type="text"
-                        value={task}
-                        onChange={(e) => setTask(e.target.value)}
-                        className="w-full p-2 mb-4 rounded border"
-                        required
-                    />
-
-                    <label className="block mb-2">Duration of the test:</label>
-                    <input
-                        type="number"
-                        value={duration}
-                        onChange={(e) => setDuration(e.target.value)}
-                        className="w-full p-2 mb-4 rounded border"
-                        required
-                    />
-
-                    <label className="block mb-2">Website Link:</label>
-                    <input
-                        type="url"
-                        value={websiteLink}
-                        onChange={(e) => setWebsiteLink(e.target.value)}
-                        className="w-full p-2 mb-4 rounded border"
-                        required
-                    />
-
-                    <label className="block mb-2">Figma Embed Code:</label>
-                    <textarea
-                        value={figmaEmbedCode}
-                        onChange={(e) => setFigmaEmbedCode(e.target.value)}
-                        className="w-full p-2 mb-4 rounded border"
-                        required
-                    />
-
+                {/* Title and Close Button Section */}
+                <div className="flex items-center justify-between p-3 bg-gray-100 rounded-t-lg relative">
+                    <h2 className="font-semibold font-funnel text-lg">Create Usability Testing</h2>
                     <button
-                        type="submit"
-                        className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700"
+                        onClick={onClose}
+                        className="text-black bg-white hover:bg-gray-200 rounded-lg border border-gray-300 p-1"
                     >
-                        Create Usability Testing
+                        <X className="w-4 h-4" />
                     </button>
-                </form>
+                </div>
+
+                {/* Divider */}
+                <div className="w-full h-[1px] bg-gray-300"></div>
+                
+                <div className="bg-white w-full p-6 h-[600px] overflow-y-auto">  
+                    <form onSubmit={handleSubmit}>
+                        <label className="block mb-2">Title:</label>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                            required
+                        />
+
+                        <label className="block mb-2">Task:</label>
+                        <textarea
+                            type="text"
+                            value={task}
+                            onChange={(e) => setTask(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                            required
+                        />
+
+                        <label className="block mb-2">Duration of the test:</label>
+                        <input
+                            type="number"
+                            value={duration}
+                            onChange={(e) => setDuration(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                            required
+                        />
+
+                        <label className="block mb-2">Website Link:</label>
+                        <input
+                            type="url"
+                            value={websiteLink}
+                            onChange={(e) => setWebsiteLink(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                            required
+                        />
+
+                        <label className="block mb-2">Figma Embed Code:</label>
+                        <textarea
+                            value={figmaEmbedCode}
+                            onChange={(e) => setFigmaEmbedCode(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                            required
+                        />
+
+                        {error && <p className="text-red-500 mb-4">{error}</p>}
+                        {success && <p className="text-green-500 mb-4">{success}</p>}
+
+                        <div className="flex justify-end">
+                            <button
+                                type="submit"
+                                className="bg-[#C4BDED] text-black py-2 px-4 rounded-lg hover:bg-[#ACA3E3]"
+                            >
+                                Create Usability Testing
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {/* Divider */}
+                <div className="w-full h-[1px] bg-gray-300"></div>
+
+                {/* Bottom and Close Button Section */}
+                <div className="flex items-center font-funnel justify-between p-3 bg-gray-100 rounded-b-lg relative">
+                    <h2 className="font-semibold text-base">Koalytics</h2>
+                </div>
             </div>
         </div>
     )

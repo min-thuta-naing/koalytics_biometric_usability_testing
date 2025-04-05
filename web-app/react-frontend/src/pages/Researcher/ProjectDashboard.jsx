@@ -1,6 +1,6 @@
 import { useEffect, useState,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Pencil, SquarePlus, EllipsisVertical, ClipboardType, FlaskConical } from 'lucide-react';
+import { Pencil, SquarePlus, EllipsisVertical, ClipboardType, FlaskConical, X } from 'lucide-react';
 import CreateSUSForms from './CreateForms'; 
 import EditProjectDetail from "./EditProjectDetail";
 import AddCriteriaForm from './AddCriteriaForm';
@@ -65,12 +65,58 @@ const ProjectDashboard = () => {
             return { ...prev, [category]: updatedCategory };
         });
     }, []);
+
     // Function to confirm the selected criteria
-    const confirmCriteria = () => {
-        setSelectedCriteria(tempSelectedCriteria);
-        setShowAddCriteriaModal(false); // Close the popup
+    const confirmCriteria = async () => {
+        setSelectedCriteria(tempSelectedCriteria); // update local state
+        setShowAddCriteriaModal(false); // close modal
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/save-criteria/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken(),
+                },
+                body: JSON.stringify(tempSelectedCriteria),
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Error saving criteria:", errorData);
+            } else {
+                const result = await response.json();
+                fetchProjectCriteria();
+            }
+        } catch (err) {
+            console.error("Error:", err);
+        }
     };
 
+    // Function to fetch the criteria from db 
+    useEffect(() => {
+        fetchProjectCriteria();
+    }, [projectId]);
+    
+    const fetchProjectCriteria = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/get-criteria/`);
+            if (response.ok) {
+                const data = await response.json();
+                setSelectedCriteria({
+                    gender: data.gender || [],
+                    ageGroup: data.age_group || [],
+                    interest: data.interest || [],
+                });
+            } else {
+                console.error("No criteria set for this project.");
+            }
+        } catch (error) {
+            console.error("Error fetching project criteria:", error);
+        }
+    };
+    
+    
 ////////////////////////////////////////////// FETCH FORMS //////////////////////////////////////////////
     useEffect(() => {
         fetchSUSForms();
@@ -138,7 +184,16 @@ const ProjectDashboard = () => {
     }, [projectId]);
 
     // will display this when there is no project 
-    if (!project) return <p>Loading project details...</p>;
+    if (!project) {
+        return (
+            <div className="flex justify-center items-center h-screen bg-gray-100">
+                <div className="text-center">
+                <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
+                    <p className="mt-4 text-xl font-funnel font-semibold text-gray-700">Loading the project, please wait ...</p>
+                </div>
+            </div>
+        );
+    }
 
 
 ////////////////////////////////////////////// HANDLE EDIT PROJECT //////////////////////////////////////////////
@@ -241,7 +296,7 @@ const ProjectDashboard = () => {
                     options.map((option) => (
                         <span
                             key={option}
-                            className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-medium"
+                            className="bg-[#DCD6F7] text-black px-3 py-1 rounded-full text-sm font-medium"
                         >
                             {option}
                         </span>
@@ -253,11 +308,6 @@ const ProjectDashboard = () => {
         </div>
     );
     
-    
-    
-    
-
-
     return (
         <div className="bg-[#F0EEED] h-screen overflow-hidden">
             {/* Project Cover Image */}
@@ -279,7 +329,7 @@ const ProjectDashboard = () => {
 
                 {/* Project Details */}
                 <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
-                    <div className="flex justify-between items-center mb-8">
+                    <div className="flex justify-between items-center border-b pb-4 mb-6">
                         <h2 className="text-2xl font-semibold text-gray-800">📁 Project Overview</h2>
                         <button
                             className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
@@ -313,22 +363,13 @@ const ProjectDashboard = () => {
                     </div>
                 </div>
                 {showEditModal && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                        <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full relative">
-                            <button
-                                className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
-                                onClick={() => setShowEditModal(false)}
-                            >
-                                ✕
-                            </button>
-                            <EditProjectDetail 
-                                onCancel={()=> setShowEditModal(false)}
-                                projectId={projectId}
-                                onProjectEdited={handleProjectEdited}
-                                project={project} // pass the data to pop up to prevent empty field when open the edit pop up 
-                            />
-                        </div>
-                    </div>
+                    <EditProjectDetail 
+                        onCancel={()=> setShowEditModal(false)}
+                        projectId={projectId}
+                        onProjectEdited={handleProjectEdited}
+                        project={project} // pass the data to pop up to prevent empty field when open the edit pop up 
+                        setShowEditModal={setShowEditModal}
+                    />    
                 )}
 
                 {/* project criteria */}
@@ -337,10 +378,13 @@ const ProjectDashboard = () => {
                         <h2 className="text-2xl font-semibold text-gray-800">🎯 Project Criteria</h2>
                         <button
                             className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
-                            onClick={() => setShowAddCriteriaModal(true)}
+                            onClick={() => {
+                                setTempSelectedCriteria(selectedCriteria); // this line is for the previously selected criteria (from the first time you saved) to be pre-checked in the modal the next time you open the pop up.
+                                setShowAddCriteriaModal(true);             
+                            }}
                         >
                             <SquarePlus className="w-4 h-4" />
-                            <span>Add</span>
+                            <span>Add Project Criteria</span>
                         </button>
                     </div>
 
@@ -419,10 +463,10 @@ const ProjectDashboard = () => {
                     <div className="flex justify-between items-center border-b pb-6 mb-6">
                         <div>
                             <h1 className="text-2xl font-semibold text-gray-800">📋 Create SUS Questionnaire</h1>
-                            <p className="text-gray-500 mt-1">You can create forms using questions.</p>
+                            <p className="text-gray-500 mt-1">You can create System Usability Scale (SUS) forms using ten questions.</p>
                         </div>
                         <button
-                            className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
+                            className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg shadow transition"
                             onClick={() => setShowSurveyFormModal(true)}
                         >
                             <ClipboardType className="w-4 h-4" />
@@ -483,19 +527,15 @@ const ProjectDashboard = () => {
                     </div>
                 </div>
                 {showSurveyFormModal && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
-                        <div className="bg-white rounded-lg shadow-xl max-w-xl w-full relative flex flex-col">
-                            <CreateSUSForms 
-                                onClose={() => setShowSurveyFormModal(false)} 
-                                projectId={projectId} 
-                                onFormCreated = {handleFormCreated}
-                            />
-                        </div>
-                    </div>
+                    <CreateSUSForms 
+                        onClose={() => setShowSurveyFormModal(false)} 
+                        projectId={projectId} 
+                        onFormCreated = {handleFormCreated}
+                    />
                 )}
                 {/* Delete Confirmation Pop up */}
                 {showConfirmModalForm && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                         <div className="bg-white p-6 rounded-lg shadow-lg">
                             <p className="text-lg font-semibold">Are you sure you want to delete this form?</p>
                             <div className="flex justify-end gap-4 mt-4">
@@ -568,7 +608,7 @@ const ProjectDashboard = () => {
                     <div className="flex justify-between items-center border-b pb-6 mb-6">
                         <div>
                             <h1 className="text-2xl font-semibold text-gray-800">🧪 Create Usability Testings</h1>
-                            <p className="text-gray-500 mt-1">You can create and manage usability tests here.</p>
+                            <p className="text-gray-500 mt-1">You can create and manage biometric usability tests.</p>
                         </div>
                         <button
                             className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
@@ -640,7 +680,7 @@ const ProjectDashboard = () => {
                 )}
                 {/* Delete Confirmation Pop up */}
                 {showConfirmModalUT && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                         <div className="bg-white p-6 rounded-lg shadow-lg">
                             <p className="text-lg font-semibold">Are you sure you want to delete this usability testing?</p>
                             <div className="flex justify-end gap-4 mt-4">

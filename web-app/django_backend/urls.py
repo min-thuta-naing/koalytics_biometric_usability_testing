@@ -58,6 +58,11 @@ urlpatterns = [
     path('api/project/<int:project_id>/', get_project, name='get_project'),
     path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"),
 
+    path('api/project/<int:project_id>/save-criteria/', views.create_or_update_criteria, name='create_or_update_criteria'),
+    path('api/project/<int:project_id>/get-criteria/', views.get_project_criteria, name='get_project_criteria'),
+
+
+
     path('api/save_criteria_gender/<int:project_id>/', save_critieria_gender, name='save-criteria-gender'),
     path('api/save_criteria_age_group/<int:project_id>/', save_critieria_age_group, name='save-criteria-age-group'),
     path('api/save_criteria_interest/<int:project_id>/', save_critieria_interest, name='save-criteria-interest'),

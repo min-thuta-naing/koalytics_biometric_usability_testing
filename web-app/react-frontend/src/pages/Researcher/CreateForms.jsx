@@ -76,66 +76,73 @@ const CreateSurveyForms = ({ onClose, projectId, onFormCreated }) => {
     };
 
     return (
-        <div>
-            {/* Title and Close Button Section */}
-            <div className="flex items-center justify-between p-3 bg-gray-100 rounded-t-lg relative">
-                <h2 className="font-semibold font-funnel text-lg">Create a New SUS Form </h2>
-                {!isSubmitted && ( // Only show close button if not on thank you page
-                    <button
-                        onClick={onClose}
-                        className="text-black bg-white hover:bg-gray-200 rounded-lg border border-gray-300 p-1"
-                    >
-                        <X className="w-4 h-4" />
-                    </button>
-                )}
-            </div>
-
-            {/* Divider */}
-            <div className="w-full h-[1px] bg-gray-300"></div>
-
-            <div className="bg-white p-8 relative">
-
-                {/* {error && <p className="text-red-500 mb-4">{error}</p>}
-                {success && <p className="text-green-500 mb-4">{success}</p>} */}
-
-                <form onSubmit={handleSubmit}>
-                    <label className="block mb-2">Form Title:</label>
-                    <input
-                        type="text"
-                        value={sustitle}
-                        onChange={(e) => setSUSTitle(e.target.value)}
-                        className="w-full p-2 mb-4 rounded border"
-                        required
-                    />
-
-                    <textarea
-                        value={susdescription}
-                        onChange={(e) => setSUSDescription(e.target.value)}
-                        className="w-full p-2 mb-4 rounded border"
-                        required
-                    />
-
-                    <button
-                        type="submit"
-                        className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700"
-                    >
-                        Create Form
-                    </button>
-
-                    {error && (
-                        <div className="text-red-500 font-funnel mb-4 p-2 bg-red-50 rounded-md">
-                            {error}
-                        </div>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
+            <div className="bg-white rounded-lg shadow-xl max-w-xl w-full relative flex flex-col">
+                {/* Title and Close Button Section */}
+                <div className="flex items-center justify-between p-3 bg-gray-100 rounded-t-lg relative">
+                    <h2 className="font-semibold font-funnel text-lg">Create a New SUS Form </h2>
+                    {!isSubmitted && ( // Only show close button if not on thank you page
+                        <button
+                            onClick={onClose}
+                            className="text-black bg-white hover:bg-gray-200 rounded-lg border border-gray-300 p-1"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
                     )}
-                </form>
-            </div>
+                </div>
 
-            {/* Divider */}
-            <div className="w-full h-[1px] bg-gray-300"></div>
+                {/* Divider */}
+                <div className="w-full h-[1px] bg-gray-300"></div>
 
-            {/* Bottom and Close Button Section */}
-            <div className="flex items-center font-funnel justify-between p-3 bg-gray-100 rounded-b-lg relative">
-                <h2 className="font-semibold text-base">Koalytics</h2>
+                <div className="bg-white p-8 w-full h-[400px] overflow-y-auto">
+
+                    {/* {error && <p className="text-red-500 mb-4">{error}</p>}
+                    {success && <p className="text-green-500 mb-4">{success}</p>} */}
+
+                    <form onSubmit={handleSubmit}>
+                        <label className="block mb-2">Form Title:</label>
+                        <input
+                            type="text"
+                            value={sustitle}
+                            onChange={(e) => setSUSTitle(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                            required
+                        />
+
+                        <label className="block mb-2">Instruction:</label>
+                        <textarea
+                            value={susdescription}
+                            onChange={(e) => setSUSDescription(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                            rows="5"
+                            required
+                        />
+                        <p className="py-2">* Please provide instruction about SUS form to participant *</p>
+
+                        <div className="flex justify-end">
+                            <button
+                                type="submit"
+                                className="bg-[#C4BDED] text-black py-2 px-4 rounded-lg hover:bg-[#ACA3E3]"
+                            >
+                                Create SUS Form
+                            </button>
+                        </div>
+
+                        {error && (
+                            <div className="text-red-500 font-funnel mb-4 p-2 bg-red-50 rounded-md">
+                                {error}
+                            </div>
+                        )}
+                    </form>
+                </div>
+
+                {/* Divider */}
+                <div className="w-full h-[1px] bg-gray-300"></div>
+
+                {/* Bottom and Close Button Section */}
+                <div className="flex items-center font-funnel justify-between p-3 bg-gray-100 rounded-b-lg relative">
+                    <h2 className="font-semibold text-base">Koalytics</h2>
+                </div>
             </div>
         </div>
     );

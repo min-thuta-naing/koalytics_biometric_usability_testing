@@ -96,6 +96,13 @@ class Project(models.Model):
         return self.name
     
 # ✅ for criteria (genders, age groups, interest)
+class ProjectCriteria(models.Model):
+    project = models.OneToOneField(Project, on_delete=models.CASCADE)
+    gender = models.JSONField(default=list)  # or use ManyToMany if you have separate Gender models
+    age_group = models.JSONField(default=list)
+    interest = models.JSONField(default=list)
+    
+
 class Gender(models.Model):
     gender = models.CharField(max_length=200)
 

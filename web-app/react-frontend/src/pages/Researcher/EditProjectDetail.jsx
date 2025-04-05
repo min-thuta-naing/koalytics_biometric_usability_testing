@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import {X} from "lucide-react"; 
 
-const EditProjectDetail = ({onCancel, projectId, onProjectEdited, project}) => {
+const EditProjectDetail = ({onCancel, projectId, onProjectEdited, project, setShowEditModal}) => {
 
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -77,80 +78,108 @@ const EditProjectDetail = ({onCancel, projectId, onProjectEdited, project}) => {
 
 
     return (
-        <div> 
-            <h2 className="text-xl font-semibold mb-6">Edit Project Details</h2>
-            <form onSubmit={handleSubmit}>
-                <label>Project Name:</label>
-                <input
-                    type="text"
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    className="w-full p-2 mb-4 rounded border"
-                />
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
 
-                <label>Project Description:</label>
-                <textarea
-                    value={projectDescription}
-                    onChange={(e) => setProjectDescription(e.target.value)}
-                    className="w-full p-2 mb-4 rounded border"
-                    rows="2"
-                />
+                {/* Title and Close Button Section */}
+                <div className="flex items-center justify-between p-3 bg-gray-100 rounded-t-lg relative">
+                    <h2 className="font-semibold font-funnel text-lg">Edit Project Details</h2>
+                    <button
+                        onClick={() => setShowEditModal(false)}
+                        className="text-black bg-white hover:bg-gray-200 rounded-lg border border-gray-300 p-1"
+                    >
+                        <X className="w-4 h-4" />
+                    </button>
 
-                <label>Organization:</label>
-                <select
-                    value={organization}
-                    onChange={(e) => setOrganization(e.target.value)}
-                    className="w-full p-2 mb-4 rounded border"
-                >
-                    <option value="company">Company</option>
-                    <option value="school">School</option>
-                    <option value="college">College</option>
-                    <option value="institution">Institution</option>
-                    <option value="university">University</option>
-                    <option value="freelance">Freelance</option>
-                </select>
+                </div>
 
-                <label>Max Participants:</label>
-                <input
-                    type="number"
-                    value={maxParticipants}
-                    onChange={(e) => setMaxParticipants(e.target.value)}
-                    className="w-full p-2 mb-4 rounded border"
-                />
+                {/* Divider */}
+                <div className="w-full h-[1px] bg-gray-300"></div>
 
-                <label>Start Date:</label>
-                <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full p-2 mb-4 rounded border"
-                />
+                <div className="bg-white w-full p-6 h-[600px] overflow-y-auto"> 
+                    <form onSubmit={handleSubmit}>
+                        <label>Project Name:</label>
+                        <input
+                            type="text"
+                            value={projectName}
+                            onChange={(e) => setProjectName(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                        />
 
-                <label>End Date:</label>
-                <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full p-2 mb-4 rounded border"
-                />
+                        <label>Project Description:</label>
+                        <textarea
+                            value={projectDescription}
+                            onChange={(e) => setProjectDescription(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                            rows="2"
+                        />
 
-                <label>Side Notes:</label>
-                <textarea
-                    value={sideNotes}
-                    onChange={(e) => setSideNotes(e.target.value)}
-                    className="w-full p-2 mb-4 rounded border"
-                    rows="2"
-                />
+                        <label>Organization:</label>
+                        <select
+                            value={organization}
+                            onChange={(e) => setOrganization(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                        >
+                            <option value="company">Company</option>
+                            <option value="school">School</option>
+                            <option value="college">College</option>
+                            <option value="institution">Institution</option>
+                            <option value="university">University</option>
+                            <option value="freelance">Freelance</option>
+                        </select>
 
-                <button
-                    type="submit"
-                    className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700"
-                >
-                    Save Changes
-                </button>
-            </form>
+                        <label>Max Participants:</label>
+                        <input
+                            type="number"
+                            value={maxParticipants}
+                            onChange={(e) => setMaxParticipants(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                        />
 
-        </div>
+                        <label>Start Date:</label>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                        />
+
+                        <label>End Date:</label>
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                        />
+
+                        <label>Side Notes:</label>
+                        <textarea
+                            value={sideNotes}
+                            onChange={(e) => setSideNotes(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                            rows="2"
+                        />
+
+                        <div className="flex justify-end">
+                            <button
+                                type="submit"
+                                className="bg-[#C4BDED] text-black py-2 px-4 rounded-lg hover:bg-[#ACA3E3]"
+                            >
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {/* Divider */}
+                <div className="w-full h-[1px] bg-gray-300"></div>
+
+                {/* Bottom and Close Button Section */}
+                <div className="flex items-center font-funnel justify-between p-3 bg-gray-100 rounded-b-lg relative">
+                    <h2 className="font-semibold text-base">Koalytics</h2>
+                </div>
+            </div>
+        </div>     
     )
 }
 
