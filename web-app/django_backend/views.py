@@ -19,8 +19,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
-from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion, SUSQAnswer
-from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer, SUSQuestionSerializer, SUSQAnswerSerializer
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion, SUSQAnswer, ProjectCriteria
+from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer, SUSQuestionSerializer, SUSQAnswerSerializer, ProjectCriteriaSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from collections import defaultdict
@@ -297,7 +297,35 @@ def update_project(request, project_id):
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
 
+
 # ✅ saving project criteria 
+@api_view(["POST"])
+def create_or_update_criteria(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+    except Project.DoesNotExist:
+        return Response({"error": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    data = request.data
+
+    criteria, created = ProjectCriteria.objects.get_or_create(project=project)
+    criteria.gender = data.get("gender", [])
+    criteria.age_group = data.get("ageGroup", [])
+    criteria.interest = data.get("interest", [])
+    criteria.save()
+
+    return Response({"message": "Criteria updated successfully!"}, status=status.HTTP_200_OK)
+
+# ✅ fetching project criteria 
+@api_view(['GET'])
+def get_project_criteria(request, project_id):
+    try:
+        criteria = ProjectCriteria.objects.get(project_id=project_id)
+        serializer = ProjectCriteriaSerializer(criteria)
+        return Response(serializer.data)
+    except ProjectCriteria.DoesNotExist:
+        return Response({"detail": "No criteria set for this project."}, status=status.HTTP_404_NOT_FOUND)
+
 @csrf_exempt
 def save_critieria_gender (request, project_id):
     if request.method == 'POST': 

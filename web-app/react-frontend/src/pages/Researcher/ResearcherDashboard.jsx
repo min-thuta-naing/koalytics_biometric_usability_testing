@@ -89,7 +89,7 @@ const ResearcherDashboard = () => {
                 </div>
                 <button
                     onClick={() => setShowProjectForm(true)}
-                    className="bg-[#C4BDED] font-funnel text-black text-sm px-4 py-2 w-40 h-12 rounded-lg shadow-lg hover:bg-[#ACA3E3]"
+                    className="bg-[#C4BDED] font-funnel text-black text-sm px-4 py-2 rounded-lg shadow hover:bg-[#ACA3E3]"
                 >
                     Create New Project
                 </button>

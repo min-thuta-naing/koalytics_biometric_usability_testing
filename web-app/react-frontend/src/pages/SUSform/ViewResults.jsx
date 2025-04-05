@@ -181,7 +181,6 @@ const ViewResults = () => {
             </div>
         );
     }
-    // if (error) return <div>{error}</div>;
     if (error) {
         return (
             <div className="flex justify-center items-center h-screen bg-gray-100">
