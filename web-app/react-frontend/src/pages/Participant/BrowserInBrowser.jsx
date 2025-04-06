@@ -1,68 +1,3 @@
-// import React, { useEffect, useRef } from 'react';
-// import { useLocation } from 'react-router-dom';
-
-// const BrowserInBrowser = () => {
-//     const location = useLocation();
-//     const urlParams = new URLSearchParams(location.search);
-//     const url = urlParams.get('url'); // Get the URL from query parameters
-
-//     const videoRef = useRef(null);
-
-//     useEffect(() => {
-//         // Access the user's webcam
-//         navigator.mediaDevices.getUserMedia({ video: true })
-//             .then((stream) => {
-//                 if (videoRef.current) {
-//                     videoRef.current.srcObject = stream;
-//                 }
-//             })
-//             .catch((error) => {
-//                 console.error("Error accessing webcam:", error);
-//             });
-
-//         return () => {
-//             // Cleanup: stop the webcam stream when the component unmounts
-//             if (videoRef.current && videoRef.current.srcObject) {
-//                 const tracks = videoRef.current.srcObject.getTracks();
-//                 tracks.forEach(track => track.stop());
-//             }
-//         };
-//     }, []);
-
-//     return (
-//         <div className="flex h-screen">
-
-//             {/* Left Side (Content Section with Camera) */}
-//             <div className="w-1/5 p-4 bg-gray-100 flex flex-col items-center">
-//                 <h2 className="text-xl font-bold">Facial</h2>
-//                 {/* <p className="mb-2 text-center">This space can be used to provide instructions or any other content.</p> */}
-
-//                 {/* Camera Frame */}
-//                 <div className="w-full bg-black rounded-lg overflow-hidden flex justify-center">
-//                     <video ref={videoRef} autoPlay playsInline className="w-full h-auto"></video>
-//                 </div>
-//             </div>
-
-//             {/* Right Side (Iframe Section) */}
-//             <div className="w-4/5 h-full">
-//                 {url ? (
-//                     <iframe
-//                         src={url}
-//                         title="Embedded Browser"
-//                         className="w-full h-full border-none"
-//                     />
-//                 ) : (
-//                     <p className="text-center mt-10">No URL provided</p>
-//                 )}
-//             </div>
-
-//         </div>
-//     );
-// };
-
-// export default BrowserInBrowser;
-
-
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -83,7 +18,7 @@ const BrowserInBrowser = () => {
     const [duration, setDuration] = useState(0);
     const [timeLeft, setTimeLeft] = useState(0);
 
-    // with the id passed from TestCalibration page, fetch the usability testing detail of that id 
+    // with the id passed from TestCalibration page, fetch the usability testing detail (task and duration) of that id 
     const id = urlParams.get('id');
     useEffect(() => {
         if (!id) return;
@@ -93,7 +28,7 @@ const BrowserInBrowser = () => {
                 const data = await res.json();
                 setTask(data.task);
                 setDuration(data.duration);
-                setTimeLeft(data.duration * 60); // convert minutes to seconds
+                setTimeLeft(data.duration * 60 * 1000); // convert minutes to seconds
             } catch (err) {
                 console.error("Failed to fetch usability test details", err);
             }
@@ -101,34 +36,31 @@ const BrowserInBrowser = () => {
         fetchUsabilityTest();
     }, [id]);
 
-    // to manage the time of the task 
+    // Countdown Timer (this updates every second)
     useEffect(() => {
         if (timeLeft <= 0) return;
     
         const timer = setInterval(() => {
-            setTimeLeft((prev) => prev - 1);
+            setTimeLeft((prev) => prev - 1000);
         }, 1000);
     
         return () => clearInterval(timer);
     }, [timeLeft]);
-    
 
-
+    // Stop the webcam when timeLeft is 0
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                }
-            })
-            .catch(error => console.error("Error accessing webcam:", error));
+        if (timeLeft <= 0) {
+            stopWebcam(); // Stop the webcam after the countdown reaches 0
+        }
+    }, [timeLeft]);
 
-        return () => {
-            if (videoRef.current?.srcObject) {
-                videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-            }
-        };
-    }, []);
+    // Function to stop the webcam
+    const stopWebcam = () => {
+        if (videoRef.current?.srcObject) {
+            videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+        }
+    };
+    
 
     // Function to capture a frame and send it to the backend
     const captureAndSendFrame = async () => {
@@ -191,6 +123,22 @@ const BrowserInBrowser = () => {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                }
+            })
+            .catch(error => console.error("Error accessing webcam:", error));
+
+        return () => {
+            if (videoRef.current?.srcObject) {
+                videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, []);
+
     return (
         <div className="flex h-screen">
             {/* Left Side (Camera & Emotion Display) */}
@@ -223,7 +171,8 @@ const BrowserInBrowser = () => {
                     <div className="mt-2">
                         <h3 className="text-md font-semibold text-gray-700">Time Left</h3>
                         <p className="text-sm text-red-500">
-                            {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                            {/* {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')} */}
+                            {Math.floor(timeLeft / 60 / 1000)}:{((timeLeft / 1000) % 60).toString().padStart(2, '0')}
                         </p>
                     </div>
                 </div>
