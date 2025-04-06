@@ -78,6 +78,42 @@ const BrowserInBrowser = () => {
     const [emotionProbabilities, setEmotionProbabilities] = useState({});
     const [boundingBox, setBoundingBox] = useState(null);
 
+    //for the task and time of the usability testing
+    const [task, setTask] = useState('');
+    const [duration, setDuration] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(0);
+
+    // with the id passed from TestCalibration page, fetch the usability testing detail of that id 
+    const id = urlParams.get('id');
+    useEffect(() => {
+        if (!id) return;
+        const fetchUsabilityTest = async () => {
+            try {
+                const res = await fetch(`http://127.0.0.1:8000/usability-testing/${id}/`);
+                const data = await res.json();
+                setTask(data.task);
+                setDuration(data.duration);
+                setTimeLeft(data.duration * 60); // convert minutes to seconds
+            } catch (err) {
+                console.error("Failed to fetch usability test details", err);
+            }
+        };
+        fetchUsabilityTest();
+    }, [id]);
+
+    // to manage the time of the task 
+    useEffect(() => {
+        if (timeLeft <= 0) return;
+    
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => prev - 1);
+        }, 1000);
+    
+        return () => clearInterval(timer);
+    }, [timeLeft]);
+    
+
+
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => {
@@ -177,6 +213,19 @@ const BrowserInBrowser = () => {
                             <strong>{emotion}</strong>: {(probability * 100).toFixed(2)}%
                         </p>
                     ))}
+                </div>
+
+                {/* Display task and countdown */}
+                <div className="mt-6 w-full text-center">
+                    <h3 className="text-md font-semibold text-gray-700">Task</h3>
+                    <p className="text-sm text-gray-600">{task}</p>
+                    
+                    <div className="mt-2">
+                        <h3 className="text-md font-semibold text-gray-700">Time Left</h3>
+                        <p className="text-sm text-red-500">
+                            {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                        </p>
+                    </div>
                 </div>
             </div>
 
