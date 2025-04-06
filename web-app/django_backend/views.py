@@ -774,7 +774,7 @@ def get_form_answers(request, form_id):
 
 
 # USABILITY TESTING RELATED METHODS (RESEARCER SIDE) ##########################################################
-# for creating usability testings
+# ✅ for creating usability testings
 @api_view(['POST'])
 def create_usability_testing(request, project_id):
     try:
@@ -796,7 +796,7 @@ def create_usability_testing(request, project_id):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-#for retrieving usability testing in project detail page 
+#f ✅ or retrieving usability testing list in ProjectDashboard page 
 @api_view(['GET'])
 def get_usability_testing(request, project_id):
     try:
@@ -808,7 +808,7 @@ def get_usability_testing(request, project_id):
     serializer = UsabilityTestingSerializer(usability_testings, many=True)
     return Response({'usability_testings': serializer.data}, status=status.HTTP_200_OK)
 
-    
+# ✅ for retrieving usability testind details
 @api_view(['GET'])
 def usability_testing_detail(request, usability_testing_id):
     try:
@@ -819,7 +819,7 @@ def usability_testing_detail(request, usability_testing_id):
     serializer = UsabilityTestingSerializer(usability_testing)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-
+# ✅ for deleting the usability testing
 @api_view(['DELETE'])
 def delete_usability_testing(request, usability_testing_id):
     try:
@@ -866,7 +866,7 @@ def check_recording(request, usability_testing_id):
     has_recording = UsabilityTestRecordingV4.objects.filter(user=user, usability_testing_id=usability_testing_id).exists()
     return Response({"hasRecording": has_recording})
 
-
+# ✅ record the screen 
 @api_view(["POST"])
 def save_recording(request):
     parser_classes = (MultiPartParser, FormParser)
@@ -903,6 +903,7 @@ def save_recording(request):
 
     return Response(UsabilityTestRecordingV4Serializer(recording).data, status=201)
 
+# ✅ fetch the screen recording 
 @api_view(['GET'])
 def get_recordings_for_usability_testing(request, usability_testing_id):
     """Retrieve all recordings for a specific usability testing."""
@@ -930,7 +931,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
+# ✅ emotion detection 
 @api_view(['POST'])
 def emotion_detection(request):
     if request.method != 'POST':
