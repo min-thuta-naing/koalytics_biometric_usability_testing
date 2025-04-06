@@ -32,7 +32,7 @@ const TestingInfo = ({ usabilityTesting, usabilityTestingId }) => {
         <div className="flex h-screen overflow-hidden">
             <div className="flex-grow overflow-y-auto">
                 <div className="mx-80 my-20 px-32">
-                    <div className="flex gap-8 p-4 mx-10">
+                    <div className="flex gap-8 p-4">
                         <div className="p-8 border-b border-gray-400">
                             <p className="font-funnel font-3xl">{usabilityTesting.id}</p>
                             <p className="font-funnel font-3xl">Title: {usabilityTesting.title}</p>

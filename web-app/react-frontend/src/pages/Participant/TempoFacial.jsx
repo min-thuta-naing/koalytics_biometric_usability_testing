@@ -47,7 +47,7 @@ const TempoFacial = () => {
 
     const [showPopup, setShowPopup] = useState(true); 
 
-    const danceSportLink = "https://www.worlddancesport.org";
+    const danceSportLink = "https://embed.figma.com/design/7wg9kH8FCsNtRaSYjPw49N/EcoExchange?node-id=0-1&embed-host=share";
 
     const openLinkInNewWindow = () => {
         // Open the BrowserInBrowser page in a new tab with the URL query parameter
@@ -93,4 +93,46 @@ const TempoFacial = () => {
 };
 
 export default TempoFacial;
+
+
+// this code work
+// import React from 'react';
+
+// const EcoExchangeEmbed = () => {
+//   return (
+//     <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
+//       <iframe
+//         style={{ border: '1px solid rgba(0, 0, 0, 0.1)' }}
+//         width="800"
+//         height="450"
+//         src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/proto/p48Axbm0CvnY6dt2pqKIce/Ultimate-Tic-tac-toe?node-id=0-1&t=29wEpJiHKhKWotF5-1"
+//         allowfullscreen
+//       />
+//     </div>
+//   );
+// };
+
+// export default EcoExchangeEmbed;
+
+
+// import React from 'react';
+
+// const EcoExchangeLink = () => {
+//   return (
+//     <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
+//       <a 
+//         href="https://www.figma.com/proto/p48Axbm0CvnY6dt2pqKIce/Ultimate-Tic-tac-toe?node-id=0-1&t=bapk5JpBVHN60zXN-1" 
+//         target="_blank" 
+//         rel="noopener noreferrer"
+//         className="text-blue-500 underline"
+//       >
+//         Open Figma Prototype
+//       </a>
+//     </div>
+//   );
+// };
+
+// export default EcoExchangeLink;
+
+
 
