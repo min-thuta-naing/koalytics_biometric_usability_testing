@@ -9,6 +9,7 @@ const TestCalibration = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  //fetching the details of usability testing
   useEffect(() => {
     const fetchUsabilityTestingDetails = async () => {
       try {
@@ -74,10 +75,15 @@ const TestCalibration = () => {
       mediaRecorder.start();
       console.log("Recording started...");
   
+      // setTimeout(() => {
+      //   mediaRecorder.stop();
+      // }, 4000); // Stop recording after 4 seconds
+
+      // Stop recording after usabilityTesting.duration minutes
       setTimeout(() => {
         mediaRecorder.stop();
-      }, 4000); // Stop recording after 4 seconds
-  
+      }, usabilityTesting.duration * 60 * 1000); // Convert duration from minutes to milliseconds
+
       window.open(`/browser-in-browser?url=${encodeURIComponent(usabilityTesting.website_link)}&id=${usabilityTestingId}`, "_blank"); // Open website in a new tab
     } catch (error) {
       console.error("Screen recording error:", error);
