@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TestingResults from "./TestingResults";
 import TestingInfo from "./TestingInfo";
+import BIBPreview from "./BIBPreview"; 
 
 const UsabilityTestingDetail = () => {
     const { usabilityTestingId } = useParams();
@@ -63,6 +64,13 @@ const UsabilityTestingDetail = () => {
                 </div>
 
                 <div
+                    onClick={() => setView("preview")}
+                    className={`px-6 py-3 cursor-pointer ${view === "preview" ? "border-b-2 border-gray-800 text-gray-800 font-semibold" : "text-gray-500" }`}
+                >
+                    Preview
+                </div>
+
+                <div
                     onClick={() => setView("results")}
                     className={`px-6 py-3 cursor-pointer ${view === "results" ? "border-b-2 border-gray-800 text-gray-800 font-semibold" : "text-gray-500" }`}
                 >
@@ -82,15 +90,20 @@ const UsabilityTestingDetail = () => {
                 <p className="font-funnel font-3xl">Figma Embed Code: {usabilityTesting.figma_embed_code}</p>
             </div> */}
 
-
-            {view === "testingdetails" ? (
-                <TestingInfo
-                    usabilityTesting={usabilityTesting}
-                    usabilityTestingId={usabilityTestingId}
-                />
-            ) : (
-                <TestingResults/>
-            )}
+            <div className="mt-[90px] flex-1 overflow-y-auto">
+                {view === "testingdetails" ? (
+                    <TestingInfo
+                        usabilityTesting={usabilityTesting}
+                        usabilityTestingId={usabilityTestingId}
+                    />
+                ) : view === "preview" ? (
+                    <BIBPreview
+                        usabilityTesting={usabilityTesting}
+                    />
+                ) : view === "results" ? (
+                    <TestingResults/>
+                ) : null}
+            </div>
 
         </div>
     );

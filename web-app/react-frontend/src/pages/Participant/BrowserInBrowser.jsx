@@ -182,11 +182,17 @@ const BrowserInBrowser = () => {
 
             {/* Right Side (Iframe Section) */}
             <div className="w-4/5 h-full">
-                {url ? (
+                <iframe
+                    style={{ border: '1px solid rgba(0, 0, 0, 0.1)' }}
+                    className="w-full h-full"
+                    src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/proto/MksDrp3YRsaKqrjrdLZQYO/Mobile-E-Commerce-App-Prototype--Community-?node-id=0-1&t=oEKe0PSG0MnJFSxL-1"
+                    allowfullscreen
+                />
+                {/* {url ? (
                     <iframe src={url} title="Embedded Browser" className="w-full h-full border-none" />
                 ) : (
                     <p className="text-center mt-10">No URL provided</p>
-                )}
+                )} */}
             </div>
         </div>
     );
