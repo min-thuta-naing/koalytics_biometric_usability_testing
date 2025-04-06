@@ -50,7 +50,10 @@ const ChooseTest = () => {
     }, [projectId]);
 
     return (
-        <div className="h-screen bg-[#F0EEED] p-8">
+        <div 
+            className="bg-cover bg-center min-h-screen px-4 py-10 overflow-y-auto"
+            style={{ backgroundImage: 'url(/static/images/backgroundform.png)' }}
+        >
             {/* Modal Popup */}
             {showPopup && (
                 <div className="font-funnel fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -65,10 +68,10 @@ const ChooseTest = () => {
 
                         <div className="bg-white w-full p-6">
                             <div className="max-h-80 overflow-y-auto mb-4 text-sm">
-                                <p className="font-semibold text-black">
+                                <p className="font-semibold text-black mb-2">
                                     Before proceeding with the usability testing and SUS questionnaire, please read the following carefully:
                                 </p>
-                                <div className="border border-gray-200 text-gray-800 rounded-lg">
+                                <div className="text-gray-800 rounded-lg">
                                     {consentText ? (
                                         <div dangerouslySetInnerHTML={{ __html: consentText }} />
                                     ) : (
@@ -86,7 +89,7 @@ const ChooseTest = () => {
                                     className="mr-2"
                                 />
                                 <label htmlFor="agree" className="text-sm">
-                                    I consented to continue
+                                    I consented to continue answering.
                                 </label>
                             </div>
                             <div className="flex justify-end">
@@ -114,20 +117,48 @@ const ChooseTest = () => {
                 </div>
             )}
             
-            <div class="grid grid-cols-2 gap-8 p-8">
+            <div className="max-w-6xl mx-auto space-y-12">
+
+                {/*usability testing section */}
+                <div className="font-funnel bg-white rounded-xl shadow-lg p-8 space-y-6">  
+                    <h1 className="text-2xl font-semibold mb-6">Biometric Usability Testing</h1>
+                    <p className="text-gray-700 text-lg leading-relaxed">
+                        Usability testing helps evaluate how user-friendly and intuitive a website or application is. 
+                        Participants are asked to perform specific tasks while observers watch, listen, and take notes. 
+                        The goal is to identify usability issues, collect qualitative and quantitative data, and determine 
+                        the user’s satisfaction with the product. Select a usability test below to begin the process.
+                    </p>
+                    <div className="border-b border-gray-300" />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+                        {usabilityTestings.length > 0 ? (
+                            usabilityTestings.map((usabilityTesting) => (
+                                <div 
+                                    key={usabilityTesting.id} 
+                                    className="p-10 relative bg-cover bg-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400 flex items-center justify-center"
+                                    style={{ backgroundImage: "url('/static/images/choosetest/usabilitytesting.png')" }}                                    
+                                    onClick={() => navigate(`/related-usability-testing/${usabilityTesting.id}`)}
+                                >
+                                    <h2 className="font-semibold text-xl text-black">{usabilityTesting.title}</h2>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-gray-500">No usability testing available for this project.</p>
+                        )}
+                    </div>
+                </div>
+
                 {/*form section*/}
-                <div className="pr-8 border-r border-gray-400">
-                    <h1 className="text-2xl font-funnel font-semibold mb-6">
-                        System Usability Scale (SUS) Questionnaire
-                    </h1>
-                    <ul className="list-disc font-funnel list-inside space-y-2 mb-6">
-                        <li>The survey contains <strong>questions</strong> about your experience using the website or system.</li>
-                        <li>Each question asks you to rate from <strong>1 (Strongly Disagree) to 5 (Strongly Agree)</strong> how you feel about the system’s usability.</li>
-                        <li>There are <strong>no right or wrong answers</strong>—just answer based on your honest experience.</li>
-                        <li>Your feedback helps improve the system so it becomes <strong>easier and more efficient</strong> for users like you.</li>
-                    </ul>
-                    <div className="grid grid-cols-2 gap-6">
-                        
+                <div className="font-funnel bg-white rounded-xl shadow-lg p-8 space-y-6">
+                    <h1 className="text-2xl font-semibold mb-6">System Usability Scale (SUS) Questionnaire</h1>
+                    <p className="text-gray-700 text-lg leading-relaxed">
+                        The SUS questionnaire is a quick and reliable tool for measuring the usability of a system. 
+                        It consists of a set of standardized questions rated on a scale from 1 (Strongly Disagree) to 5 (Strongly Agree). 
+                        Your responses help us understand your experience and make improvements. There are no right or wrong answers—just your honest feedback.
+                    </p>
+                    <div className="border-b border-gray-300" />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
                         {forms.length > 0 ? (
                             forms.map((form) => (
                                 <div 
@@ -138,34 +169,14 @@ const ChooseTest = () => {
                                     //     backgroundImage: "url('/static/images/sus_pic.png')",
                                     // }}
                                     className="p-10 relative bg-cover bg-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400 flex items-center justify-center"
-                                    style={{ backgroundImage: "url('/static/images/sus_pic.png')" }}
+                                    style={{ backgroundImage: "url('/static/images/choosetest/susform.png')" }}
                                     onClick={() => navigate(`/related-form/${form.id}`)}
                                 >
-                                    <h2 className="font-semibold text-lg">{form.susform_title}</h2>
+                                    <h2 className="font-semibold text-xl text-black">{form.susform_title}</h2>
                                 </div>
                             ))
                         ) : (
-                            <p>No forms available for this project.</p>
-                        )}
-                    </div>
-                </div>
-
-                {/*usability testing section */}
-                <div className="pl-8">  
-                    <h1 className="text-2xl font-semibold mb-6">Select a usability </h1>
-                    <div className="grid grid-cols-2 gap-6"> 
-                        {usabilityTestings.length > 0 ? (
-                            usabilityTestings.map((usabilityTesting) => (
-                                <div 
-                                    key={usabilityTesting.id} 
-                                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400"
-                                    onClick={() => navigate(`/related-usability-testing/${usabilityTesting.id}`)}
-                                >
-                                    <h2 className="font-semibold text-lg">{usabilityTesting.title}</h2>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No usability testing available for this project.</p>
+                            <p className="text-gray-500">No forms available for this project.</p>
                         )}
                     </div>
                 </div>

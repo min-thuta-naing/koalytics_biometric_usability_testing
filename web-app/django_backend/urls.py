@@ -90,14 +90,17 @@ urlpatterns = [
     path('forms/update/<int:form_id>/', views.update_form, name='update_form'),
     path('forms/delete/<int:form_id>/', views.delete_form, name='delete_form'),
 
-    path('projects/<int:project_id>/usability-testing/', views.create_usability_testing, name='create_usability_testing'),
-    path('projects/<int:project_id>/usability-testings/', views.get_usability_testing, name='get_usability_testing'),
-    path('usability-testing/<int:usability_testing_id>/', views.usability_testing_detail, name='usability_testing_detail'),
-    path('usability-testing/delete/<int:usability_testing_id>/', views.delete_usability_testing, name='delete_usability_testing'),
-    path("api/save-recording/check/<int:usability_testing_id>/", views.check_recording, name="check-recording"),
-    path("api/save-recording/", views.save_recording, name="save-recording"),
-    path('usability-testing/<int:usability_testing_id>/recordings/', views.get_recordings_for_usability_testing, name='get_recordings_for_usability_testing'),
-    path('video/<str:video_name>/', lambda request, video_name: print(f"Video requested: {video_name}") or views.video_view(request, video_name), name='video-view'),
+
+    # ✅ usability testing 
+    path('projects/<int:project_id>/usability-testing/', views.create_usability_testing, name='create_usability_testing'), # usability testing creation form CreateUsabilityTesting.jsx
+    path('projects/<int:project_id>/usability-testings/', views.get_usability_testing, name='get_usability_testing'), # get all usability testings list on ProjectDashboard.jsx
+    path('usability-testing/<int:usability_testing_id>/', views.usability_testing_detail, name='usability_testing_detail'), # usability testing detail on UsabilityTestingDetail.jsx
+    path('usability-testing/delete/<int:usability_testing_id>/', views.delete_usability_testing, name='delete_usability_testing'), # delete usability testing on ProjectDashboard.jsx
+    path("api/save-recording/check/<int:usability_testing_id>/", views.check_recording, name="check-recording"), # ❌
+    path("api/save-recording/", views.save_recording, name="save-recording"), # start and save recording on TestCalibration.jsx
+    path('emotion-detection/', views.emotion_detection, name='emotion_detection'), # emotion detection from BrowserinBrowser.jsx
+    path('usability-testing/<int:usability_testing_id>/recordings/', views.get_recordings_for_usability_testing, name='get_recordings_for_usability_testing'), # usability testing recording on TestingResults.jsx
+    path('video/<str:video_name>/', lambda request, video_name: print(f"Video requested: {video_name}") or views.video_view(request, video_name), name='video-view'), # usability testing recording on TestingResults.jsx
 
     path('usability-testing/<int:usability_testing_id>/create-or-update-testingconsent/', views.create_or_update_testingconsent, name="create_or_update_testingconsent"),
     path('usability-testing/<int:usability_testing_id>/testingconsent/', views.get_testingconsent, name="get_testingconsent"),
@@ -126,7 +129,7 @@ urlpatterns = [
     path('api/admin/users/', get_all_users, name='get_all_users'),
     path('api/delete_user/<int:user_id>/', delete_user, name='delete_user'),
 
-    path('emotion-detection/', views.emotion_detection, name='emotion_detection'),
+   
 
     
     # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
