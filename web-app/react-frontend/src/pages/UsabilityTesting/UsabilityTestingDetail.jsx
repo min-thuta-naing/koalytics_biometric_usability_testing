@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TestingResults from "./TestingResults";
-import CreatePermission from "./CreatePermission";
+import TestingInfo from "./TestingInfo";
 
 const UsabilityTestingDetail = () => {
     const { usabilityTestingId } = useParams();
@@ -21,7 +21,6 @@ const UsabilityTestingDetail = () => {
                 setError(err.message);
             }
         };
-
         fetchDetails();
         // fetchRecordings();
     }, [usabilityTestingId]);
@@ -85,7 +84,7 @@ const UsabilityTestingDetail = () => {
 
 
             {view === "testingdetails" ? (
-                <CreatePermission
+                <TestingInfo
                     usabilityTesting={usabilityTesting}
                     usabilityTestingId={usabilityTestingId}
                 />

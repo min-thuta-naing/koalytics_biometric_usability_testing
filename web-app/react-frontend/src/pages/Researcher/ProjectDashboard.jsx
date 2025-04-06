@@ -627,13 +627,12 @@ const ProjectDashboard = () => {
                             <p className="text-gray-400 italic">No usability testings available.</p>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-4">
-                                {usabilityTestings.map((usabilityTesting) => (
+                                {/* {usabilityTestings.map((usabilityTesting) => (
                                     <div
                                         key={usabilityTesting.id}
                                         className="relative p-5 bg-[#DCD6F7] border border-[#C4BDED] rounded-xl shadow-sm hover:shadow-md transition cursor-pointer group"
                                         onClick={() => navigate(`/usability_testing/${usabilityTesting.id}`)}
                                     >
-                                        {/* Dropdown */}
                                         <div className="absolute top-3 right-3 z-10">
                                             <button
                                                 onClick={(e) => {
@@ -660,15 +659,66 @@ const ProjectDashboard = () => {
                                             )}
                                         </div>
 
-                                        {/* Card Content */}
                                         <div className="mt-2">
                                             <h3 className="text-md font-semibold text-gray-800 truncate">{usabilityTesting.title}</h3>
                                             <p className="text-sm text-gray-500 mt-1">Test ID: {usabilityTesting.id}</p>
                                         </div>
                                     </div>
-                                ))}
+                                ))} */}
+                                {usabilityTestings.map((usabilityTesting) => {
+                                    const typeLabel = usabilityTesting.website_link
+                                        ? "(Website)"
+                                        : usabilityTesting.figma_embed_code
+                                        ? "(Prototype)"
+                                        : "(Unknown)";
+
+                                    return (
+                                        <div
+                                            key={usabilityTesting.id}
+                                            className="relative p-5 bg-[#DCD6F7] border border-[#C4BDED] rounded-xl shadow-sm hover:shadow-md transition cursor-pointer group"
+                                            onClick={() => navigate(`/usability_testing/${usabilityTesting.id}`)}
+                                        >
+                                            {/* Dropdown */}
+                                            <div className="absolute top-3 right-3 z-10">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setShowDropdown(showDropdown === usabilityTesting.id ? null : usabilityTesting.id);
+                                                    }}
+                                                    className="p-2 rounded-full bg-[#C4BDED] hover:bg-[#ACA3E3]"
+                                                >
+                                                    <EllipsisVertical size={20} />
+                                                </button>
+
+                                                {showDropdown === usabilityTesting.id && (
+                                                    <div
+                                                        className="absolute right-0 mt-2 bg-white border rounded shadow-md z-20"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        <button
+                                                            onClick={() => handleDeleteUsabilityTesting(usabilityTesting.id)}
+                                                            className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100 text-left"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Card Content */}
+                                            <div className="mt-2">
+                                                <h3 className="text-md font-semibold text-gray-800 truncate">
+                                                    {usabilityTesting.title}
+                                                </h3>
+                                                <p className="text-sm text-gray-600 mt-1 italic">{typeLabel}</p>
+                                                <p className="text-sm text-gray-500 mt-1">Test ID: {usabilityTesting.id}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        )}
+                        )} 
+
                     </div>
                 </div>
                 {showUsabilityTestingModal && (
