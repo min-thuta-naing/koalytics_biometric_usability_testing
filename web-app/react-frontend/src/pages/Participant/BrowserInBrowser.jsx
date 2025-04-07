@@ -5,6 +5,7 @@ const BrowserInBrowser = () => {
     const location = useLocation();
     const urlParams = new URLSearchParams(location.search);
     const url = urlParams.get('url'); // Get the URL from query parameters
+    const [usabilityTesting, setUsabilityTesting] = useState(null);
 
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
@@ -55,6 +56,7 @@ const BrowserInBrowser = () => {
             try {
                 const res = await fetch(`http://127.0.0.1:8000/usability-testing/${id}/`);
                 const data = await res.json();
+                setUsabilityTesting(data);
                 setTask(data.task);
                 setDuration(data.duration);
                 setTimeLeft(data.duration * 60 * 1000); // convert minutes to seconds
@@ -263,21 +265,26 @@ useEffect(() => {
 
             {/* Right Side (Iframe Section) */}
             <div className="w-4/5 h-full">
-                <iframe
-                    style={{ border: '1px solid rgba(0, 0, 0, 0.1)' }}
-                    className="w-full h-full"
-                    src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/proto/MksDrp3YRsaKqrjrdLZQYO/Mobile-E-Commerce-App-Prototype--Community-?node-id=0-1&t=oEKe0PSG0MnJFSxL-1"
-                    allowfullscreen
-                />
-                {/* {url ? (
-                    <iframe src={url} title="Embedded Browser" className="w-full h-full border-none" />
-                ) : (
-                    <p className="text-center mt-10">No URL provided</p>
-                )} */}
+                {usabilityTesting?.website_link && !usabilityTesting?.figma_embed_code && (
+                    <iframe
+                        src={usabilityTesting.website_link}
+                        title="Website Preview"
+                        className="w-full h-full"
+                    />
+                )}
+
+                {usabilityTesting?.figma_embed_code && !usabilityTesting?.website_link && (
+                    <iframe
+                        style={{ border: '1px solid rgba(0, 0, 0, 0.1)' }}
+                        className="w-full h-full"
+                        src={`https://www.figma.com/embed?embed_host=share&url=${usabilityTesting.figma_embed_code}`}
+                        allowFullScreen
+                        title="Figma Prototype"
+                    />
+                )}
             </div>
         </div>
     );
 };
 
 export default BrowserInBrowser;
-

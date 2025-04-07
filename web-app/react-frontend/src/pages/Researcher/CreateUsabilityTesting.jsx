@@ -262,7 +262,7 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
 
                             {testingType === "prototype" && (
                                 <>
-                                    <label className="block mb-2">Figma Embed Code:</label>
+                                    <label className="block mb-2">Figma Protoype Link:</label>
                                     <textarea
                                         value={figmaEmbedCode}
                                         onChange={(e) => setFigmaEmbedCode(e.target.value)}
