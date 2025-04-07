@@ -518,7 +518,7 @@ const ProjectDashboard = () => {
                                         {/* Content */}
                                         <div className="mt-2">
                                             <h3 className="text-md font-semibold text-gray-800 truncate">{susform.susform_title}</h3>
-                                            <p className="text-sm text-gray-500 mt-1">Form ID: {susform.id}</p>
+                                            {/* <p className="text-sm text-gray-500 mt-1">Form ID: {susform.id}</p> */}
                                         </div>
                                     </div>
                                 ))}
@@ -711,7 +711,7 @@ const ProjectDashboard = () => {
                                                     {usabilityTesting.title}
                                                 </h3>
                                                 <p className="text-sm text-gray-600 mt-1 italic">{typeLabel}</p>
-                                                <p className="text-sm text-gray-500 mt-1">Test ID: {usabilityTesting.id}</p>
+                                                {/* <p className="text-sm text-gray-500 mt-1">Test ID: {usabilityTesting.id}</p> */}
                                             </div>
                                         </div>
                                     );
