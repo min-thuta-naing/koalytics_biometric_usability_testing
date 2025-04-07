@@ -95,20 +95,26 @@ const TestingResults = () => {
                                         <td className="border px-4 py-2">{index + 1}</td>
                                         <td className="border px-4 py-2">{recording.participant_email}</td>
                                         <td className="border px-4 py-2">
-                                            <button
-                                                className="text-black bg-[#C4BDED] rounded-lg shadow-md"
-                                                onClick={() => openVideoModal(recording.video)}
-                                            >
-                                                View the video
-                                            </button>
+                                            <div className="flex items-center justify-center">
+                                                <button
+                                                    className="text-black bg-[#C4BDED] px-6 py-3 rounded-lg shadow-md"
+                                                    onClick={() => openVideoModal(recording.video)}
+                                                >
+                                                    View the video
+                                                </button>
+                                            </div>
+                                            
                                         </td>
-                                        <td className="border px-4 py-2">
-                                            <button
-                                                className="text-black bg-[#C4BDED] rounded-lg shadow-md"
-                                                onClick={() => handleEmotionDetailClick(recording.participant_email)}
-                                            >
-                                                See Emotion Detail
-                                            </button>
+                                        <td className="border px-4 py-2 ">
+                                            <div className="flex items-center justify-center">
+                                                <button
+                                                    className="text-black bg-[#C4BDED] px-6 py-3 rounded-lg shadow-md"
+                                                    onClick={() => handleEmotionDetailClick(recording.participant_email)}
+                                                >
+                                                    See Emotion Detail
+                                                </button>
+                                            </div>
+                                            
                                         </td>
                                     </tr>
                                 ))}
