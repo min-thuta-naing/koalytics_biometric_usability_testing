@@ -17,6 +17,35 @@ const BrowserInBrowser = () => {
     const [task, setTask] = useState('');
     const [duration, setDuration] = useState(0);
     const [timeLeft, setTimeLeft] = useState(0);
+    const [userEmail, setUserEmail] = useState(null); // State to store user email
+    
+    // Fetch the user email from localStorage or session
+    useEffect(() => {
+        const userData = localStorage.getItem("user");
+        if (userData) {
+        const parsedUser = JSON.parse(userData);
+        setUserEmail(parsedUser.email); // Extract the email
+        } else {
+        console.error("User not found in localStorage!");
+        }
+    }, []);
+
+    useEffect(() => {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                console.log("✅ Webcam stream started");
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                }
+            })
+            .catch(error => console.error("Error accessing webcam:", error));
+
+        return () => {
+            if (videoRef.current?.srcObject) {
+                videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, []);
 
     // with the id passed from TestCalibration page, fetch the usability testing detail (task and duration) of that id 
     const id = urlParams.get('id');
@@ -39,7 +68,8 @@ const BrowserInBrowser = () => {
     // Countdown Timer (this updates every second)
     useEffect(() => {
         if (timeLeft <= 0) return;
-    
+
+        console.log("⏱️ Starting interval for capturing frames");
         const timer = setInterval(() => {
             setTimeLeft((prev) => prev - 1000);
         }, 1000);
@@ -64,27 +94,58 @@ const BrowserInBrowser = () => {
 
     // Function to capture a frame and send it to the backend
     const captureAndSendFrame = async () => {
-        if (!videoRef.current || !canvasRef.current) return;
+        if (!videoRef.current || !canvasRef.current || !userEmail) {
+            console.error("❌ videoRef or canvasRef is not available");
+            return;
+        }
 
-        const video = videoRef.current;
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
+        // Log the video dimensions
+        console.log("📏 Video dimensions:", videoRef.current.videoWidth, videoRef.current.videoHeight);
 
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        console.log("Submitting answers for user:", userEmail);
 
-        const imageData = canvas.toDataURL('image/jpeg'); // Convert to base64
+        // const video = videoRef.current;
+        // const canvas = canvasRef.current;
+        // const ctx = canvas.getContext('2d');
+
+        // canvas.width = video.videoWidth;
+        // canvas.height = video.videoHeight;
+        // ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // Set canvas size based on the video
+        canvasRef.current.width = videoRef.current.videoWidth;
+        canvasRef.current.height = videoRef.current.videoHeight;
+
+        const ctx = canvasRef.current.getContext('2d');
+        ctx.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
+
+        // const imageData = canvas.toDataURL('image/jpeg'); // Convert to base64
+        const imageData = canvasRef.current.toDataURL('image/jpeg');
+        console.log("📸 Sending image to backend, size:", imageData.length);
+        
+
+        // Check if the base64 string is valid
+        if (!imageData || imageData.length === 0) {
+            console.error("Captured image is empty or invalid");
+            return;
+        }
+        
         console.log(imageData);
+        console.log("📸 Sending image to backend, size:", imageData.length);
+
 
         try {
             const response = await fetch('http://127.0.0.1:8000/emotion-detection/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: imageData }),
+                body: JSON.stringify({ 
+                    image: imageData, 
+                    test_id:id, 
+                    participant_email: userEmail,
+                }),
             });
 
             const data = await response.json();
+            console.log("🎯 Server response:", data);
             if (data.error) {
                 console.error(data.error);
                 return;
@@ -118,26 +179,48 @@ const BrowserInBrowser = () => {
         ctx.fillText(emotion, box.x + box.width / 2, box.y - 10);
     };
 
-    useEffect(() => {
-        const interval = setInterval(captureAndSendFrame, 1000);
-        return () => clearInterval(interval);
-    }, []);
+    // useEffect(() => {
+    //     console.log("🔥 Calling captureAndSendFrame directly:");
+    //     const interval = setInterval(captureAndSendFrame, 1000);
+    //     return () => clearInterval(interval);
+    // }, []);
+    // useEffect(() => {
+    //     if (videoRef.current) {
+    //         videoRef.current.onloadedmetadata = () => {
+    //             console.log("📽️ Video metadata loaded, starting capture interval.");
+    //             const interval = setInterval(captureAndSendFrame, 1000);
+    //             // Store interval in state if you need to clear it later
+    //             return () => clearInterval(interval);
+    //         };
+    //     }
+    // }, []);
+    const intervalRef = useRef(null);
 
-    useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                }
-            })
-            .catch(error => console.error("Error accessing webcam:", error));
+useEffect(() => {
+    const startCapture = () => {
+        if (intervalRef.current) return; // Prevent multiple intervals
 
-        return () => {
-            if (videoRef.current?.srcObject) {
-                videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-            }
-        };
-    }, []);
+        console.log("📽️ Video metadata loaded, starting capture interval.");
+        intervalRef.current = setInterval(captureAndSendFrame, 1000);
+    };
+
+    if (videoRef.current) {
+        if (videoRef.current.readyState >= 1) {
+            startCapture();
+        } else {
+            videoRef.current.onloadedmetadata = startCapture;
+        }
+    }
+
+    return () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    };
+}, [userEmail]); // Make sure email is available before starting
+
+    
 
     return (
         <div className="flex h-screen">

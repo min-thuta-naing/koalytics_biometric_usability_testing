@@ -129,7 +129,8 @@ const FormDetail = () => {
 
       <div className="font-funnel border-b border-gray-300 flex flex-col justify-center bg-[#DCD6F7] fixed w-full top-0 z-10 shadow-lg">
         <div className="py-2 px-5">
-          <p className="font-funnel font-bold text-base">{form.id} - {form.susform_title} </p>
+          {/* <p className="font-funnel font-bold text-base">{form.id} - {form.susform_title} </p> */}
+          <p className="font-funnel font-bold text-base">{form.susform_title} </p>
         </div>
         <div className="flex justify-center">
           <div

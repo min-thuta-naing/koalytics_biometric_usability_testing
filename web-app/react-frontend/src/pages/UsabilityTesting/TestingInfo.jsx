@@ -1,64 +1,65 @@
-
-// const TestingInfo = ({ usabilityTesting, usabilityTestingId }) => {
-
-
-//     return (
-//         <div className="flex h-screen overflow-hidden">
-//             <div className="flex-grow overflow-y-auto">
-//                 <div className="mx-80 my-20 px-32">
-//                     <div className="flex gap-8 p-4 mx-10">
-//                         <div className="p-8 border-b border-gray-400">
-//                             <p className="font-funnel font-3xl">{usabilityTesting.id}</p>
-//                             <p className="font-funnel font-3xl">Title: {usabilityTesting.title}</p>
-//                             <p className="font-funnel font-3xl">Task: {usabilityTesting.task}</p>
-//                             <p className="font-funnel font-3xl">Duration: {usabilityTesting.duration}</p>
-//                             <p className="font-funnel font-3xl">
-//                                 Website: <a href={usabilityTesting.website_link} target="_blank" rel="noopener noreferrer">{usabilityTesting.website_link}</a>
-//                             </p>
-//                             <p className="font-funnel font-3xl">Figma Embed Code: {usabilityTesting.figma_embed_code}</p>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
-
-// export default TestingInfo; 
-
-
 const TestingInfo = ({ usabilityTesting, usabilityTestingId }) => {
     return (
-        <div className="flex h-screen overflow-hidden">
-            <div className="flex-grow overflow-y-auto">
-                <div className="mx-80 my-20 px-32">
-                    <div className="flex gap-8 p-4">
-                        <div className="p-8 border-b border-gray-400">
-                            <p className="font-funnel font-3xl">{usabilityTesting.id}</p>
-                            <p className="font-funnel font-3xl">Title: {usabilityTesting.title}</p>
-                            <p className="font-funnel font-3xl">Task: {usabilityTesting.task}</p>
-                            <p className="font-funnel font-3xl">Duration: {usabilityTesting.duration}</p>
-
-                            {/* Conditionally render Website or Prototype */}
-                            {usabilityTesting.website_link && (
-                                <p className="font-funnel font-3xl">
-                                    Website: <a href={usabilityTesting.website_link} target="_blank" rel="noopener noreferrer">{usabilityTesting.website_link}</a>
-                                </p>
-                            )}
-
-                            {usabilityTesting.figma_embed_code && (
-                                <p className="font-funnel font-3xl">
-                                    Figma Embed Code: {usabilityTesting.figma_embed_code}
-                                </p>
-                            )}
-
-                            {/* In case both website and prototype are missing, display a message */}
-                            {!usabilityTesting.website_link && !usabilityTesting.figma_embed_code && (
-                                <p className="font-funnel font-3xl text-red-500">
-                                    No website link or prototype embed code available.
-                                </p>
-                            )}
+        <div className="font-funnel flex h-screen overflow-hidden">
+            <div className="max-w-4xl w-full mx-auto overflow-y-auto p-12">
+                <div className="flex flex-col">
+                    <h2 className="mx-3 px-4 pt-3 text-lg font-bold font-funnel">Usability Test Details</h2>
+                    <div className="font-funnel mt-3 mx-3 p-4 bg-white rounded-lg shadow-lg">
+                        {/* Title */}
+                        <div className="mb-2">
+                            <p className="font-semibold text-gray-600 mb-1">Title:</p>
+                            <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-2 text-gray-800">
+                                {usabilityTesting.title}
+                            </div>
                         </div>
+
+                        {/* Task */}
+                        <div className="mb-2">
+                            <p className="font-semibold text-gray-600 mb-1">Task:</p>
+                            <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-2 text-gray-800">
+                                {usabilityTesting.task}
+                            </div>
+                        </div>
+
+                        {/* Duration */}
+                        <div className="mb-2">
+                            <p className="font-semibold text-gray-600 mb-1">Duration:</p>
+                            <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-2 text-gray-800">
+                                {usabilityTesting.duration} minutes
+                            </div>
+                        </div>
+
+                        {/* Website */}
+                        {usabilityTesting.website_link && (
+                            <div className="mb-2">
+                                <p className="font-semibold text-gray-600 mb-1">Website:</p>
+                                <a
+                                    href={usabilityTesting.website_link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block bg-gray-50 border border-gray-100 rounded-lg px-4 py-2 text-blue-600 hover:underline break-words"
+                                >
+                                    {usabilityTesting.website_link}
+                                </a>
+                            </div>
+                        )}
+
+                        {/* Figma */}
+                        {usabilityTesting.figma_embed_code && (
+                            <div className="mb-2">
+                                <p className="font-semibold text-gray-600 mb-1">Figma Embed Code:</p>
+                                <div className="block bg-gray-50 border border-gray-100 rounded-lg px-4 py-2 text-blue-600 hover:underline break-words">
+                                    {usabilityTesting.figma_embed_code}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* No data fallback */}
+                        {!usabilityTesting.website_link && !usabilityTesting.figma_embed_code && (
+                            <p className="text-red-500 font-medium">
+                                ⚠️ No website link or prototype embed code available.
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
