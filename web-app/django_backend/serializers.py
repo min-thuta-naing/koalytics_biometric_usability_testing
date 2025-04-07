@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import User, Hobby, Project, Form, Question, Answer, Consent, TestingConsent, SUSForm, SUSQuestion, SUSQAnswer,Gender, AgeGroup, Interest, ProjectCriteria
+from .models import User, Hobby, Project, Form, Question, Answer, Consent, TestingConsent, SUSForm, SUSQuestion, SUSQAnswer,Gender, AgeGroup, Interest, ProjectCriteria,EmotionCapture
 
 from .models import UsabilityTestRecordingV4
 from .models import UsabilityTesting
@@ -109,6 +109,30 @@ class TestingConsentSerializer(serializers.ModelSerializer):
     class Meta: 
         model = TestingConsent
         fields = ['id', 'usability_testing', 'consent_text']
+
+class EmotionCaptureSerializer(serializers.ModelSerializer):
+    participant_email = serializers.EmailField(source='participant_email.email')
+    usability_test_title = serializers.CharField(source='usability_test.title', read_only=True)
+    
+    class Meta:
+        model = EmotionCapture
+        fields = [
+            'id',
+            'usability_test',
+            'usability_test_title',
+            'participant_email',
+            'timestamp',
+            'sad',
+            'angry',
+            'disgust',
+            'fear',
+            'happy',
+            'surprise',
+            'neutral',
+            'dominant'
+        ]
+        read_only_fields = ['id', 'timestamp']
+
 
 class UsabilityTestRecordingV4Serializer(serializers.ModelSerializer):
     participant_email = serializers.EmailField(source="participant_email.email", read_only=True)

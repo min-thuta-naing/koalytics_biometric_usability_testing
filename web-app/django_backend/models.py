@@ -188,6 +188,23 @@ class TestingConsent(models.Model):
     usability_testing = models.OneToOneField(UsabilityTesting, on_delete=models.CASCADE)  # one consent per one form
     consent_text = models.TextField()
 
+class EmotionCapture(models.Model):
+    usability_test = models.ForeignKey('UsabilityTesting', on_delete=models.CASCADE, related_name='emotion_snapshots')
+    participant_email = models.ForeignKey(User, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    sad = models.FloatField(null=True, blank=True)
+    angry = models.FloatField(null=True, blank=True)
+    disgust = models.FloatField(null=True, blank=True)
+    fear = models.FloatField(null=True, blank=True)
+    happy = models.FloatField(null=True, blank=True)
+    surprise = models.FloatField(null=True, blank=True)
+    neutral = models.FloatField(null=True, blank=True)
+    dominant = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.usability_test.title} - {self.timestamp} - {self.dominant}"
+
 class UsabilityTestRecordingV4(models.Model):
     usability_testing = models.ForeignKey(UsabilityTesting, on_delete=models.CASCADE)
     participant_email = models.ForeignKey(User, on_delete=models.CASCADE )

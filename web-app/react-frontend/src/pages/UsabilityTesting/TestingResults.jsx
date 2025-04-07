@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
 
 const TestingResults = () => {
+    const navigate = useNavigate();
     const { usabilityTestingId } = useParams();
     const [usabilityTesting, setUsabilityTesting] = useState(null);
     const [recordings, setRecordings] = useState([]);
+    const [emotion, setEmotions] = useState([]);
     const [error, setError] = useState("");
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
     const [selectedVideo, setSelectedVideo] = useState(null);
 
-      // Fetch usability testing details and recordings
+    // Fetch usability testing details and recordings
     useEffect(() => {
         const fetchDetails = async () => {
             try {
@@ -34,6 +36,17 @@ const TestingResults = () => {
             }
         };
 
+        const fetchEmotions = async () => {
+            try{
+                const response = await fetch(`http://127.0.0.1:8000/api/usability-testing/${usabilityTestingId}/emotion-data/`)
+                if (!response.ok) throw new Error("Failed to fetch recordings.");
+                const data = await response.json();
+                setEmotions(data);
+            } catch (err){
+                setError(err.message)
+            }
+        }
+        fetchEmotions(); 
         fetchDetails();
         fetchRecordings();
     }, [usabilityTestingId]);
@@ -48,9 +61,18 @@ const TestingResults = () => {
         setSelectedVideo(null);
     };
 
+    const handleEmotionDetailClick = (participantEmail) => {
+        navigate(`/usability-testing/${usabilityTestingId}/emotion-details`, {
+            state: {
+                testingName: usabilityTesting?.title,  // Changed from name to title
+                participantEmail: participantEmail,
+                usabilityTestingId: usabilityTestingId
+            }
+        });
+    };
+
     if (error) return <p className="text-red-500">{error}</p>;
     if (!usabilityTesting) return <p>Loading...</p>;
-
 
     return(
         <div className="flex h-screen overflow-hidden">
@@ -63,7 +85,8 @@ const TestingResults = () => {
                                 <tr className="bg-[#ACA3E3]">
                                     <th className="border px-4 py-2">Sir No.</th>
                                     <th className="border px-4 py-2">Participant Email</th>
-                                    <th className="border px-4 py-2">Video</th>
+                                    <th className="border px-4 py-2">Screen Recording</th>
+                                    <th className="border px-4 py-2">Emotion Detail</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,10 +96,18 @@ const TestingResults = () => {
                                         <td className="border px-4 py-2">{recording.participant_email}</td>
                                         <td className="border px-4 py-2">
                                             <button
-                                                className="text-blue-600"
+                                                className="text-black bg-[#C4BDED] rounded-lg shadow-md"
                                                 onClick={() => openVideoModal(recording.video)}
                                             >
-                                                Click to View
+                                                View the video
+                                            </button>
+                                        </td>
+                                        <td className="border px-4 py-2">
+                                            <button
+                                                className="text-black bg-[#C4BDED] rounded-lg shadow-md"
+                                                onClick={() => handleEmotionDetailClick(recording.participant_email)}
+                                            >
+                                                See Emotion Detail
                                             </button>
                                         </td>
                                     </tr>

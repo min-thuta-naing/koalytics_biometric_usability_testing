@@ -19,11 +19,12 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
-from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion, SUSQAnswer, ProjectCriteria
-from .serializers import UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer, SUSQuestionSerializer, SUSQAnswerSerializer, ProjectCriteriaSerializer
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion, SUSQAnswer, ProjectCriteria, EmotionCapture
+from .serializers import EmotionCaptureSerializer, UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer, SUSQuestionSerializer, SUSQAnswerSerializer, ProjectCriteriaSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from collections import defaultdict
+from django.utils.timezone import now
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -514,6 +515,7 @@ def get_sus_questions(request, form_id):
     except Exception as e:
         return Response({"error": str(e)}, status=400)
 
+
 # ✅ display question on the participant side 
 @api_view(['POST'])
 def create_or_update_susanswer(request, question_id):
@@ -936,10 +938,21 @@ logger = logging.getLogger(__name__)
 def emotion_detection(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid request'}, status=400)
+    
+    user_email=request.data.get("participant_email")
+    if not user_email: 
+        return Response({"error": "User email is required."}, status=status.HTTP_400)
+    
+    # Fetch user based on email
+    try:
+        user = User.objects.get(email=user_email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
     try:
         # Decode the base64 image
         image_data = request.data.get('image').split(',')[1]
+        test_id = request.data.get('test_id')  # <-- Get test ID from frontend
         image_bytes = base64.b64decode(image_data)
         image = Image.open(io.BytesIO(image_bytes))
         image = np.array(image)
@@ -949,6 +962,8 @@ def emotion_detection(request):
         mp_face_mesh = mp.solutions.face_mesh
         face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, min_detection_confidence=0.5)
         results = face_mesh.process(image)
+        print(results.multi_face_landmarks)  # Log face landmarks ************************
+
 
         bounding_box = None
         dominant_emotion = 'No emotion detected'
@@ -971,6 +986,21 @@ def emotion_detection(request):
             dominant_emotion = analysis[0]['dominant_emotion']
             emotion_probabilities = analysis[0]['emotion']
 
+            # Save to EmotionSnapshot model
+            test_instance = UsabilityTesting.objects.get(id=test_id)
+            EmotionCapture.objects.create(
+                usability_test=test_instance,
+                participant_email=user,
+                sad=emotion_probabilities.get('sad'),
+                angry=emotion_probabilities.get('angry'),
+                disgust=emotion_probabilities.get('disgust'),
+                fear=emotion_probabilities.get('fear'),
+                happy=emotion_probabilities.get('happy'),
+                surprise=emotion_probabilities.get('surprise'),
+                neutral=emotion_probabilities.get('neutral'),
+                dominant=dominant_emotion
+            )
+
         return JsonResponse({
             'emotion': dominant_emotion,
             'bounding_box': bounding_box,
@@ -978,8 +1008,25 @@ def emotion_detection(request):
         })
 
     except Exception as e:
-        logger.error(f"Emotion detection error: {e}")
-        return JsonResponse({'error': str(e)}, status=500)
+        import traceback
+        print("=== Emotion Detection Error ===")
+        print(traceback.format_exc())
+        return JsonResponse({'error': f"Backend error: {str(e)}"}, status=500)
+
+
+# ✅ fetching the emotion data
+@api_view(['GET'])
+def emotion_data_list(request, usability_testing_id):
+    queryset = EmotionCapture.objects.filter(usability_test_id=usability_testing_id)
+    
+    # Filter by participant if provided
+    participant_email = request.query_params.get('participant', None)
+    if participant_email is not None:
+        queryset = queryset.filter(participant_email__email=participant_email)
+        
+    serializer = EmotionCaptureSerializer(queryset.order_by('timestamp'), many=True)
+    return Response(serializer.data)
+
 
 #########################################################################################################################################################################################################################################################
 #########################################################################################################################################################################################################################################################

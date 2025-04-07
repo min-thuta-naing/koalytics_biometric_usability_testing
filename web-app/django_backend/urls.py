@@ -99,6 +99,7 @@ urlpatterns = [
     path("api/save-recording/check/<int:usability_testing_id>/", views.check_recording, name="check-recording"), # ❌
     path("api/save-recording/", views.save_recording, name="save-recording"), # start and save recording on TestCalibration.jsx
     path('emotion-detection/', views.emotion_detection, name='emotion_detection'), # emotion detection from BrowserinBrowser.jsx
+    path('api/usability-testing/<int:usability_testing_id>/emotion-data/', views.emotion_data_list, name='emotion-data-list'), # emotion data list from DetailedEmotion.jsx and TestingResults.jsx
     path('usability-testing/<int:usability_testing_id>/recordings/', views.get_recordings_for_usability_testing, name='get_recordings_for_usability_testing'), # usability testing recording on TestingResults.jsx
     path('video/<str:video_name>/', lambda request, video_name: print(f"Video requested: {video_name}") or views.video_view(request, video_name), name='video-view'), # usability testing recording on TestingResults.jsx
 

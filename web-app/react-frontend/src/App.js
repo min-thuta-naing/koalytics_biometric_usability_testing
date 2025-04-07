@@ -21,6 +21,7 @@ import CreateQuestions from "./pages/SUSform/CreateQuestions";
 import CreateSUSQuestion from "./pages/SUSform/CreateSUSQuestion";
 import ViewResults from "./pages/SUSform/ViewResults";
 import Guide from "./pages/Guide";
+import DetailedEmotion from "./pages/UsabilityTesting/DetailedEmotion";
 import Tempque from "./pages/SUSform/tempque";
 import AnswerForm from "./pages/Participant/AnswerForms";
 import ChooseTest from "./pages/Participant/ChooseTest";
@@ -57,12 +58,12 @@ function App() {
         <Route path="/all-project/:projectId" element={<ChooseTest />} />
         <Route path="/related-form/:formId" element={<AnswerForm />} />
         <Route path="/related-usability-testing/:usabilityTestingId" element={<TestCalibration/>}/>
+        <Route path="/usability-testing/:usabilityTestingId/emotion-details" element={<DetailedEmotion />} />
         <Route path="/question1" element={<Question1 />} />
         <Route path="/question2" element={<Question2 />} />
         <Route path="/question3" element={<Question3 />} />
         <Route path="/question4" element={<Question4 />} />
         <Route path="/question5" element={<Question5 />} />
-
 
         {/* temporary page */}
         <Route path="/facial" element={<TempoFacial />} />

@@ -69,7 +69,7 @@ const TestCalibration = () => {
           console.log("Recording uploaded successfully.");
         }
   
-        navigate(-1); // Redirect back to the previous page
+        //navigate(-1); // Redirect back to the previous page *************
       };
   
       mediaRecorder.start();

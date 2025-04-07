@@ -52,10 +52,20 @@ const CreateSUSQuestion = ({ form, formId }) => {
             <div className="mx-80 my-10 px-32">
               <div className="flex flex-col">
                 <h2 className="mx-3 px-4 pt-3 text-lg font-bold font-funnel">SUS Form Information</h2>
-                <div className="mt-3 mx-3 p-4 bg-white rounded-lg shadow-lg">
-                  <p className="mt-2 mb-2 font-funnel">Id: {form.id}</p>
-                  <p className="mt-2 mb-2 font-funnel">Title: {form.susform_title}</p>
-                  <p className="mt-2 mb-2 font-funnel">Description: {form.susform_description}</p>
+                <div className="font-funnel mt-3 mx-3 p-4 bg-white rounded-lg shadow-lg">
+                  <div className="mb-2">
+                    <p className="font-semibold text-gray-600 mb-1">Title:</p>
+                    <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-2 text-gray-800">
+                        {form.susform_title}
+                    </div>
+                  </div>
+                  {/* <p className="mt-2 mb-2 font-funnel">Id: {form.id}</p> */}
+                  <div className="mb-2">
+                    <p className="font-semibold text-gray-600 mb-1">Description:</p>
+                    <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-2 text-gray-800">
+                        {form.susform_description}
+                    </div>
+                  </div>
                 </div>
               </div>
     
