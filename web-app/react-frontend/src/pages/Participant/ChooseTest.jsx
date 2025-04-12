@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {X} from 'lucide-react';
 
 const ChooseTest = () => {
@@ -67,11 +67,12 @@ const ChooseTest = () => {
                         <div className="w-full h-[1px] bg-gray-300"></div>
 
                         <div className="bg-white w-full p-6">
+                            <p className="font-semibold text-[#8A78C1] mb-2">
+                                Before proceeding with the usability testing and SUS questionnaire, please read the following carefully:
+                            </p>
                             <div className="max-h-80 overflow-y-auto mb-4 text-sm">
-                                <p className="font-semibold text-black mb-2">
-                                    Before proceeding with the usability testing and SUS questionnaire, please read the following carefully:
-                                </p>
-                                <div className="text-gray-800 rounded-lg">
+                                
+                                <div className="p-5 text-gray-800 rounded-lg">
                                     {consentText ? (
                                         <div dangerouslySetInnerHTML={{ __html: consentText }} />
                                     ) : (
@@ -110,8 +111,11 @@ const ChooseTest = () => {
                         <div className="w-full h-[1px] bg-gray-300"></div>
 
                         {/* Bottom and Close Button Section */}
-                        <div className="flex items-center font-funnel justify-between p-3 bg-gray-100 rounded-b-lg relative">
-                            <h2 className="font-semibold text-base">Don't want to answer yet, Click here to quit. ok na ka</h2>
+                        <div className="flex items-center font-funnel p-3 bg-gray-100 rounded-b-lg relative">
+                            <h2 className="text-base mr-2">Don't want to answer yet, </h2>
+                            <Link to="/homepage">
+                                <button className="underline font-semibold text-red-400">Click here to quit.</button>
+                            </Link>
                         </div>
                     </div>
                 </div>
