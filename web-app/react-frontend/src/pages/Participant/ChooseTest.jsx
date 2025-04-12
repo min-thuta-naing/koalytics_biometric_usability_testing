@@ -111,7 +111,7 @@ const ChooseTest = () => {
 
                         {/* Bottom and Close Button Section */}
                         <div className="flex items-center font-funnel justify-between p-3 bg-gray-100 rounded-b-lg relative">
-                            <h2 className="font-semibold text-base">Koalytics</h2>
+                            <h2 className="font-semibold text-base">Don't want to answer yet, Click here to quit. ok na ka</h2>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Plot from "react-plotly.js"; // ✅ Import Plotly
+// import Plot from "react-plotly.js"; // ✅ Import Plotly
+import createPlotlyComponent from 'react-plotly.js/factory';
+import Plotly from 'plotly.js/lib/core';
+
+// Import only what you need
+import box from 'plotly.js/lib/box';
+import scatter from 'plotly.js/lib/scatter'; // scatter = line charts
+
+// Register them with Plotly
+Plotly.register([box, scatter]);
+
+const Plot = createPlotlyComponent(Plotly);
+
 
 const DetailedEmotion = () => {
     const location = useLocation();

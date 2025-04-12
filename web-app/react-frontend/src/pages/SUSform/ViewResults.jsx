@@ -172,7 +172,18 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Plot from 'react-plotly.js';
+// import Plot from 'react-plotly.js';
+import createPlotlyComponent from 'react-plotly.js/factory';
+import Plotly from 'plotly.js/lib/core';
+
+// Only import the trace types you need
+import box from 'plotly.js/lib/box';
+import scatter from 'plotly.js/lib/scatter'; // used for line charts
+
+// Register only these with Plotly
+Plotly.register([box, scatter]);
+
+const Plot = createPlotlyComponent(Plotly);
 
 
 const ViewResults = () => {
