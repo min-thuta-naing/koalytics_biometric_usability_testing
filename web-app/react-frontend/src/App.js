@@ -26,7 +26,8 @@ import Tempque from "./pages/SUSform/tempque";
 import AnswerForm from "./pages/Participant/AnswerForms";
 import ChooseTest from "./pages/Participant/ChooseTest";
 import UsabilityTestingDetail from "./pages/UsabilityTesting/UsabilityTestingDetail";
-import TestCalibration from "./pages/Participant/TestCalibration";
+import TestInfo from "./pages/Participant/TestInfo";
+import CalibrationPopUp from "./pages/Participant/UsabilityTestingCallibration/CalibrationPopUp";
 import TempoFacial from "./pages/Participant/TempoFacial";
 import BrowserInBrowser from "./pages/Participant/BrowserInBrowser";
 import MultiPointProgressBar from "./pages/SUSform/MultiPointProgressBar";
@@ -57,7 +58,8 @@ function App() {
         <Route path="/usability_testing/:usabilityTestingId" element={<UsabilityTestingDetail />} />
         <Route path="/all-project/:projectId" element={<ChooseTest />} />
         <Route path="/related-form/:formId" element={<AnswerForm />} />
-        <Route path="/related-usability-testing/:usabilityTestingId" element={<TestCalibration/>}/>
+        <Route path="/related-usability-testing/:usabilityTestingId" element={<TestInfo/>}/>
+        <Route path="/calibration-pop-up" element={<CalibrationPopUp/>}/> 
         <Route path="/usability-testing/:usabilityTestingId/emotion-details" element={<DetailedEmotion />} />
         <Route path="/question1" element={<Question1 />} />
         <Route path="/question2" element={<Question2 />} />

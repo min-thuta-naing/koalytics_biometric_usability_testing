@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import React from 'react';
 
-const TestCalibration = () => {
+const TestInfo = () => {
   const { usabilityTestingId } = useParams();
   const [usabilityTesting, setUsabilityTesting] = useState(null);
   const [error, setError] = useState("");
@@ -208,4 +208,4 @@ const TestCalibration = () => {
   
 };
 
-export default TestCalibration;
+export default TestInfo;
