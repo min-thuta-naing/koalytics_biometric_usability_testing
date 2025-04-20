@@ -342,7 +342,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
     const [consentContent, setConsentContent] = useState(getConsentTemplate('biometric'));
 
     const getRandomImages = () => {
-        const allImages = Array.from({ length: 12 }, (_, i) => `/static/images/projectcategory/${i + 1}.png`);
+        const allImages = Array.from({ length: 30 }, (_, i) => `/static/images/projectcategory/${i + 1}.png`);
         return allImages.sort(() => Math.random() - 0.5);
     };
     const [images, setImages] = useState(getRandomImages());
@@ -568,8 +568,8 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                     {/* Scrollable Masonry Layout */}
                     <div className="relative h-[390px] overflow-hidden">
                         {/* Fading top and bottom */}
-                        <div className="pointer-events-none absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-white to-transparent z-10" />
-                        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent z-10" />
+                        <div className="pointer-events-none absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-white to-transparent z-10" />
+                        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent z-10" />
 
                         {/* Scrollable area */}
                         <div className="overflow-y-auto h-full px-4 pb-20 hide-scrollbar scroll-smooth">
@@ -590,9 +590,9 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
                         <button
                             onClick={refreshImages}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-400 border border-gray-700 transition"
+                            className="inline-flex items-center gap-2 px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-400 border border-gray-700 transition"
                         >
-                            <RefreshCcw className="w-4 h-4" />
+                            <RefreshCcw className="w-3 h-3" />
                             Refresh
                         </button>
                         </div>
