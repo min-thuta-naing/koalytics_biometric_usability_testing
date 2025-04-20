@@ -321,8 +321,7 @@
 
 
 import React, { useState, useRef } from "react";
-import { X } from "lucide-react";
-import Editor from "./SampleEditor";
+import { X, RefreshCcw } from "lucide-react";
 import WYSIWYGEditor from "./WYSIWYGEditor";
 import {getConsentTemplate} from "./templates";
 
@@ -331,6 +330,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
     const [currentStep, setCurrentStep] = useState(1);
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
+    const [category, setCategory] = useState(""); 
     const [organization, setOrganization] = useState("");
     const [maxParticipants, setMaxParticipants] = useState("");
     const [startDate, setStartDate] = useState("");
@@ -338,10 +338,18 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
     const [sideNotes, setSideNotes] = useState("");
     const [error, setError] = useState("");
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [editorContent, setEditorContent] = React.useState(
-        "<p><strong>Hello World,</strong></p><p>This Is a Demo Use of The Editor</p><p></p><p>Try Your Self like<u> UnderLine</u></p><p>or <s>Strike</s></p><p><strong>Bold is Gold</strong></p><p><em>Italic Is Elite</em></p><p><em><mark>Or You Want To Highlight</mark></em></p><p>Did I told You About Justify</p><p style='text-align: right'>Left</p><p>right</p><p style='text-align: center'>or even center</p><p>try The Link &amp; visit <a target='_blank' rel='noopener noreferrer nofollow' class='link link' href='https://github.com/mahmoud-bebars'>My GitHub</a></p><p style='text-align: center'></p>"
-    );
+   
     const [consentContent, setConsentContent] = useState(getConsentTemplate('biometric'));
+
+    const getRandomImages = () => {
+        const allImages = Array.from({ length: 12 }, (_, i) => `/static/images/projectcategory/${i + 1}.png`);
+        return allImages.sort(() => Math.random() - 0.5);
+    };
+    const [images, setImages] = useState(getRandomImages());
+    const refreshImages = () => {
+        setImages(getRandomImages());
+    };
+
 
     const steps = [
         {
@@ -395,6 +403,59 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                         </div>
 
                         <div className="flex flex-col gap-2">
+                            <label className="font-medium">Category:</label>
+                            <select
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value)}
+                                className="border border-gray-300 p-3 rounded-lg flex-1"
+                                required
+                                style={{ color: category ? 'black' : '#9CA3AF' }}
+                            >
+                                <option value="" disabled>Select Category of your project</option>
+                                <optgroup label="Commerce & Finance">
+                                <option value="shopping-and-ecommerce">Shopping & E-commerce</option>
+                                <option value="finance-and-investment">Finance & Investment</option>
+                                <option value="real-estate-and-property">Real Estate & Property</option>
+                                <option value="business-and-productivity">Business & Productivity</option>
+                                </optgroup>
+
+                                <optgroup label="Learning & Career">
+                                <option value="education-and-learning">Education & Learning</option>
+                                <option value="careers-and-jobs">Careers & Jobs</option>
+                                </optgroup>
+
+                                <optgroup label="Creativity & Media">
+                                <option value="arts-and-design">Arts & Design</option>
+                                <option value="entertainment-and-media">Entertainment & Media</option>
+                                <option value="news-and-information">News & Information</option>
+                                <option value="technology-and-software">Technology & Software</option>
+                                </optgroup>
+
+                                <optgroup label="Health & Lifestyle">
+                                <option value="health-and-wellness">Health & Wellness</option>
+                                <option value="lifestyle-and-hobbies">Lifestyle & Hobbies</option>
+                                <option value="home-and-garden">Home & Garden</option>
+                                <option value="pets-and-animals">Pets & Animals</option>
+                                </optgroup>
+
+                                <optgroup label="Sports & Recreation">
+                                <option value="sports-and-fitness">Sports & Fitness</option>
+                                <option value="gaming">Gaming</option>
+                                </optgroup>
+
+                                <optgroup label="Travel & Utilities">
+                                <option value="travel-and-navigation">Travel & Navigation</option>
+                                <option value="tools-and-utilities">Tools & Utilities</option>
+                                </optgroup>
+
+                                <optgroup label="Social & Communication">
+                                <option value="social-and-communication">Social & Communication</option>
+                                </optgroup>
+
+                            </select>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
                             <label className="font-medium">Organization:</label>
                             <select
                                 value={organization}
@@ -403,7 +464,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                                 required
                                 style={{ color: organization ? 'black' : '#9CA3AF' }}
                             >
-                                <option value="" disabled>Select Organization</option>
+                                <option value="" disabled>Select Organization </option>
                                 <option value="company">Company</option>
                                 <option value="school">School</option>
                                 <option value="college">College</option>
@@ -478,11 +539,6 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                     <p className="font-semibold text-xl">Consent Form</p>
                     <p className="text-base">You can modify the following consent template.</p>
                     <div className="flex flex-col gap-6 mt-10">
-            
-                        {/* <WYSIWYGEditor 
-                            content={getConsentTemplate('biometric')}  
-                            onUpdate={(html) => console.log(html)} 
-                        /> */}
                         <WYSIWYGEditor
                             content={consentContent}  
                             onUpdate={(html) => {
@@ -502,6 +558,50 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         },
         {
             id: 4,
+            title: "Cover Photo",
+            description: "Choose a cover photo for your project.",
+            content: (
+                <div className="space-y-4">
+                    <p className="font-semibold text-xl">Project Cover Photo</p>
+                    <p className="text-base">Choose a cover photo for your project.</p>
+
+                    {/* Scrollable Masonry Layout */}
+                    <div className="relative h-[390px] overflow-hidden">
+                        {/* Fading top and bottom */}
+                        <div className="pointer-events-none absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-white to-transparent z-10" />
+                        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent z-10" />
+
+                        {/* Scrollable area */}
+                        <div className="overflow-y-auto h-full px-4 pb-20 hide-scrollbar scroll-smooth">
+                        <div className="columns-2 sm:columns-3 md:columns-4 gap-4 space-y-4">
+                            {images.map((src, index) => (
+                            <div key={index} className="break-inside-avoid overflow-hidden rounded-lg shadow-md">
+                                <img
+                                src={src}
+                                alt={`Image ${index + 1}`}
+                                className="w-full object-cover rounded-lg"
+                                />
+                            </div>
+                            ))}
+                        </div>
+                        </div>
+
+                        {/* Floating Refresh Button */}
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+                        <button
+                            onClick={refreshImages}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-400 border border-gray-700 transition"
+                        >
+                            <RefreshCcw className="w-4 h-4" />
+                            Refresh
+                        </button>
+                        </div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            id: 5,
             title: "Finish",
             description: "Your project is now created.",
             content: (
@@ -539,6 +639,10 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         if (!projectDescription.trim()) {
             requiredErrors.push("Project description");
             isValid = false;
+        }
+        if (!category){
+            requiredErrors.push("Category");
+            isValid = false; 
         }
         if (!organization) {
             requiredErrors.push("Organization");
@@ -584,9 +688,26 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         if (errorMessage) {
             setError(errorMessage);
         }
-    
         return isValid;
     };
+
+    const validateConsent = () =>{
+        setError("");
+        let isValid = true;
+        const requiredErrors = [];
+        let errorMessage = "";
+
+        if (!consentContent.trim()) {
+            requiredErrors.push("Consent Form is required");
+            isValid = false;
+        }
+
+        if (errorMessage) {
+            setError(errorMessage);
+        }
+        return isValid;
+    }
+
 
     const handleNext = (e) => {
         if (currentStep === 2) {
@@ -597,6 +718,11 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
             }
             // Clear any previous errors if validation passes
             setError("");
+        } else if (currentStep === 3) {
+            const isValid = validateConsent();
+            if (!isValid){
+                return; 
+            }
         }
 
         if (currentStep < steps.length ) { 
@@ -634,6 +760,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                 body: JSON.stringify({
                     name: projectName,
                     description: projectDescription,
+                    category: category,
                     organization: organization,
                     max_participants: maxParticipants ? parseInt(maxParticipants) : null,
                     start_date: startDate,
@@ -653,7 +780,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
 
             // On successful submission:
             setIsSubmitted(true);
-            setCurrentStep(4); // Go to thank you page
+            setCurrentStep(5); // Go to thank you page
             onProjectCreated();
             
         } catch (err) {
@@ -718,7 +845,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                         {steps[currentStep - 1].content}
                     </div>
 
-                    {currentStep !== 4 && (
+                    {currentStep !== 5 && (
                         <div className="flex justify-between mt-8">
                             <button
                                 type="button"
@@ -732,11 +859,10 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
          
                             <button
                                 type="button"
-                                onClick={currentStep === 3 ? handleSubmit : handleNext}
-                                //onClick={handleNext}
-                                className={`px-4 py-2 ${currentStep === 2 ? 'bg-[#C4BDED] hover:bg-[#ACA3E3]' : 'bg-[#C4BDED] hover:bg-[#ACA3E3]'} text-black rounded-md`}
+                                onClick={currentStep === 4 ? handleSubmit : handleNext}
+                                className={`px-4 py-2 ${currentStep === 2 && 3 ? 'bg-[#C4BDED] hover:bg-[#ACA3E3]' : 'bg-[#C4BDED] hover:bg-[#ACA3E3]'} text-black rounded-md`}
                             >
-                                {currentStep === 3 ? 'Submit' : 'Next'}
+                                {currentStep === 4 ? 'Submit' : 'Next'}
                             </button>
                         </div>
                     )}

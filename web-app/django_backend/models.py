@@ -75,11 +75,15 @@ class Industry (models.Model):
 class Project(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
+    category = models.CharField(max_length=50, blank=True, null=True)
     organization = models.CharField(max_length=255, blank=True, null=True)
     max_participants = models.IntegerField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     side_notes = models.TextField(blank=True, null=True)
+
+    image_path = models.CharField(max_length=500, blank=True, null=True)
+
     consent_text = models.TextField(blank=True, null=True)
 
     gender = models.ManyToManyField('Gender', related_name="projects", blank=True )

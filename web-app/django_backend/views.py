@@ -249,6 +249,7 @@ def create_project(request, user_id):
         project = Project.objects.create(
             name=project_name,
             description=project_description,
+            category = data.get('category'),
             organization=data.get('organization'),
             max_participants=data.get('max_participants'),
             start_date=data.get('start_date'),
@@ -283,6 +284,7 @@ def update_project(request, project_id):
 
             # Update only provided fields
             project.name = data.get("name", project.name)
+            project.category = data.get("category", project.category)
             project.description = data.get("description", project.description)
             project.organization = data.get("organization", project.organization)
             project.max_participants = data.get("max_participants", project.max_participants)
@@ -392,6 +394,7 @@ def get_project(request, project_id):
         return JsonResponse({
             "id": project.id,
             "name": project.name,
+            "category":project.category,
             "description": project.description,
             "organization": project.organization,
             "max_participants": project.max_participants,

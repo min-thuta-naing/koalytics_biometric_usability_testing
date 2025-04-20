@@ -28,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ProjectSerializer (serializers.ModelSerializer):               
     class Meta: 
         model = Project
-        fields = ["id", "name", "description", "organization", "max_participants", "start_date", "end_date", "side_notes", "consent_text"]
+        fields = ["id", "name", "category", "description", "organization", "max_participants", "start_date", "end_date", "side_notes", "consent_text"]
 
 # ✅
 class ProjectCriteriaSerializer(serializers.ModelSerializer):
