@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import CreateQuestions from "./CreateQuestions";
 import CreateSUSQuestion from "./CreateSUSQuestion"; 
 import ViewResults from "./ViewResults";
 import SUSQuesionPreview from "./SUSQuestionPreview";

@@ -1,4 +1,4 @@
-// CreateQuestions.js
+// CreateQuestions.js not use this file
 import { useState, useEffect, useRef } from "react";
 import {Trash2} from "lucide-react"; 
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateProjects from "./CreateProjects";
+import CreateProjects from "./Project/CreateProjects";
 import { EllipsisVertical,X } from "lucide-react";
 
 const ResearcherDashboard = () => {

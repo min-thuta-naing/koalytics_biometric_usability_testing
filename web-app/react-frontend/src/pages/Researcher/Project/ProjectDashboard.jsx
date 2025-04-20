@@ -1,10 +1,10 @@
 import { useEffect, useState,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Pencil, SquarePlus, EllipsisVertical, ClipboardType, FlaskConical, X } from 'lucide-react';
-import CreateSUSForms from './CreateForms'; 
+import CreateSUSForms from './SUS/CreateForms'; 
 import EditProjectDetail from "./EditProjectDetail";
 import AddCriteriaForm from './AddCriteriaForm';
-import CreateUsabilityTesting from "./CreateUsabilityTesting";
+import CreateUsabilityTesting from "./UsabilityTest/CreateUsabilityTesting";
 
 const ProjectDashboard = () => {
     const { projectId } = useParams(); // Get projectId from URL
