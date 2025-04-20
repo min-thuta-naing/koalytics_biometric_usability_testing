@@ -342,7 +342,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
     const [consentContent, setConsentContent] = useState(getConsentTemplate('biometric'));
 
     const getRandomImages = () => {
-        const allImages = Array.from({ length: 30 }, (_, i) => `/static/images/projectcategory/${i + 1}.png`);
+        const allImages = Array.from({ length: 44 }, (_, i) => `/static/images/projectcategory/${i + 1}.png`);
         return allImages.sort(() => Math.random() - 0.5);
     };
     const [images, setImages] = useState(getRandomImages());
@@ -572,18 +572,18 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent z-10" />
 
                         {/* Scrollable area */}
-                        <div className="overflow-y-auto h-full px-4 pb-20 hide-scrollbar scroll-smooth">
-                        <div className="columns-2 sm:columns-3 md:columns-4 gap-4 space-y-4">
-                            {images.map((src, index) => (
-                            <div key={index} className="break-inside-avoid overflow-hidden rounded-lg shadow-md">
-                                <img
-                                src={src}
-                                alt={`Image ${index + 1}`}
-                                className="w-full object-cover rounded-lg"
-                                />
+                        <div className="overflow-y-auto h-full px-4 pt-10 pb-20 hide-scrollbar scroll-smooth">
+                            <div className="columns-2 sm:columns-3 md:columns-4 gap-4 space-y-4">
+                                {images.map((src, index) => (
+                                <div key={index} className="break-inside-avoid overflow-hidden rounded-lg shadow-md">
+                                    <img
+                                    src={src}
+                                    alt={`Image ${index + 1}`}
+                                    className="w-full object-cover rounded-lg"
+                                    />
+                                </div>
+                                ))}
                             </div>
-                            ))}
-                        </div>
                         </div>
 
                         {/* Floating Refresh Button */}
