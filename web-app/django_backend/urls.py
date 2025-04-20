@@ -53,7 +53,8 @@ urlpatterns = [
     path('api/save_industry/<int:user_id>/', save_industry, name='save_industry'), 
     
     # project related 
-    path('create_project/<int:user_id>/', create_project, name='create_project'),  
+    path('create_project/<int:user_id>/', create_project, name='create_project'), 
+    path('api/projects/<int:project_id>/publish/', views.publish_project, name="publish_project"), # publishing the project on ProjectDashboard.jsx
     path("api/update_project/<int:project_id>/", update_project, name="update_project"),
     path('api/project/<int:project_id>/', get_project, name='get_project'),
     path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"),
@@ -119,7 +120,7 @@ urlpatterns = [
     path('forms/<int:form_id>/answers/', views.get_form_answers, name='get-form-answers'),
 
     # participant side 
-    path("api/projects/", get_all_projects, name="get_all_project"), 
+    path("api/all-published-projects/", get_all_projects, name="get_all_project"), 
     path('api/projects/<int:project_id>/details/', views.get_project_details),
     path("api/projects/<int:project_id>/related_forms/", get_project_forms, name="get_project_forms"),
     path("api/projects/<int:project_id>/related_usability_testing/", get_project_usabilitytesting, name="get_project_usabilitytesting"),

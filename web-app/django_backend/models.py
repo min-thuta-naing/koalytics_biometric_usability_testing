@@ -86,6 +86,8 @@ class Project(models.Model):
 
     consent_text = models.TextField(blank=True, null=True)
 
+    is_shared = models.BooleanField(default=False)
+
     gender = models.ManyToManyField('Gender', related_name="projects", blank=True )
     age_group = models.ManyToManyField('AgeGroup', related_name="projects", blank=True )
     interest = models.ManyToManyField('Interest', related_name="projects", blank=True )

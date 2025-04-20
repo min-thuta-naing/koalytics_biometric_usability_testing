@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import {X} from 'lucide-react';
 
 const ChooseTest = () => {
     const { projectId } = useParams(); // Get project ID from URL

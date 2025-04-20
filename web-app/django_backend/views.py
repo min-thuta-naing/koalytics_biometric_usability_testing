@@ -273,6 +273,17 @@ def create_project(request, user_id):
     except Exception as e:
         print("Error creating project:", str(e))  # Debug log
         return Response({'error': str(e)}, status=500)
+    
+# ✅ publish the project 
+@api_view(['POST'])
+def publish_project(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        project.is_shared = True
+        project.save()
+        return Response({"message": "Project shared successfully!"}, status=200)
+    except Project.DoesNotExist:
+        return Response({"error": "Project not found."}, status=404)
 
 
 # ✅ editing the project info 
@@ -403,6 +414,7 @@ def get_project(request, project_id):
             "end_date": project.end_date,
             "side_notes": project.side_notes,
             "image_path": project.image_path,
+            "is_shared" : project.is_shared, 
             "usability_testings": list(project.usability_testings.values("id", "title", "task")),
         })
     except Project.DoesNotExist:
@@ -1040,8 +1052,14 @@ def emotion_data_list(request, usability_testing_id):
 # ✅ get all projects on the homepage for participant 
 def get_all_projects(request):
     if request.method == "GET":
-        projects = list(Project.objects.values("id", "name", "description", "organization", "start_date", "end_date", "side_notes", "consent_text"))
-        return JsonResponse(projects, safe=False)
+        # projects = list(Project.objects.values("id", "name", "description", "organization", "start_date", "end_date", "side_notes", "consent_text"))
+        # return JsonResponse(projects, safe=False)
+        # Fetch only projects where is_shared is True
+        projects = Project.objects.filter(is_shared=True).values(
+            "id", "name", "description", "organization", "start_date", "end_date",
+            "side_notes", "consent_text"
+        )
+        return JsonResponse(list(projects), safe=False)
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
 # ✅ display project's forms to display in the ChooseTest.jsx
