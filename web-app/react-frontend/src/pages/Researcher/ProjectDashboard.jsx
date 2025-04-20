@@ -12,6 +12,7 @@ const ProjectDashboard = () => {
     const [project, setProject] = useState(null);
 
     const [projectName, setProjectName] = useState("");
+    const [projectCategory, setProjectCategory] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
     const [organization, setOrganization] = useState("");
     const [maxParticipants, setMaxParticipants] = useState("");
@@ -162,8 +163,10 @@ const ProjectDashboard = () => {
             const response = await fetch(`http://127.0.0.1:8000/api/project/${projectId}/`);
             if (response.ok) {
                 const data = await response.json();
+                console.log("Fetched project:", data); // 👈 check here
                 setProject(data);
                 setProjectName(data.name || "");
+                setProjectCategory(data.category || "");
                 setProjectDescription(data.description || "");
                 setOrganization(data.organization || "");
                 setMaxParticipants(data.max_participants || "");
@@ -311,7 +314,7 @@ const ProjectDashboard = () => {
     return (
         <div className="bg-[#F0EEED] h-screen overflow-hidden">
             {/* Project Cover Image */}
-            <div className="fixed top-0 left-0 w-full h-[50vh] z-10">
+            <div className="fixed top-0 left-0 w-full h-[40vh] z-10">
                 {/* Dark Overlay */}
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
                 
@@ -340,8 +343,14 @@ const ProjectDashboard = () => {
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-gray-700">
+                        {/* First row: 2 columns */}
                         <DetailCard icon="📝" label="Project Name" value={project.name} />
+                        <div className="lg:col-span-2">
+                            <DetailCard icon="🏷️" label="Category" value={project.category} />
+                        </div>
+
+                        {/* Second row: 3 columns */}
                         <DetailCard icon="🏢" label="Organization" value={project.organization} />
                         <DetailCard
                             icon="📅"
@@ -354,10 +363,13 @@ const ProjectDashboard = () => {
                             }
                         />
                         <DetailCard icon="👥" label="Max Participants" value={project.max_participants} />
-                        <div className="sm:col-span-2">
+
+
+                        {/* Full-width rows */}
+                        <div className="lg:col-span-3">
                             <DetailCard icon="💬" label="Description" value={project.description} />
                         </div>
-                        <div className="sm:col-span-2">
+                        <div className="lg:col-span-3">
                             <DetailCard icon="🗒️" label="Side Note" value={project.side_notes || "—"} />
                         </div>
                     </div>
@@ -407,57 +419,6 @@ const ProjectDashboard = () => {
                     />
                 )}
 
-                {/* sus questionnaire creation and list */}
-                {/* <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md"> 
-                    <div className="flex justify-between items-center border-b border-gray-300">
-                        <div className="flex flex-col gap-2">
-                            <h1 className="font-semibold text-xl">Create SUS Questionnaire</h1>
-                            <p>You can create forms using questions.</p>
-                        </div>
-                        <button
-                            className="bg-[#C4BDED] font-funnel text-black text-sm px-4 py-2 w-48 h-12 rounded-lg shadow-lg hover:bg-[#ACA3E3]"
-                            onClick={() => setShowSurveyFormModal(true)}
-
-                        >
-                            Create SUS Form
-                        </button>
-                    </div>
-                    <div>
-                        <p>Here are your current forms:</p>
-                        {susforms.length === 0 ? (
-                            <p>No forms available.</p>
-                        ) : (
-                            <div className="flex flex-wrap gap-4 mt-4">
-                                {susforms.map((susform) => (
-                                    <div 
-                                        key={susform.id} 
-                                        className="p-4 border rounded-lg shadow-md bg-white w-64 relative"
-                                    >
-                                        <div className="absolute top-3 right-3">
-                                            <button onClick={() => setShowDropdown(showDropdown === susform.id ? null : susform.id)} className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
-                                                <EllipsisVertical size={20}/> 
-                                            </button>
-                                            {showDropdown === susform.id && (
-                                                <div className="absolute right-0 mt-2 bg-white border rounded shadow-md">
-                                                    <button
-                                                        onClick={() => handleDeleteForm(susform.id)}
-                                                        className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100"
-                                                    >
-                                                        Delete
-                                                    </button> 
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div onClick={()=> navigate(`/form/${susform.id}`)}> 
-                                            <h3 className="text-lg font-semibold">{susform.id}</h3>
-                                            <h3 className="text-lg font-semibold">{susform.susform_title}</h3>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div> */}
                 <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
                     {/* Header */}
                     <div className="flex justify-between items-center border-b pb-6 mb-6">
@@ -550,59 +511,6 @@ const ProjectDashboard = () => {
                     </div>
                 )}
 
-
-                {/* usability testing creation and list  */}
-                {/* <div className="mx-10 my-5 bg-white p-8 rounded-lg shadow-md">
-                    <div className="flex justify-between items-center border-b border-gray-300">
-                        <div className="flex flex-col gap-2">
-                            <h1 className="font-semibold text-xl">Create Usability Testings</h1>
-                            <p>You can create usability testings.</p>
-                        </div>
-                        <button
-                            className="bg-[#C4BDED] font-funnel text-black text-sm px-4 py-2 w-48 h-12 rounded-lg shadow-lg hover:bg-[#ACA3E3]"
-                            onClick={() => setShowUsabilityTestingModal(true)}
-                        >
-                            Create Usability Testing
-                        </button>
-                    </div>
-
-                    <div>
-                        <p>Here are your current usability testings:</p>
-                        {usabilityTestings.length === 0 ? (
-                            <p>No forms available.</p>
-                        ) : (
-                            <div className="flex flex-wrap gap-4 mt-4">
-                                {usabilityTestings.map((usabilityTesting) => (
-                                    <div 
-                                        key={usabilityTesting.id} 
-                                        className="p-4 border rounded-lg shadow-md bg-white w-64 relative"
-                                    >
-                                        <div className="absolute top-3 right-3">
-                                            <button onClick={() => setShowDropdown(showDropdown === usabilityTesting.id ? null : usabilityTesting.id)} className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
-                                                <EllipsisVertical size={20}/> 
-                                            </button>
-                                            {showDropdown === usabilityTesting.id && (
-                                                <div className="absolute right-0 mt-2 bg-white border rounded shadow-md">
-                                                    <button
-                                                        onClick={() => handleDeleteUsabilityTesting(usabilityTesting.id)}
-                                                        className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100"
-                                                    >
-                                                        Delete
-                                                    </button> 
-                                                </div>
-                                            )}
-                                        </div>
-                                        
-                                        <div onClick={()=> navigate(`/usability_testing/${usabilityTesting.id}`)}> 
-                                            <h3 className="text-lg font-semibold">{usabilityTesting.id}</h3>
-                                            <h3 className="text-lg font-semibold">{usabilityTesting.title}</h3>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div> */}
                 <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
                     {/* Header */}
                     <div className="flex justify-between items-center border-b pb-6 mb-6">
@@ -627,44 +535,6 @@ const ProjectDashboard = () => {
                             <p className="text-gray-400 italic">No usability testings available.</p>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-4">
-                                {/* {usabilityTestings.map((usabilityTesting) => (
-                                    <div
-                                        key={usabilityTesting.id}
-                                        className="relative p-5 bg-[#DCD6F7] border border-[#C4BDED] rounded-xl shadow-sm hover:shadow-md transition cursor-pointer group"
-                                        onClick={() => navigate(`/usability_testing/${usabilityTesting.id}`)}
-                                    >
-                                        <div className="absolute top-3 right-3 z-10">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setShowDropdown(showDropdown === usabilityTesting.id ? null : usabilityTesting.id);
-                                                }}
-                                                className="p-2 rounded-full bg-[#C4BDED] hover:bg-[#ACA3E3]"
-                                            >
-                                                <EllipsisVertical size={20} />
-                                            </button>
-
-                                            {showDropdown === usabilityTesting.id && (
-                                                <div
-                                                    className="absolute right-0 mt-2 bg-white border rounded shadow-md z-20"
-                                                    onClick={(e) => e.stopPropagation()}
-                                                >
-                                                    <button
-                                                        onClick={() => handleDeleteUsabilityTesting(usabilityTesting.id)}
-                                                        className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100 text-left"
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <div className="mt-2">
-                                            <h3 className="text-md font-semibold text-gray-800 truncate">{usabilityTesting.title}</h3>
-                                            <p className="text-sm text-gray-500 mt-1">Test ID: {usabilityTesting.id}</p>
-                                        </div>
-                                    </div>
-                                ))} */}
                                 {usabilityTestings.map((usabilityTesting) => {
                                     const typeLabel = usabilityTesting.website_link
                                         ? "(Website)"

@@ -4,6 +4,7 @@ import {X} from "lucide-react";
 const EditProjectDetail = ({onCancel, projectId, onProjectEdited, project, setShowEditModal}) => {
 
     const [projectName, setProjectName] = useState("");
+    const [projectCategory, setProjectCategory] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
     const [organization, setOrganization] = useState("");
     const [maxParticipants, setMaxParticipants] = useState("");
@@ -19,6 +20,7 @@ const EditProjectDetail = ({onCancel, projectId, onProjectEdited, project, setSh
     useEffect(() => {
         if (project) {
             setProjectName(project.name || "");
+            setProjectCategory(project.category || ""); 
             setProjectDescription(project.description || "");
             setOrganization(project.organization || "");
             setMaxParticipants(project.max_participants || "");
@@ -52,6 +54,7 @@ const EditProjectDetail = ({onCancel, projectId, onProjectEdited, project, setSh
                 },
                 body: JSON.stringify({
                     name: projectName,
+                    category: projectCategory, 
                     description: projectDescription,
                     organization: organization,
                     max_participants: maxParticipants ? parseInt(maxParticipants) : null,
@@ -113,6 +116,53 @@ const EditProjectDetail = ({onCancel, projectId, onProjectEdited, project, setSh
                             className="w-full p-2 mb-4 rounded border"
                             rows="2"
                         />
+
+                        <label>Category:</label>
+                        <select
+                            value={projectCategory}
+                            onChange={(e) => setProjectCategory(e.target.value)}
+                            className="w-full p-2 mb-4 rounded border"
+                        >
+                            <optgroup label="Commerce & Finance">
+                                <option value="shopping-and-ecommerce">Shopping & E-commerce</option>
+                                <option value="finance-and-investment">Finance & Investment</option>
+                                <option value="real-estate-and-property">Real Estate & Property</option>
+                                <option value="business-and-productivity">Business & Productivity</option>
+                            </optgroup>
+
+                            <optgroup label="Learning & Career">
+                                <option value="education-and-learning">Education & Learning</option>
+                                <option value="careers-and-jobs">Careers & Jobs</option>
+                            </optgroup>
+
+                            <optgroup label="Creativity & Media">
+                                <option value="arts-and-design">Arts & Design</option>
+                                <option value="entertainment-and-media">Entertainment & Media</option>
+                                <option value="news-and-information">News & Information</option>
+                                <option value="technology-and-software">Technology & Software</option>
+                            </optgroup>
+
+                            <optgroup label="Health & Lifestyle">
+                                <option value="health-and-wellness">Health & Wellness</option>
+                                <option value="lifestyle-and-hobbies">Lifestyle & Hobbies</option>
+                                <option value="home-and-garden">Home & Garden</option>
+                                <option value="pets-and-animals">Pets & Animals</option>
+                            </optgroup>
+
+                            <optgroup label="Sports & Recreation">
+                                <option value="sports-and-fitness">Sports & Fitness</option>
+                                <option value="gaming">Gaming</option>
+                            </optgroup>
+
+                            <optgroup label="Travel & Utilities">
+                                <option value="travel-and-navigation">Travel & Navigation</option>
+                                <option value="tools-and-utilities">Tools & Utilities</option>
+                            </optgroup>
+
+                            <optgroup label="Social & Communication">
+                                <option value="social-and-communication">Social & Communication</option>
+                            </optgroup>
+                        </select>
 
                         <label>Organization:</label>
                         <select
