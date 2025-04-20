@@ -55,6 +55,7 @@ urlpatterns = [
     # project related 
     path('create_project/<int:user_id>/', create_project, name='create_project'), 
     path('api/projects/<int:project_id>/publish/', views.publish_project, name="publish_project"), # publishing the project on ProjectDashboard.jsx
+    path('api/projects/<int:project_id>/unpublish/', views.unpublish_project, name="unpublish_project"), # unpublising the project on ProjectDashboard.jsx
     path("api/update_project/<int:project_id>/", update_project, name="update_project"),
     path('api/project/<int:project_id>/', get_project, name='get_project'),
     path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"),
