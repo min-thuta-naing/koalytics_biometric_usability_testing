@@ -13,16 +13,15 @@ import Question3 from "./pages/Question3";
 import Question4 from "./pages/Question4";
 import Question5 from "./pages/Question5";
 import LoginPage from "./pages/LoginPage";
-import NewProjectPage from "./pages/Researcher/CreateProjects";
+import NewProjectPage from "./pages/Researcher/Project/CreateProjects";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import ProjectDashboard from "./pages/Researcher/ProjectDashboard";
+import ProjectDashboard from "./pages/Researcher/Project/ProjectDashboard";
 import FormDetail from "./pages/SUSform/FormDetail";
 import CreateQuestions from "./pages/SUSform/CreateQuestions";
 import CreateSUSQuestion from "./pages/SUSform/CreateSUSQuestion";
 import ViewResults from "./pages/SUSform/ViewResults";
 import Guide from "./pages/Guide";
 import DetailedEmotion from "./pages/UsabilityTesting/DetailedEmotion";
-import Tempque from "./pages/SUSform/tempque";
 import AnswerForm from "./pages/Participant/AnswerForms";
 import ChooseTest from "./pages/Participant/ChooseTest";
 import UsabilityTestingDetail from "./pages/UsabilityTesting/UsabilityTestingDetail";
@@ -30,7 +29,6 @@ import TestInfo from "./pages/Participant/TestInfo";
 import CalibrationPopUp from "./pages/Participant/UsabilityTestingCallibration/CalibrationPopUp";
 import TempoFacial from "./pages/Participant/TempoFacial";
 import BrowserInBrowser from "./pages/Participant/BrowserInBrowser";
-import MultiPointProgressBar from "./pages/SUSform/MultiPointProgressBar";
 
 
 function App() {
@@ -49,7 +47,6 @@ function App() {
         <Route path="/new-project" element={<NewProjectPage />} />
         <Route path="/create" element={<CreateQuestions/>}/>
         <Route path="/create-susque" element={<CreateSUSQuestion/>}/>
-        <Route path="/temp-que" element={<Tempque/>}/>
         <Route path="/guide" element={<Guide/>}/>
         <Route path="/results" element={<ViewResults/>}/>
         <Route path="/project/:projectId" element={<ProjectDashboard />} />
@@ -70,7 +67,6 @@ function App() {
         {/* temporary page */}
         <Route path="/facial" element={<TempoFacial />} />
         <Route path="/browser-in-browser" element={<BrowserInBrowser/>}/>
-        <Route path="/progress-bar" element={<MultiPointProgressBar/>}/>
       </Routes>
     </Router>
   );

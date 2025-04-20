@@ -3,7 +3,7 @@ import { Menu, Info, FolderOpenDot, LogOut, CircleUserRound } from "lucide-react
 import ResearcherGuideline from "./ResearcherGuideline";
 import ResearcherDashboard from "./ResearcherDashboard";
 import { Link, useNavigate } from "react-router-dom";
-import NewProjectPage from "./CreateProjects";
+import NewProjectPage from "./Project/CreateProjects";
 
 
 const SideandTopBar = () => {
