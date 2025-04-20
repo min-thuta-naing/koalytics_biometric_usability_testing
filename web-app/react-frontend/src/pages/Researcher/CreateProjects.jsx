@@ -338,6 +338,8 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
     const [sideNotes, setSideNotes] = useState("");
     const [error, setError] = useState("");
     const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const [imagePath, setImagePath] = useState("");
    
     const [consentContent, setConsentContent] = useState(getConsentTemplate('biometric'));
 
@@ -572,8 +574,8 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent z-10" />
 
                         {/* Scrollable area */}
-                        <div className="overflow-y-auto h-full px-4 pt-10 pb-20 hide-scrollbar scroll-smooth">
-                            <div className="columns-2 sm:columns-3 md:columns-4 gap-4 space-y-4">
+                        <div className="overflow-y-auto h-full px-4 pt-8 pb-20 hide-scrollbar scroll-smooth">
+                            {/* <div className="columns-2 sm:columns-3 md:columns-4 gap-4 space-y-4">
                                 {images.map((src, index) => (
                                 <div key={index} className="break-inside-avoid overflow-hidden rounded-lg shadow-md">
                                     <img
@@ -583,19 +585,40 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                                     />
                                 </div>
                                 ))}
+                            </div> */}
+                            <div className="columns-2 sm:columns-3 md:columns-4 gap-4 space-y-4">
+                                {images.map((src, index) => (
+                                    <div
+                                    key={index}
+                                    onClick={() => setImagePath(src)} // Set selected image path here
+                                    className={`break-inside-avoid overflow-hidden rounded-lg shadow-md cursor-pointer border-4 transition 
+                                        ${imagePath === src ? "border-[#ACA3E3]" : "border-transparent"}`}
+                                    >
+                                    <img
+                                        src={src}
+                                        alt={`Image ${index + 1}`}
+                                        className="w-full object-cover rounded-md"
+                                    />
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
                         {/* Floating Refresh Button */}
                         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
-                        <button
-                            onClick={refreshImages}
-                            className="inline-flex items-center gap-2 px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-400 border border-gray-700 transition"
-                        >
-                            <RefreshCcw className="w-3 h-3" />
-                            Refresh
-                        </button>
+                            <button
+                                onClick={refreshImages}
+                                className="inline-flex items-center gap-2 px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-400 border border-gray-700 transition"
+                            >
+                                <RefreshCcw className="w-3 h-3" />
+                                Refresh
+                            </button>
                         </div>
+                        {error && (
+                            <div className="text-red-500 font-funnel mb-4 p-2 bg-red-50 rounded-md">
+                                {error}
+                            </div>
+                        )}
                     </div>
                 </div>
             )
@@ -670,6 +693,15 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
             requiredErrors.push("Side notes");
             isValid = false;
         }
+        // if (!consentContent.trim()) {
+        //     requiredErrors.push("Consent form");
+        //     isValid = false;
+        // }
+        // if (!imagePath.trim()) {
+        //     requiredErrors.push("Cover photo");
+        //     isValid = false;
+        // }  
+    
     
         // Format error messages
         let errorMessage = "";
@@ -691,23 +723,6 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         return isValid;
     };
 
-    const validateConsent = () =>{
-        setError("");
-        let isValid = true;
-        const requiredErrors = [];
-        let errorMessage = "";
-
-        if (!consentContent.trim()) {
-            requiredErrors.push("Consent Form is required");
-            isValid = false;
-        }
-
-        if (errorMessage) {
-            setError(errorMessage);
-        }
-        return isValid;
-    }
-
 
     const handleNext = (e) => {
         if (currentStep === 2) {
@@ -718,12 +733,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
             }
             // Clear any previous errors if validation passes
             setError("");
-        } else if (currentStep === 3) {
-            const isValid = validateConsent();
-            if (!isValid){
-                return; 
-            }
-        }
+        } 
 
         if (currentStep < steps.length ) { 
             setCurrentStep(currentStep + 1);
@@ -767,6 +777,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                     end_date: endDate,
                     side_notes: sideNotes,
                     consent_text: consentContent || "",
+                    image_path: imagePath,
                 }),
             });
 
