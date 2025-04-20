@@ -1,6 +1,6 @@
 import { useEffect, useState,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Pencil, SquarePlus, EllipsisVertical, ClipboardType, FlaskConical, X } from 'lucide-react';
+import { Pencil, SquarePlus, EllipsisVertical, ClipboardType, FlaskConical, X, UsersRound, Share, Globe } from 'lucide-react';
 import CreateSUSForms from './SUS/CreateForms'; 
 import EditProjectDetail from "./EditProjectDetail";
 import AddCriteriaForm from './AddCriteriaForm';
@@ -20,8 +20,11 @@ const ProjectDashboard = () => {
     const [endDate, setEndDate] = useState("");
     const [sideNotes, setSideNotes] = useState("");
     const [imagePath, setImagePath] = useState("");
+    const [isPublished, setIsPublished] = useState(""); 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    const [showPublishPopup, setShowPublishPopup] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     
     const [showSurveyFormModal, setShowSurveyFormModal] = useState(false);
@@ -54,6 +57,27 @@ const ProjectDashboard = () => {
             .split("; ")
             .find((row) => row.startsWith("csrftoken="));
         return cookie ? cookie.split("=")[1] : "";
+    };
+
+////////////////////////////////////////////// PUBLISH PROJECT FUNCTIONS //////////////////////////////////////////////
+    const handlePublishProject = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/projects/${projectId}/publish/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+        
+            if (!response.ok) {
+                throw new Error('Failed to publish project.');
+            }
+        
+            alert('Project Publish successfully!');
+            setShowPublishPopup(false);
+        } catch (error) {
+            alert('Error publish project: ' + error.message);
+        }
     };
 
 
@@ -175,6 +199,7 @@ const ProjectDashboard = () => {
                 setEndDate(data.end_date || "");
                 setSideNotes(data.side_notes || "");
                 setImagePath(data.image_path || "")
+                setIsPublished(data.is_shared || "")
             } else {
                 setError("Failed to load project details.");
             }
@@ -329,8 +354,65 @@ const ProjectDashboard = () => {
 
 
             {/* scrollable content */}
-            <div className="mx-44 relative z-20 overflow-y-auto h-screen pt-[22vh]-30 font-funnel">
-                <h1 className="font-bold text-5xl mx-10 my-5 p-8 text-white shadwo-xl">{project.name}</h1>
+            <div className="mx-44 relative z-20 overflow-y-auto h-screen pt-[22vh]-30 font-funnel hide-scrollbar scroll-smooth">
+                {/* <div className="flex justify-between">
+                    <h1 className="font-bold text-5xl mx-10 my-5 p-8 text-white shadwo-xl">{project.name}</h1>
+                    <div className="flex justify-end gap-1 py-2"> 
+                        <button className="flex items-center mx-10 my-5 py-2 px-6 gap-2 bg-[#9EC6F3] rounded-2xl shadow-md ">
+                            <UsersRound className="w-h h-4"/>
+                            <span>Collaborate</span>
+                        </button>
+                        <button className="flex items-center mx-10 my-5 py-2 px-6 gap-2 bg-[#A1EEBD] rounded-2xl shadow-md ">
+                            <Share className="w-h h-4"/>
+                            <span>Publish</span>
+                        </button>
+                    </div>
+                    
+                </div> */}
+                <div className="flex justify-between items-center mt-32 px-10">
+                    <h1 className="font-bold text-5xl text-white drop-shadow-xl">
+                        {project.name}
+                    </h1>
+                    
+                    <div className="flex items-center gap-4">
+                        <button className="flex items-center gap-2 px-5 py-2 bg-[#9EC6F3] rounded-xl shadow-md hover:opacity-90 transition">
+                            <UsersRound className="w-4 h-4" />
+                            <span>Collaborate</span>
+                        </button>
+
+                        <button 
+                            className="flex items-center gap-2 px-5 py-2 bg-[#A1EEBD] rounded-xl shadow-md hover:opacity-90 transition"
+                            onClick={() => setShowPublishPopup(true)}
+                        >
+                            <Share className="w-4 h-4" />
+                            <span>Publish</span>
+                        </button>
+                        {showPublishPopup && (
+                            <div className="font-funnel fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                                <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                                    <h2 className="text-lg font-semibold mb-4">Confirm Publish</h2>
+                                    <p className="text-gray-700 mb-6">Are you sure you want to publish this project?</p>
+                                    <div className="flex justify-end gap-4">
+                                        <button
+                                            onClick={() => setShowPublishPopup(false)}
+                                            className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            onClick={handlePublishProject}
+                                            className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
+                                        >
+                                            Publish
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                
 
                 {/* Project Details */}
                 <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
