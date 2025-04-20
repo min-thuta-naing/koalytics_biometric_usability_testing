@@ -19,6 +19,7 @@ const ProjectDashboard = () => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [sideNotes, setSideNotes] = useState("");
+    const [imagePath, setImagePath] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [showEditModal, setShowEditModal] = useState(false);
@@ -173,6 +174,7 @@ const ProjectDashboard = () => {
                 setStartDate(data.start_date || "");
                 setEndDate(data.end_date || "");
                 setSideNotes(data.side_notes || "");
+                setImagePath(data.image_path || "")
             } else {
                 setError("Failed to load project details.");
             }
@@ -314,12 +316,12 @@ const ProjectDashboard = () => {
     return (
         <div className="bg-[#F0EEED] h-screen overflow-hidden">
             {/* Project Cover Image */}
-            <div className="fixed top-0 left-0 w-full h-[40vh] z-10">
+            <div className="fixed top-0 left-0 w-full h-full z-10">
                 {/* Dark Overlay */}
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
                 
                 <img
-                    src="/static/images/coverphoto.jpg"
+                    src={`http://127.0.0.1:8000${project.image_path}`}
                     alt="Project Image"
                     className="w-full h-full object-cover"
                 />

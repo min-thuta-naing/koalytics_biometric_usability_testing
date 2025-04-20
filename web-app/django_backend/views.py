@@ -255,6 +255,7 @@ def create_project(request, user_id):
             start_date=data.get('start_date'),
             end_date=data.get('end_date'),
             side_notes=data.get('side_notes'),
+            image_path=data.get('image_path'),
             consent_text=consent_text  # Make sure this is included
         )
         
@@ -401,6 +402,7 @@ def get_project(request, project_id):
             "start_date": project.start_date,
             "end_date": project.end_date,
             "side_notes": project.side_notes,
+            "image_path": project.image_path,
             "usability_testings": list(project.usability_testings.values("id", "title", "task")),
         })
     except Project.DoesNotExist:
