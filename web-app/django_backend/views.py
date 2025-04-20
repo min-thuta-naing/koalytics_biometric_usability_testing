@@ -285,6 +285,17 @@ def publish_project(request, project_id):
     except Project.DoesNotExist:
         return Response({"error": "Project not found."}, status=404)
 
+# ✅ un-publish the project 
+@api_view(['POST'])
+def unpublish_project(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        project.is_shared = False
+        project.save()
+        return Response({"message": "Project unpublished successfully!"}, status=200)
+    except Project.DoesNotExist:
+        return Response({"error": "Project not found."}, status=404)
+
 
 # ✅ editing the project info 
 @csrf_exempt

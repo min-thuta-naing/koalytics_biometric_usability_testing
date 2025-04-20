@@ -1,6 +1,6 @@
 import { useEffect, useState,useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Pencil, SquarePlus, EllipsisVertical, ClipboardType, FlaskConical, X, UsersRound, Share, Globe } from 'lucide-react';
+import { Pencil, SquarePlus, EllipsisVertical, ClipboardType, FlaskConical, X, UsersRound, Share, Ban } from 'lucide-react';
 import CreateSUSForms from './SUS/CreateForms'; 
 import EditProjectDetail from "./EditProjectDetail";
 import AddCriteriaForm from './AddCriteriaForm';
@@ -25,6 +25,8 @@ const ProjectDashboard = () => {
     const [success, setSuccess] = useState("");
 
     const [showPublishPopup, setShowPublishPopup] = useState(false);
+    const [showUnpublishPopup, setShowUnpublishPopup] = useState(false);
+
     const [showEditModal, setShowEditModal] = useState(false);
     
     const [showSurveyFormModal, setShowSurveyFormModal] = useState(false);
@@ -59,7 +61,7 @@ const ProjectDashboard = () => {
         return cookie ? cookie.split("=")[1] : "";
     };
 
-////////////////////////////////////////////// PUBLISH PROJECT FUNCTIONS //////////////////////////////////////////////
+////////////////////////////////////////////// PUBLISH or UN-PUBLISH PROJECT FUNCTIONS //////////////////////////////////////////////
     const handlePublishProject = async () => {
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/projects/${projectId}/publish/`, {
@@ -74,9 +76,31 @@ const ProjectDashboard = () => {
             }
         
             alert('Project Publish successfully!');
+            setIsPublished(true); //set the state to true 
             setShowPublishPopup(false);
         } catch (error) {
             alert('Error publish project: ' + error.message);
+        }
+    };
+
+    const handleUnpublishProject = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/projects/${projectId}/unpublish/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to unpublish project.');
+            }
+    
+            alert('Project unpublished successfully!');
+            setIsPublished(false); //set state to false
+            setShowUnpublishPopup(false);
+        } catch (error) {
+            alert('Error unpublishing project: ' + error.message);
         }
     };
 
@@ -380,35 +404,75 @@ const ProjectDashboard = () => {
                             <span>Collaborate</span>
                         </button>
 
-                        <button 
-                            className="flex items-center gap-2 px-5 py-2 bg-[#A1EEBD] rounded-xl shadow-md hover:opacity-90 transition"
-                            onClick={() => setShowPublishPopup(true)}
-                        >
-                            <Share className="w-4 h-4" />
-                            <span>Publish</span>
-                        </button>
-                        {showPublishPopup && (
-                            <div className="font-funnel fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                                <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-                                    <h2 className="text-lg font-semibold mb-4">Confirm Publish</h2>
-                                    <p className="text-gray-700 mb-6">Are you sure you want to publish this project?</p>
-                                    <div className="flex justify-end gap-4">
-                                        <button
-                                            onClick={() => setShowPublishPopup(false)}
-                                            className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={handlePublishProject}
-                                            className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
-                                        >
-                                            Publish
-                                        </button>
+                        {/* changing buttons for publish and unpublishing the project based on the state  */}
+                        {!isPublished ? (
+                            <>
+                                <button 
+                                    className="flex items-center gap-2 px-5 py-2 bg-[#A1EEBD] rounded-xl shadow-md hover:opacity-90 transition"
+                                    onClick={() => setShowPublishPopup(true)}
+                                >
+                                    <Share className="w-4 h-4" />
+                                    <span>Publish</span>
+                                </button>
+
+                                {showPublishPopup && (
+                                    <div className="font-funnel fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                                        <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                                            <h2 className="text-lg font-semibold mb-4">Confirm Publish</h2>
+                                            <p className="text-gray-700 mb-6">Are you sure you want to publish this project?</p>
+                                            <div className="flex justify-end gap-4">
+                                                <button
+                                                    onClick={() => setShowPublishPopup(false)}
+                                                    className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    onClick={handlePublishProject}
+                                                    className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
+                                                >
+                                                    Publish
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <button 
+                                    className="flex items-center gap-2 px-5 py-2 bg-red-300 rounded-xl shadow-md hover:opacity-90 transition"
+                                    onClick={() => setShowUnpublishPopup(true)}
+                                >
+                                    <Ban className="w-4 h-4" /> {/* 👈 Make sure to import this icon from Lucide */}
+                                    <span>Unpublish</span>
+                                </button>
+
+                                {showUnpublishPopup && (
+                                    <div className="font-funnel fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                                        <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                                            <h2 className="text-lg font-semibold mb-4">Confirm Unpublish</h2>
+                                            <p className="text-gray-700 mb-6">Are you sure you want to unpublish this project?</p>
+                                            <div className="flex justify-end gap-4">
+                                                <button
+                                                    onClick={() => setShowUnpublishPopup(false)}
+                                                    className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    onClick={handleUnpublishProject}
+                                                    className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
+                                                >
+                                                    Unpublish
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
                         )}
+
                     </div>
                 </div>
 
