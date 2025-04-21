@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import User, Hobby, Project, Form, Question, Answer, Consent, TestingConsent, SUSForm, SUSQuestion, SUSQAnswer,Gender, AgeGroup, Interest, ProjectCriteria,EmotionCapture
+from .models import User, Hobby, Project, Form, Question, Answer, Consent, TestingConsent, SUSForm, SUSQuestion, SUSQAnswer,Gender, AgeGroup, Interest, ProjectCriteria,EmotionCapture, Collaboration
 
 from .models import UsabilityTestRecordingV4
 from .models import UsabilityTesting
@@ -29,6 +29,12 @@ class ProjectSerializer (serializers.ModelSerializer):
     class Meta: 
         model = Project
         fields = ["id", "name", "category", "image_path", "description", "organization", "max_participants", "start_date", "end_date", "side_notes", "consent_text", "is_shared"]
+
+# ✅  
+class CollaborationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Collaboration
+        fields = '__all__'
 
 # ✅
 class ProjectCriteriaSerializer(serializers.ModelSerializer):

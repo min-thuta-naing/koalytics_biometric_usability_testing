@@ -19,8 +19,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password,  check_password
 import numpy as np
-from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion, SUSQAnswer, ProjectCriteria, EmotionCapture
-from .serializers import EmotionCaptureSerializer, UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer, SUSQuestionSerializer, SUSQAnswerSerializer, ProjectCriteriaSerializer
+from .models import UsabilityTestRecordingV4, User, Hobby, Project, SUSForm, Form, EmploymentStatus, Profession, Position, Industry, Gender, AgeGroup, Interest, Consent, Question, Answer, UsabilityTesting, TestingConsent, SUSQuestion, SUSQAnswer, ProjectCriteria, EmotionCapture, Collaboration
+from .serializers import EmotionCaptureSerializer, UsabilityTestingSerializer, UserSerializer, ProjectSerializer, AnswerSerializer, ConsentSerializer, TestingConsentSerializer, SUSFormSerializer, SUSQuestionSerializer, SUSQAnswerSerializer, ProjectCriteriaSerializer, CollaborationSerializer
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from collections import defaultdict
@@ -295,6 +295,65 @@ def unpublish_project(request, project_id):
         return Response({"message": "Project unpublished successfully!"}, status=200)
     except Project.DoesNotExist:
         return Response({"error": "Project not found."}, status=404)
+
+# ✅ searching email function 
+@api_view(['GET'])
+def search_users_by_email(request):
+    query = request.GET.get('q', '')
+    if query:
+        users = User.objects.filter(email__icontains=query).values('id', 'email')
+        return Response(list(users))
+    return Response([])
+
+# ✅ adding collaborators to project
+@api_view(['POST'])
+def add_collaborator(request):
+    try:
+        project_id = request.data.get('project_id')
+        collaborator_id = request.data.get('collaborator_id')
+        researcher_id = request.data.get('researcher_id')
+        researcher_email = request.data.get('researcher_email')
+
+        collaborator = User.objects.get(id=collaborator_id)
+        researcher = User.objects.get(id=researcher_id)
+        project = Project.objects.get(id=project_id)
+
+        collaboration = Collaboration.objects.create(
+            project=project,
+            researcher=researcher,
+            collaborator=collaborator,
+            researcher_email=researcher_email,
+            collaborator_email=collaborator.email
+        )
+        serializer = CollaborationSerializer(collaboration)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+# ✅ display a list of collaborators in the project 
+@api_view(['GET'])
+def get_collaborators(request, project_id):
+    collaborations = Collaboration.objects.filter(project_id=project_id)
+    data = [
+        {
+            "id": collab.id,
+            "collaborator_email": collab.collaborator_email,
+            "collaborator_id": collab.collaborator.id
+        }
+        for collab in collaborations
+    ]
+    return Response(data)
+
+# ✅ remove the collaborators 
+@api_view(['DELETE'])
+def delete_collaborator(request, collaboration_id):
+    try:
+        collaboration = Collaboration.objects.get(id=collaboration_id)
+        collaboration.delete()
+        return Response({"message": "Collaborator removed."}, status=status.HTTP_204_NO_CONTENT)
+    except Collaboration.DoesNotExist:
+        return Response({"error": "Collaboration not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 # ✅ editing the project info 

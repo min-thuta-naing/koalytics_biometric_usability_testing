@@ -54,6 +54,10 @@ urlpatterns = [
     
     # project related 
     path('create_project/<int:user_id>/', create_project, name='create_project'), 
+    path('api/search-users-by-email', views.search_users_by_email, name='search_users_by_email'), # searching people email on ProjectDashboard.jsx
+    path('api/add-collaborator/', views.add_collaborator, name='add_collaborator'), # adding collaborators on ProjectDashboard.jsx
+    path('api/get-collaborators/<int:project_id>/', views.get_collaborators), # list of collaborators in the project
+    path('api/delete-collaborator/<int:collaboration_id>/', views.delete_collaborator), # remove the collaborator in the project
     path('api/projects/<int:project_id>/publish/', views.publish_project, name="publish_project"), # publishing the project on ProjectDashboard.jsx
     path('api/projects/<int:project_id>/unpublish/', views.unpublish_project, name="unpublish_project"), # unpublising the project on ProjectDashboard.jsx
     path("api/update_project/<int:project_id>/", update_project, name="update_project"),
