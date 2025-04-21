@@ -103,6 +103,7 @@ urlpatterns = [
     path('usability-testing/<int:usability_testing_id>/', views.usability_testing_detail, name='usability_testing_detail'), # usability testing detail on UsabilityTestingDetail.jsx
     path('usability-testing/delete/<int:usability_testing_id>/', views.delete_usability_testing, name='delete_usability_testing'), # delete usability testing on ProjectDashboard.jsx
     path("api/save-recording/check/<int:usability_testing_id>/", views.check_recording, name="check-recording"), # ❌
+    path('api/validate-frame/', views.validate_camera_frame, name='validate-camera-frame'), # camera callibration
     path("api/save-recording/", views.save_recording, name="save-recording"), # start and save recording on TestCalibration.jsx
     path('emotion-detection/', views.emotion_detection, name='emotion_detection'), # emotion detection from BrowserinBrowser.jsx
     path('api/usability-testing/<int:usability_testing_id>/emotion-data/', views.emotion_data_list, name='emotion-data-list'), # emotion data list from DetailedEmotion.jsx and TestingResults.jsx
