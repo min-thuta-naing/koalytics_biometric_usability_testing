@@ -7,6 +7,7 @@ const ResearcherDashboard = () => {
     const [userId, setUserId] = useState(null);
     const [showProjectForm, setShowProjectForm] = useState(false);
     const [projects, setProjects] = useState([]);
+    const [sharedProjects, setSharedProjects] = useState([]);
     const [showDropdown, setShowDropdown] = useState(null);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [projectToDelete, setProjectToDelete] = useState(null);
@@ -27,6 +28,7 @@ const ResearcherDashboard = () => {
         if (user && user.id) {
             setUserId(user.id);
             fetchProjects(user.id);
+            fetchSharedProjects(user.id);
         }
     }, []);
 
@@ -42,6 +44,20 @@ const ResearcherDashboard = () => {
             console.error("Error fetching projects:", error);
         }
     };
+
+    // FETCH PROJECT from collaboration ////////////////////////////////////////////
+    const fetchSharedProjects = async (userId) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/shared_projects/${userId}/`);
+            if (response.ok) {
+                const data = await response.json();
+                setSharedProjects(data);
+            }
+        } catch (error) {
+            console.error("Error fetching shared projects:", error);
+        }
+    };
+    
 
     // handle project creation ///////////////////////////////////////
     const handleProjectCreated = () => {
@@ -127,7 +143,6 @@ const ResearcherDashboard = () => {
                     ))}
                 </div>
             </div>
-
             {/* Delete Confirmation Pop up */}
             {showConfirmModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -144,20 +159,6 @@ const ResearcherDashboard = () => {
                     </div>
                 </div>
             )}
-
-            {/* Project creation form 
-            {showProjectForm && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-xl max-w-5xl w-full relative">
-                        
-                        <CreateProjects 
-                            onCancel={() => setShowProjectForm(false)} 
-                            userId={userId} 
-                            onProjectCreated={handleProjectCreated}
-                        />
-                    </div>
-                </div>
-            )} */}
             {showProjectForm && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white rounded-lg shadow-xl max-w-5xl w-full relative flex flex-col">
@@ -173,6 +174,24 @@ const ResearcherDashboard = () => {
                     </div>
                 </div>
             )}
+
+
+            {/* shared project list */}
+            <div className="px-12 mt-8">
+                <h1 className="font-funnel font-semibold text-xl gap-2">Shared Projects</h1>
+                <p className="font-funnel">Here are the shared projects by other researchers with you ...</p>
+                <div className="grid grid-cols-3 gap-6 mt-6">
+                    {sharedProjects.map((project) => (
+                        <div key={project.id} className="relative p-6 bg-white border rounded-lg shadow-md">
+                            <div onClick={() => navigate(`/project/${project.id}`)} className="cursor-pointer">
+                                <h2 className="text-xl font-semibold">{project.name}</h2>
+                                <p className="text-gray-600 mt-2">{project.description}</p>
+                            </div>
+                            <div className="mt-2 text-sm text-gray-500 italic">Shared by another researcher</div>
+                        </div>
+                    ))}
+                </div>
+            </div>
 
         </div>
     );

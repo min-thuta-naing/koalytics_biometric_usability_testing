@@ -133,6 +133,7 @@ urlpatterns = [
 
     path('api/login/', login, name='login'),
     path('api/user/<int:user_id>/', get_user, name='get_user'),
+    path('api/shared_projects/<int:user_id>/', views.get_shared_projects, name='shared-projects'), # for fetching shared project on collaborator side on ResearcherDashboard.jsx
     path('api/admin/users/', get_all_users, name='get_all_users'),
     path('api/delete_user/<int:user_id>/', delete_user, name='delete_user'),
 
