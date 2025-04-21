@@ -47,7 +47,7 @@ const SideandTopBar = () => {
 
   // Logout confirmation popup
   const LogoutConfirmation = ({ onConfirm, onCancel }) => (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
         <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
         <p className="text-gray-700 mb-6">Are you sure you want to log out?</p>
@@ -127,7 +127,7 @@ const SideandTopBar = () => {
 
           {/* Sidebar */}
           <div
-            className={`fixed left-0 top-0 h-full bg-[#DCD6F7] shadow-lg p-4 transition-all duration-300 ease-in-out ${
+            className={`fixed left-0 top-0 h-full bg-[#DCD6F7] shadow-lg p-4 transition-all duration-300 ease-in-out z-1000 ${
               isCollapsed ? "w-20" : "w-48"
             }`}
           >
@@ -181,7 +181,7 @@ const SideandTopBar = () => {
 
                 <div
                   onClick={() => setShowLogoutPopup(true)}
-                  className="flex items-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out"
+                  className="flex items-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out z-[1002]"
                 >
                   <LogOut size={20} />
                   {showText && <span className="ml-3 text-sm">Log Out</span>}

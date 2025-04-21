@@ -6,6 +6,7 @@ import ScreenShareInstruction from './ScreenShareInstruction';
 const CalibrationPopUp = () => {
     const [showCalibrationModal, setShowCalibrationModal] = useState(false);
     const [step, setStep] = useState(1);
+    const [isFrameValid, setIsFrameValid] = useState(false);
     const cameraRef = useRef(null); // 👈 reference to access stopCamera
 
     const handleClose = () => {
@@ -44,9 +45,9 @@ const CalibrationPopUp = () => {
                         {/* Body */}
                         <div className="bg-white rounded-lg h-[500px] shadow-lg p-6 w-full">
                             {step === 1 && (
-                                <div>
-                                    <CameraCalibration ref={cameraRef} />
-                                    <div>
+                                <div className="overflow-auto max-h-[500px]">
+                                    <CameraCalibration ref={cameraRef} onValidationChange={setIsFrameValid} />
+                                    <div className="mt-4 flex flex-col items-end space-y-2">
                                         <button
                                             onClick={() => {
                                                 if (cameraRef.current) {
@@ -54,24 +55,61 @@ const CalibrationPopUp = () => {
                                                 }
                                                 setStep(step + 1);
                                             }}
-                                            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                            disabled={!isFrameValid}
+                                            className={`px-4 py-2 rounded transition 
+                                                ${isFrameValid 
+                                                    ? 'bg-gray-300 hover:bg-gray-400' 
+                                                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
                                         >
                                             Next
-                                        </button> 
+                                        </button>
+
+                                        {/* 👇 Conditional Message */}
+                                        {!isFrameValid && (
+                                            <p className="text-sm text-red-500">
+                                                Please pass all validation checks to continue.
+                                            </p>
+                                        )}
+ 
                                     </div>
                                 </div>
                             )}
                             {step === 2 && (
                                 <div>
                                     <ScreenShareInstruction />
+                                    <div className="mt-4 flex justify-between">
+                                        <button
+                                            onClick={() => setStep(step - 1)}
+                                            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                        >
+                                            Back
+                                        </button>
+                                        <button
+                                            onClick={() => setStep(step + 1)}
+                                            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                            {step === 3 && (
+                                <div className="flex justify-between">
                                     <button
                                         onClick={() => setStep(step - 1)}
                                         className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
                                     >
                                         Back
                                     </button>
+                                    <button
+                                        onClick={() => setStep(step + 1)}
+                                        className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                    >
+                                        Next
+                                    </button>
                                 </div>
                             )}
+
                         </div>
 
                         <div className="w-full h-[1px] bg-gray-300"></div>
