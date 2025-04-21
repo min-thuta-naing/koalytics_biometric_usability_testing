@@ -469,6 +469,15 @@ def save_critieria_interest (request, project_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+# ✅ for fetching shared project on collaborator side on ResearcherDashboard.jsx
+@api_view(["GET"])
+def get_shared_projects(request, user_id):
+    collaborations = Collaboration.objects.filter(collaborator_id=user_id)
+    projects = [c.project for c in collaborations]
+    serializer = ProjectSerializer(projects, many=True)
+    return Response(serializer.data)
+
+
 # ✅ for viewing each project in the ProjectDashboard.jsx 
 def get_project(request, project_id):
     try:
