@@ -1,4 +1,4 @@
-import { useEffect, useState,useCallback } from "react";
+import { useEffect, useState,useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Pencil, SquarePlus, EllipsisVertical, ClipboardType, FlaskConical, X, UsersRound, Share, Ban } from 'lucide-react';
 import CreateSUSForms from './SUS/CreateForms'; 
@@ -24,6 +24,7 @@ const ProjectDashboard = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
+    const [showCollaboratePopUp, setShowCollaboratePopUp] = useState(false); 
     const [showPublishPopup, setShowPublishPopup] = useState(false);
     const [showUnpublishPopup, setShowUnpublishPopup] = useState(false);
 
@@ -104,6 +105,139 @@ const ProjectDashboard = () => {
         }
     };
 
+////////////////////////////////////////////// COLLABORATION FUNCTIONS //////////////////////////////////////////////
+    //search related 
+    const [searchQuery, setSearchQuery] = useState("");
+    const [results, setResults] = useState([]);
+    const [showMailDropdown, setShowMailDropdown] = useState(false);
+    const dropdownRef = useRef();
+    //currently logged in user retrieved (to be stored as researcher id and email)
+    const [userId, setUserId] = useState(null);
+    const [userEmail,setUserEmail] = useState(null);
+    //for fectching and deletion of collaborators 
+    const [collaborators, setCollaborators] = useState([]);
+    const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+
+    //search function 
+    useEffect(() => {
+        if (searchQuery.trim() === "") {
+            setResults([]);
+            setShowDropdown(false);
+            return;
+        }
+
+        const delayDebounce = setTimeout(() => {
+            fetch(`/api/search-users-by-email?q=${encodeURIComponent(searchQuery)}`)
+                .then(res => res.json())
+                .then(data => {
+                    setResults(data);
+                    setShowDropdown(true);
+                })
+                .catch(err => {
+                    console.error("Error fetching users:", err);
+                    setShowDropdown(false);
+                });
+        }, 300);
+
+        return () => clearTimeout(delayDebounce);
+    }, [searchQuery]);
+
+    // Close dropdown if click outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    //retrieve currently logged in user
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user && user.id) {
+            setUserId(user.id);
+            setUserEmail(user.email)
+        }
+    }, []);
+
+    //submit the collaborator 
+    const handleAddCollaborator = async () => {
+        const selectedUser = results.find(user => user.email === searchQuery);
+        if (!selectedUser) {
+            alert("Please select a valid user from the list.");
+            return;
+        }
+    
+        console.log("Researcher ID:", userId);
+        console.log("Researcher Email:", userEmail);
+
+        if (!userId || !userEmail) {
+            alert("You must be logged in.");
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/add-collaborator/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    project_id: projectId,
+                    collaborator_id: selectedUser.id,
+                    researcher_id: userId,
+                    researcher_email: userEmail,
+                })
+            });
+    
+            if (res.ok) {
+                const data = await res.json();
+                //alert(`✅ Added ${data.collaborator_email} as a collaborator.`);
+                setSearchQuery("");
+                setResults([]);
+                setShowDropdown(false);
+                fetchCollaborators(); // update real time on the current collaborator list 
+            } else {
+                const error = await res.json();
+                alert("❌ Error: " + error.error);
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            alert("Something went wrong.");
+        }
+    };
+
+    //fetch the collaborators 
+    const fetchCollaborators = async () => {
+        try {
+            const res = await fetch(`/api/get-collaborators/${projectId}/`);
+            const data = await res.json();
+            setCollaborators(data);
+        } catch (err) {
+            console.error("Error fetching collaborators", err);
+        }
+    };
+    
+    useEffect(() => {
+        if (showCollaboratePopUp) {
+            fetchCollaborators();
+        }
+    }, [showCollaboratePopUp]);
+
+
+    //delete the collaborator 
+    const handleRemoveCollaborator = async (collabId) => {
+        try {
+            await fetch(`/api/delete-collaborator/${collabId}/`, {
+                method: "DELETE"
+            });
+            fetchCollaborators(); // Refresh list after deletion
+        } catch (err) {
+            console.error("Error removing collaborator", err);
+        }
+    };
 
 ////////////////////////////////////////////// CRITERIA FUNCTIONS //////////////////////////////////////////////
     // Function to handle checkbox changes in the popup
@@ -399,10 +533,143 @@ const ProjectDashboard = () => {
                     </h1>
                     
                     <div className="flex items-center gap-4">
-                        <button className="flex items-center gap-2 px-5 py-2 bg-[#9EC6F3] rounded-xl shadow-md hover:opacity-90 transition">
+                        {/* collaboratiion means adding other researchers on your project */}
+                        <button 
+                            className="flex items-center gap-2 px-5 py-2 bg-[#9EC6F3] rounded-xl shadow-md hover:opacity-90 transition"
+                            onClick={() => setShowCollaboratePopUp(true)}
+                        >
                             <UsersRound className="w-4 h-4" />
                             <span>Collaborate</span>
                         </button>
+                        {showCollaboratePopUp && (
+                            <div className="font-funnel fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                                <div className="bg-white rounded-lg shadow-lg max-w-xl w-full">
+                                    {/* Title and Close Button Section */}
+                                    <div className="flex items-center justify-between p-3 bg-gray-100 rounded-t-lg relative">
+                                        <h2 className="font-semibold font-funnel text-lg">Add Collabrators to your project</h2>
+                                        <button
+                                            onClick={() => setShowCollaboratePopUp(false)}
+                                            className="text-black bg-white hover:bg-gray-200 rounded-lg border border-gray-300 p-1"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    </div>
+
+                                    {/* Divider */}
+                                    <div className="w-full h-[1px] bg-gray-300"/>
+
+                                    {/* main content */} 
+                                    <div className="bg-white w-full p-6">
+                                        <div className="flex flex-row justify-center items-center gap-2" ref={dropdownRef}>
+                                            <div className="relative w-96">
+                                                <input
+                                                    type="text"
+                                                    className="w-full px-6 py-2 border border-gray-300 rounded-full"
+                                                    placeholder="Search other researchers by their emails ..."
+                                                    value={searchQuery}
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                    onFocus={() => {
+                                                        if (results.length > 0) setShowDropdown(true);
+                                                    }}
+                                                />
+
+                                                {showDropdown && results.length > 0 && (
+                                                    <ul className="absolute z-10 w-96 mt-1 bg-white border border-gray-300 rounded shadow max-h-48 overflow-y-auto">
+                                                        {results.map((user) => (
+                                                            <li
+                                                                key={user.id}
+                                                                className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                                                                onClick={() => {
+                                                                    setSearchQuery(user.email);
+                                                                    setShowDropdown(false);
+                                                                }}
+                                                            >
+                                                                {user.email}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </div>
+                                            <button
+                                                className="bg-[#9EC6F3] text-black px-4 py-2 rounded-md hover:opacity-90 "
+                                                onClick={handleAddCollaborator}
+                                            >
+                                                Add 
+                                            </button>
+                                        </div>
+                                        {collaborators.length > 0 && (
+                                            <div className="mt-6">
+                                                <h4 className="text-sm font-semibold mb-2">Current Collaborators</h4>
+                                                <ul className="max-h-40 overflow-y-auto border rounded p-2 text-sm">
+                                                    {/* {collaborators.map((c) => (
+                                                        <li key={c.id} className="flex justify-between items-center py-1 border-b">
+                                                            <span>{c.collaborator_email}</span>
+                                                            <button
+                                                                onClick={() => handleRemoveCollaborator(c.id)}
+                                                                className="text-red-500 text-xs hover:underline"
+                                                            >
+                                                                Remove
+                                                            </button>
+                                                        </li>
+                                                    ))} */}
+                                                    {collaborators.map((c) => (
+                                                        <div key={c.id} className="mb-2">
+                                                            <div className="flex justify-between items-center py-2">
+                                                                <span>{c.collaborator_email}</span>
+                                                                <button
+                                                                    onClick={() => setConfirmDeleteId(c.id === confirmDeleteId ? null : c.id)}
+                                                                    className="text-red-500 text-xs hover:underline"
+                                                                >
+                                                                    {confirmDeleteId === c.id ? "Cancel" : "Remove"}
+                                                                </button>
+                                                            </div>
+
+                                                            {/* Expandable confirm delete section */}
+                                                            <div
+                                                                className={`overflow-hidden transition-all duration-300 ${
+                                                                    confirmDeleteId === c.id ? "max-h-40 opacity-100 mt-2" : "max-h-0 opacity-0"
+                                                                }`}
+                                                            >
+                                                                <div className="bg-red-50 p-2 rounded shadow text-xs">
+                                                                    <p className="mb-2 text-red-700">Are you sure you want to delete this collaborator?</p>
+                                                                    <div className="flex justify-end gap-2">
+                                                                        <button
+                                                                            onClick={() => setConfirmDeleteId(null)}
+                                                                            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+                                                                        >
+                                                                            No
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => {
+                                                                            handleRemoveCollaborator(c.id);
+                                                                            setConfirmDeleteId(null);
+                                                                            }}
+                                                                            className="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
+                                                                        >
+                                                                            Yes, Delete
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Divider */}
+                                    <div className="w-full h-[1px] bg-gray-300"></div>
+
+                                    {/* Bottom and Close Button Section */}
+                                    <div className="flex items-center font-funnel justify-between p-3 bg-gray-100 rounded-b-lg relative">
+                                        <h2 className="font-semibold text-base">Koalytics</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
 
                         {/* changing buttons for publish and unpublishing the project based on the state  */}
                         {!isPublished ? (
@@ -475,8 +742,6 @@ const ProjectDashboard = () => {
 
                     </div>
                 </div>
-
-                
 
                 {/* Project Details */}
                 <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">

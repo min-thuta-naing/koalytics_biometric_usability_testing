@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
 
-# for sign up 
+# ✅ User model for sign up and login 
 class User(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -100,6 +100,19 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+    
+# ✅  collaboration model 
+class Collaboration(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    researcher = models.ForeignKey(User, related_name='owned_collaborations', on_delete=models.CASCADE)
+    collaborator = models.ForeignKey(User, related_name='collaborations', on_delete=models.CASCADE)
+    researcher_email = models.EmailField()
+    collaborator_email = models.EmailField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.researcher_email} ↔ {self.collaborator_email} on {self.project.name}"
+
     
 # ✅ for criteria (genders, age groups, interest)
 class ProjectCriteria(models.Model):
