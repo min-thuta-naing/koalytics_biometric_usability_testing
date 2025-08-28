@@ -282,16 +282,21 @@ const TestInfo = () => {
                                 </div>
                             )}
                             {step === 3 && (
-                                <div className="flex flex-col items-center gap-8 p-8 bg-white rounded-lg shadow-lg max-w-xl mx-auto">
-                                  <div>
-                                    <p className="text-3xl font-bold text-gray-800 text-center">Are you ready for the test?</p>
+                                <div className="flex flex-col items-center gap-8 p-8 max-w-xl mx-auto">
+                                  <p className="text-3xl font-bold text-gray-800 text-center">Are you ready for the test?</p>
+                                  {/* <img 
+                                    src="/static/images/welcomeback.png" 
+                                    alt="Test illustration" 
+                                    className="w-64 h-auto rounded-xl shadow-md" 
+                                  /> */}
+                                  <div className="flex flex-col items-center mt-6 px-6 py-2">
                                     <button
                                       onClick={startRecording}
                                       className="px-6 py-3 bg-[#C4BDED] text-black rounded-lg shadow-md hover:bg-[#ACA3E3] transition duration-300"
                                     >
                                       🚀 Start Testing
                                     </button>
-                                  </div> 
+                                  </div>
                                   
                                   <div className="flex justify-between mt-6">
                                       <button
