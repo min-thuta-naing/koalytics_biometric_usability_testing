@@ -6,8 +6,16 @@ Koalytic usability testing platform is mainly intended to the usability testing 
 Follow these steps to set up the project locally:
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/your-project.git
-cd your-project
+git clone https://github.com/min-thuta-naing/koalytics_biometric_usability_testing.git
+cd koalytics_biometric_usability_testing
+
+### 2. Create a virtual environment
+
+# For Linux / macOS
+python3 -m venv venv
+
+# For Windows
+python -m venv venv
 
 
 
