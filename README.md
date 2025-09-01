@@ -8,14 +8,35 @@ Follow these steps to set up the project locally:
 ```bash
 git clone https://github.com/min-thuta-naing/koalytics_biometric_usability_testing.git
 cd koalytics_biometric_usability_testing
-
+``` 
 ### 2. Create a virtual environment
-
+```bash
 # For Linux / macOS
 python3 -m venv venv
 
 # For Windows
 python -m venv venv
+```
+### 3. Activate the virual environment 
+```bash
+# For Linux / macOS
+source venv/bin/activate
+
+# For Windows (CMD)
+venv\Scripts\activate
+
+# For Windows (PowerShell)
+venv\Scripts\Activate.ps1
+```
+### 4. Install dependencies 
+```bash
+pip install -r requirements.txt
+```
+### 5. Run the project 
+```bash
+cd web-app
+python manage.py runserver
+```
 
 
 
