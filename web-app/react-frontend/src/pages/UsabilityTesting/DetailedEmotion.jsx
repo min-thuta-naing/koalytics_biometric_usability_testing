@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-// import Plot from "react-plotly.js"; // ✅ Import Plotly
+// import Plot from "react-plotly.js"; // Import Plotly
 import createPlotlyComponent from 'react-plotly.js/factory';
 import Plotly from 'plotly.js/lib/core';
 
@@ -13,7 +13,6 @@ Plotly.register([box, scatter]);
 
 const Plot = createPlotlyComponent(Plotly);
 
-
 const DetailedEmotion = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -21,6 +20,21 @@ const DetailedEmotion = () => {
     const [emotionData, setEmotionData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Calculate total time
+    let totalTimeTaken = null;
+    if (emotionData.length > 1) {
+        const start = new Date(emotionData[0].timestamp);
+        const end = new Date(emotionData[emotionData.length - 1].timestamp);
+        const diffMs = end - start; // difference in milliseconds
+
+        // Convert to hh:mm:ss
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+        totalTimeTaken = `${hours > 0 ? hours + "h " : ""}${minutes > 0 ? minutes + "m " : ""}${seconds}s`;
+    }
 
     useEffect(() => {
         if (!usabilityTestingId || !participantEmail) {
@@ -115,7 +129,7 @@ const DetailedEmotion = () => {
         mode: 'lines',
         name: emotion.charAt(0).toUpperCase() + emotion.slice(1),
         line: {
-            shape: 'spline', // 🟢 makes the line smooth!
+            shape: 'spline', // makes the line smooth!
             width: 2
         }
     }));
@@ -125,8 +139,13 @@ const DetailedEmotion = () => {
             <h1 className="text-2xl font-bold mb-4">Emotion Details</h1>
             <h2 className="text-xl mb-2">Test: {testingName}</h2>
             <h3 className="text-lg mb-6">Participant: {participantEmail}</h3>
+            {totalTimeTaken && (
+                <h3 className="text-lg mb-6">
+                    Total Time Taken: {totalTimeTaken}
+                </h3>
+            )}
 
-            {/* ✅ Line Chart for Emotions */}
+            {/* Line Chart for Emotions */}
             <div className="mb-4 bg-white p-4 rounded-lg shadow-lg">
                 <h2 className="text-lg font-semibold mb-2 text-center">Emotions Over Time</h2>
                 <Plot
