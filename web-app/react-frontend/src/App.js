@@ -4,6 +4,7 @@ import './index.css'; // Ensure this is already here
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/Participant/HomePage";
 import SideandTopBar from "./pages/Researcher/SideandTopBar";
+import ResearcherGuideline from "./pages/Researcher/ResearcherGuideline";
 import MyAccount from "./pages/MyAccount";
 import AboutUs from "./pages/AboutUs";
 import Settings from "./pages/Settings";
@@ -51,6 +52,7 @@ function App() {
         <Route path="/results" element={<ViewResults/>}/>
         <Route path="/project/:projectId" element={<ProjectDashboard />} />
         <Route path="/researcher-dashboard" element={<SideandTopBar />} />
+        <Route path="/researcher-guideline" element={<ResearcherGuideline />} />
         <Route path="/form/:formId" element={<FormDetail />} />
         <Route path="/usability_testing/:usabilityTestingId" element={<UsabilityTestingDetail />} />
         <Route path="/all-project/:projectId" element={<ChooseTest />} />
