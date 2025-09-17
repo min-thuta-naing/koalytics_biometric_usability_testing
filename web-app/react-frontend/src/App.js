@@ -17,7 +17,7 @@ import LoginPage from "./pages/LoginPage";
 import NewProjectPage from "./pages/Researcher/Project/CreateProjects";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import ProjectDashboard from "./pages/Researcher/Project/ProjectDashboard";
-import FormDetail from "./pages/SUSform/FormDetail";
+import SUSDetailTopBar from "./pages/SUSform/SUSDetailTopBar";
 import CreateQuestions from "./pages/SUSform/CreateQuestions";
 import CreateSUSQuestion from "./pages/SUSform/CreateSUSQuestion";
 import ViewResults from "./pages/SUSform/ViewResults";
@@ -53,7 +53,7 @@ function App() {
         <Route path="/project/:projectId" element={<ProjectDashboard />} />
         <Route path="/researcher-dashboard" element={<SideandTopBar />} />
         <Route path="/researcher-guideline" element={<ResearcherGuideline />} />
-        <Route path="/form/:formId" element={<FormDetail />} />
+        <Route path="/form/:formId" element={<SUSDetailTopBar />} />
         <Route path="/usability_testing/:usabilityTestingId" element={<UsabilityTestingDetail />} />
         <Route path="/all-project/:projectId" element={<ChooseTest />} />
         <Route path="/related-form/:formId" element={<AnswerForm />} />
