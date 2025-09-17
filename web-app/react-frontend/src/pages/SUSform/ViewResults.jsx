@@ -10,72 +10,102 @@ import scatter from 'plotly.js/lib/scatter'; // used for line charts
 
 // Register only these with Plotly
 Plotly.register([box, scatter]);
-
 const Plot = createPlotlyComponent(Plotly);
-
 
 const ViewResults = () => {
    const { formId } = useParams();
    const [questions, setQuestions] = useState([]);
    const [answers, setAnswers] = useState([]);
+   const [selected, setSelected] = useState([]); 
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
 
 
-   useEffect(() => {
+    useEffect(() => {
+        //Fetch questions for the form
+        fetch(`http://127.0.0.1:8000/api/${formId}/sus-questions/list/`)
+            .then(response => response.json())
+            .then(data => setQuestions(data))
+            .catch(error => console.error("Error fetching questions:", error));
+
+        //fetch answers corresponding with each question
+        fetch(`http://127.0.0.1:8000/api/${formId}/sus-answers/results/`)
+            .then((response) => response.json())
+            .then((data) => {
+                setAnswers(data);
+                // all checkboxes are selected by default
+                setSelected(data.map(() => true));
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Error fetching answers:", error);
+                setError("Error fetching answers");
+                setLoading(false);
+            });
+    }, [formId]);
 
 
-       //Fetch questions for the form
-       fetch(`http://127.0.0.1:8000/api/${formId}/sus-questions/list/`)
-           .then(response => response.json())
-           .then(data => setQuestions(data))
-           .catch(error => console.error("Error fetching questions:", error));
+    const getBoxPlotTraces = (questions, answers, isOdd) => {
+        const traces = [];
+    
+        questions.forEach((question, index) => {
+            const isQuestionOdd = (index + 1) % 2 === 1;
+            if (isOdd !== isQuestionOdd) return;
+    
+            const qKey = `Q${question.id}`;
+            const values = answers
+                .map((a) => a[qKey])
+                .filter((v) => v !== undefined && v !== null);
+    
+            if (values.length > 0) {
+                traces.push({
+                    y: values,
+                    name: `Q${index + 1}`,
+                    type: 'box',
+                    boxpoints: 'all',
+                    jitter: 0.5,
+                    whiskerwidth: 0.2,
+                    fillcolor: isOdd ? '#ACA3E3' : '#F8BBD0',
+                    marker: { size: 4 },
+                    line: { width: 1 }
+                });
+            }
+        });
+        return traces;
+    };
+
+    const downloadCSV = () => {
+        // Filter only the selected answers
+        const selectedAnswers = answers.filter((_, index) => selected[index]);
+        if (!selectedAnswers.length) return;
+
+        // CSV Header Row
+        const headers = ["Participant", ...questions.map((q, i) => `Q${i + 1}`)];
+
+        // CSV Data Rows
+        const rows = selectedAnswers.map((ans) => {
+            const values = questions.map((q) => ans[`Q${q.id}`] ?? "");
+            return [ans.participant_email, ...values];
+        });
+
+        // Convert to CSV string
+        const csvContent = [
+            headers.join(","),
+            ...rows.map((r) => r.join(","))
+        ].join("\n");
+
+        // Trigger download
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "sus_results.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
 
-       //fetch answers corresponding with each question
-       fetch(`http://127.0.0.1:8000/api/${formId}/sus-answers/results/`)
-           .then((response) => response.json())
-           .then((data) => {
-               setAnswers(data);
-               setLoading(false);
-           })
-           .catch((error) => {
-               console.error("Error fetching answers:", error);
-               setError("Error fetching answers");
-               setLoading(false);
-           });
-   }, [formId]);
-
-
-   const getBoxPlotTraces = (questions, answers, isOdd) => {
-       const traces = [];
-  
-       questions.forEach((question, index) => {
-           const isQuestionOdd = (index + 1) % 2 === 1;
-           if (isOdd !== isQuestionOdd) return;
-  
-           const qKey = `Q${question.id}`;
-           const values = answers
-               .map((a) => a[qKey])
-               .filter((v) => v !== undefined && v !== null);
-  
-           if (values.length > 0) {
-               traces.push({
-                   y: values,
-                   name: `Q${index + 1}`,
-                   type: 'box',
-                   boxpoints: 'all',
-                   jitter: 0.5,
-                   whiskerwidth: 0.2,
-                   fillcolor: isOdd ? '#ACA3E3' : '#F8BBD0',
-                   marker: { size: 4 },
-                   line: { width: 1 }
-               });
-           }
-       });
-  
-       return traces;
-   };
   
     const calculateSUSScore = (questions, answerData) => {
         let X = 0, Y = 0;
@@ -117,39 +147,50 @@ const ViewResults = () => {
     };
 
 
-    const calculateAverageSUS = (questions, answers) => {
-        if (answers.length === 0) return 0;
-        const total = answers.reduce((sum, answerData) => {
-            return sum + calculateSUSScore(questions, answerData);
-        }, 0);
-        return (total / answers.length).toFixed(2);
+    // const calculateAverageSUS = (questions, answers) => {
+    //     const filtered = answers.filter((_, i) => selected[i]);
+    //     if (answers.length === 0) return 0;
+    //     const total = answers.reduce((sum, answerData) => {
+    //         return sum + calculateSUSScore(questions, answerData);
+    //     }, 0);
+    //     return (total / answers.length).toFixed(2);
+    // };
+
+    const calculateAverageSUS = () => {
+        const filtered = answers.filter((_, i) => selected[i]);
+        if (filtered.length === 0) return 0;
+        const total = filtered.reduce((sum, a) => sum + calculateSUSScore(questions, a), 0);
+        return (total / filtered.length).toFixed(2);
     };
-    
-    
 
+    const toggleSelect = (index) => {
+        setSelected((prev) => {
+        const newSel = [...prev];
+        newSel[index] = !newSel[index];
+        return newSel;
+        });
+    };
 
-   if (loading) {
-       return (
-           <div className="flex justify-center items-center h-screen bg-gray-100">
-               <div className="text-center">
-               <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
-                   <p className="mt-4 text-xl font-funnel font-semibold text-gray-700">Loading...</p>
-               </div>
-           </div>
-       );
-   }
-   if (error) {
-       return (
-           <div className="flex justify-center items-center h-screen bg-gray-100">
-               <div className="text-center">
-               <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
-                   <div className="mt-4 text-xl font-funnel font-semibold text-gray-700">{error}</div>
-               </div>
-           </div>
-       );
-   }
-
-
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen bg-gray-100">
+                <div className="text-center">
+                <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
+                    <p className="mt-4 text-xl font-funnel font-semibold text-gray-700">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div className="flex justify-center items-center h-screen bg-gray-100">
+                <div className="text-center">
+                <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
+                    <div className="mt-4 text-xl font-funnel font-semibold text-gray-700">{error}</div>
+                </div>
+            </div>
+        );
+    }
 
 
    // if there are no answers yet, these test will be displayed
@@ -163,8 +204,6 @@ const ViewResults = () => {
            </div>
        );
    }
-
-
 
 
    // if answers are available, the table will be displayed
@@ -239,28 +278,43 @@ const ViewResults = () => {
                    </div>
 
 
-                   <div className="flex flex-col font-funnel">
-                       <h1 className="text-xl font-bold mb-4">SUS Questionnaire Results Table</h1>
-                       {/* horizontally scrollable table */}
-                       <div className="overflow-x-auto">
-                           <table className="w-full bg-white rounded-lg shadow-lg border border-gray-300 overflow-hidden">
-                               <thead>
-                                   <tr className="bg-[#DCD6F7] text-gray-600">
-                                       <th className="border border-gray-400 px-4 py-2 text-left font-semibold">No.</th>
-                                       <th className="border border-gray-400 px-4 py-2 text-left font-semibold">Participant<br/>Email</th>
-                                       {/* Dynamically render question columns */}
-                                       {questions.map((question, idx) => (
-                                           <th key={idx} className="border border-gray-400 px-4 py-2 text-left font-semibold">
-                                               {/* {question.question_text} */}
-                                               {`Q${idx+1}. ${question.question_text}`}
-                                           </th>
-                                       ))}
-                                       <th className="border border-gray-400 px-4 py-2 text-left font-semibold">Individual<br/>sus<br/>score</th>
-                                   </tr>
-                               </thead>
-                               <tbody className="text-gray-700">
+                    <div className="flex flex-col font-funnel">
+                        <h1 className="text-xl font-bold mb-4">SUS Questionnaire Results Table</h1>
+                        {/* horizontally scrollable table */}
+                        <div className="overflow-x-auto">
+                            <button 
+                                onClick={downloadCSV} 
+                                className="mb-4 px-4 py-2 bg-[#C4BDED] text-black rounded-lg shadow-md hover:bg-[#ACA3E3]"
+                                style={{ position: 'relative', left: 0 }}
+                            >
+                                Download CSV
+                            </button>
+                            <table className="w-full bg-white rounded-lg shadow-lg border border-gray-300 overflow-hidden">
+                                <thead>
+                                    <tr className="bg-[#DCD6F7] text-gray-600">
+                                        <th className="border border-gray-400 px-4 py-2 text-left font-semibold">Select</th>
+                                        <th className="border border-gray-400 px-4 py-2 text-left font-semibold">No.</th>
+                                        <th className="border border-gray-400 px-4 py-2 text-left font-semibold">Participant<br/>Email</th>
+                                        {/* Dynamically render question columns */}
+                                        {questions.map((question, idx) => (
+                                            <th key={idx} className="border border-gray-400 px-4 py-2 text-left font-semibold">
+                                                {/* {question.question_text} */}
+                                                {`Q${idx+1}. ${question.question_text}`}
+                                            </th>
+                                        ))}
+                                        <th className="border border-gray-400 px-4 py-2 text-left font-semibold">Individual<br/>sus<br/>score</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-gray-700">
                                    {answers.map((answer, index) => (
                                        <tr key={index} className={`hover:bg-gray-100 ${index % 2 === 0 ? 'bg-gray-50' : ''}`}>
+                                            <td className="border border-gray-400 px-4 py-2 text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selected[index]}
+                                                    onChange={() => toggleSelect(index)}
+                                                />
+                                            </td>
                                            <td className="border border-gray-400 px-4 py-2">{index + 1}</td>
                                            <td className="border border-gray-400 px-4 py-2">{answer.participant_email}</td>
                                            {/* <td className="border border-gray-400 px-4 py-2">{answer.sus_score}</td> */}
@@ -274,34 +328,34 @@ const ViewResults = () => {
                                            </td>
                                        </tr>
                                    ))}
-                               </tbody>
-                               <tr className="bg-[#DCD6F7] font-semibold">
-    <td className="border border-gray-400 px-4 py-2 text-center" colSpan={2 + questions.length}>
-        Average SUS Score
-    </td>
-    <td className="border border-gray-400 px-4 py-2 text-left">
-        {answers.length > 0 ? (
-            <div className="flex items-baseline">
-                <span className={`mr-2 ${getSUSRating(calculateAverageSUS(questions, answers)).scoreColor}`}>
-                    {calculateAverageSUS(questions, answers)}
-                </span>
-                <span className={`${getSUSRating(calculateAverageSUS(questions, answers)).labelColor}`}>
-                    ({getSUSRating(calculateAverageSUS(questions, answers)).label})
-                </span>
-            </div>
-        ) : (
-            '0'
-        )}
-    </td>
-</tr>
+                                </tbody>
+                                <tr className="bg-[#DCD6F7] font-semibold">
+                                    <td className="border border-gray-400 px-4 py-2 text-center" colSpan={3 + questions.length}>
+                                        Average SUS Score
+                                    </td>
+                                    <td className="border border-gray-400 px-4 py-2 text-left">
+                                        {answers.length > 0 ? (
+                                            <div className="flex items-baseline">
+                                                <span className={`mr-2 ${getSUSRating(calculateAverageSUS()).scoreColor}`}>
+                                                    {calculateAverageSUS()}
+                                                </span>
+                                                <span className={`${getSUSRating(calculateAverageSUS()).labelColor}`}>
+                                                    ({getSUSRating(calculateAverageSUS()).label})
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            '0'
+                                        )}
+                                    </td>
+                                </tr>
 
-                           </table>
-                       </div>
-                   </div>
-               </div>
-           </div>
-       </div>
-   );
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 
