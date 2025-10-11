@@ -95,7 +95,7 @@ const SideandTopBar = () => {
 
 
   return (
-    <div className="flex h-screen bg-[#F0EEED]">
+    <div className="flex min-h-screen bg-[#F0EEED]">
       {isSwitching ? (
         <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-purple-600 via-blue-600 to-green-600 animate-gradient-move">
           <h1 className="text-4xl font-funnel font-bold text-white animate-fade-in">
@@ -105,7 +105,7 @@ const SideandTopBar = () => {
       ) : (
         <>
           {/* Top Bar */}
-          <div className="fixed w-full bg-transparent p-4 pl-8 flex justify-between items-center">
+          <div className="fixed w-full bg-[#F0EEED] p-4 pl-8 flex justify-between items-center shadow-md">
             <h1 className="text-xl pl-20 font-semibold"></h1>
             <div className="flex items-center gap-6">
               <button
@@ -167,7 +167,7 @@ const SideandTopBar = () => {
               {/* User Info */}
               <div className="flex flex-col items-left mt-auto">
                 
-                <p>{user ? `Hey ${user.first_name}` : "loading ..."}</p>
+                {/* <p>{user ? `Hey ${user.first_name}` : "loading ..."}</p> */}
 
 
                 <div
