@@ -9,7 +9,7 @@ const Guide = () => {
             {/* Back Arrow Button */}
             <button
                 onClick={() => navigate("/homepage")}
-                className="absolute top-6 left-6 flex items-center text-gray-700 hover:text-blue-600 transition-colors"
+                className="absolute top-6 left-6 flex items-center text-gray-700 hover:text-[#8B82BB] transition-colors"
             >
                 <ArrowLeft size={24} className="mr-2" />
                 <span className="font-medium">Back</span>
