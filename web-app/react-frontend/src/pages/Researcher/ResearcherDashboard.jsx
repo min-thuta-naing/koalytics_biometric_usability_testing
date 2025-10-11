@@ -136,9 +136,9 @@ const ResearcherDashboard = () => {
                     <>
                         <h1 className="font-funnel font-semibold text-xl gap-2">Projects</h1>
                         <p className="font-funnel">Here are your current projects...</p>
-                        <div className="grid grid-cols-3 gap-6 mt-6">
+                        <div className="relative z-0 grid grid-cols-3 gap-6 mt-6">
                             {projects.map((project) => (
-                                <div key={project.id} className="relative p-6 bg-white border rounded-lg shadow-md">
+                                <div key={project.id} className="relative z-0 p-6 bg-white border rounded-lg shadow-md">
                                     <div className="absolute top-3 right-3">
                                         <button onClick={() => setShowDropdown(showDropdown === project.id ? null : project.id)} className="p-2 rounded-full hover:bg-gray-200">
                                             <EllipsisVertical size={20} />
@@ -169,9 +169,9 @@ const ResearcherDashboard = () => {
                     <>
                         <h1 className="font-funnel font-semibold text-xl gap-2">Shared Projects</h1>
                         <p className="font-funnel">Here are the shared projects by other researchers with you ...</p>
-                        <div className="grid grid-cols-3 gap-6 mt-6">
+                        <div className="relative z-0 grid grid-cols-3 gap-6 mt-6">
                             {sharedProjects.map((project) => (
-                                <div key={project.id} className="relative p-6 bg-white border rounded-lg shadow-md">
+                                <div key={project.id} className="relative z-0 p-6 bg-white border rounded-lg shadow-md">
                                     <div onClick={() => navigate(`/project/${project.id}`)} className="cursor-pointer">
                                         <h2 className="text-xl font-semibold">{project.name}</h2>
                                         <p className="text-gray-600 mt-2">{project.description}</p>
