@@ -105,7 +105,7 @@ const SideandTopBar = () => {
       ) : (
         <>
           {/* Top Bar */}
-          <div className="fixed w-full bg-[#F0EEED] p-4 pl-8 flex justify-between items-center shadow-md">
+          <div className="fixed w-full bg-[#F0EEED] p-4 pl-8 flex justify-between items-center">
             <h1 className="text-xl pl-20 font-semibold"></h1>
             <div className="flex items-center gap-6">
               <button
