@@ -127,7 +127,7 @@ const SideandTopBar = () => {
 
           {/* Sidebar */}
           <div
-            className={`fixed left-0 top-0 h-full bg-[#DCD6F7] shadow-lg p-4 transition-all duration-300 ease-in-out z-1000 ${
+            className={`fixed left-0 top-0 h-full bg-[#DCD6F7] shadow-lg p-4 transition-all duration-300 ease-in-out z-[9999] ${
               isCollapsed ? "w-20" : "w-48"
             }`}
           >
@@ -181,7 +181,7 @@ const SideandTopBar = () => {
 
                 <div
                   onClick={() => setShowLogoutPopup(true)}
-                  className="flex items-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out z-[1002]"
+                  className="flex items-center p-2 rounded-lg hover:bg-gray-200 cursor-pointer transition-all duration-300 ease-in-out z-[9999]"
                 >
                   <LogOut size={20} />
                   {showText && <span className="ml-3 text-sm">Log Out</span>}

@@ -138,7 +138,20 @@ urlpatterns = [
     path('api/admin/users/', get_all_users, name='get_all_users'),
     path('api/delete_user/<int:user_id>/', delete_user, name='delete_user'),
 
+   
+
+    
+    # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+
+
+    #re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
 ] 
+
+
+# # Ensure the static media path is served before the catch-all route
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
 
 # Static files URL handling
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

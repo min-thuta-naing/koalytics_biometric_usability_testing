@@ -4,7 +4,6 @@ import './index.css'; // Ensure this is already here
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/Participant/HomePage";
 import SideandTopBar from "./pages/Researcher/SideandTopBar";
-import ResearcherGuideline from "./pages/Researcher/ResearcherGuideline";
 import MyAccount from "./pages/MyAccount";
 import AboutUs from "./pages/AboutUs";
 import Settings from "./pages/Settings";
@@ -17,7 +16,7 @@ import LoginPage from "./pages/LoginPage";
 import NewProjectPage from "./pages/Researcher/Project/CreateProjects";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import ProjectDashboard from "./pages/Researcher/Project/ProjectDashboard";
-import SUSDetailTopBar from "./pages/SUSform/SUSDetailTopBar";
+import FormDetail from "./pages/SUSform/FormDetail";
 import CreateQuestions from "./pages/SUSform/CreateQuestions";
 import CreateSUSQuestion from "./pages/SUSform/CreateSUSQuestion";
 import ViewResults from "./pages/SUSform/ViewResults";
@@ -52,8 +51,7 @@ function App() {
         <Route path="/results" element={<ViewResults/>}/>
         <Route path="/project/:projectId" element={<ProjectDashboard />} />
         <Route path="/researcher-dashboard" element={<SideandTopBar />} />
-        <Route path="/researcher-guideline" element={<ResearcherGuideline />} />
-        <Route path="/form/:formId" element={<SUSDetailTopBar />} />
+        <Route path="/form/:formId" element={<FormDetail />} />
         <Route path="/usability_testing/:usabilityTestingId" element={<UsabilityTestingDetail />} />
         <Route path="/all-project/:projectId" element={<ChooseTest />} />
         <Route path="/related-form/:formId" element={<AnswerForm />} />

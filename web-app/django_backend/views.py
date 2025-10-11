@@ -966,6 +966,131 @@ def check_recording(request, usability_testing_id):
     has_recording = UsabilityTestRecordingV4.objects.filter(user=user, usability_testing_id=usability_testing_id).exists()
     return Response({"hasRecording": has_recording})
 
+# ✅ camera calibration check 
+# @api_view(['POST'])
+# def validate_camera_frame(request):
+#     try:
+#         image_data = request.data.get('image')
+#         if not image_data:
+#             return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Decode base64 image
+#         content = image_data.split(';base64,')[-1]
+#         image_bytes = base64.b64decode(content)
+#         np_arr = np.frombuffer(image_bytes, np.uint8)
+#         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+#         result = {
+#             'face_detected': False,
+#             'multiple_faces': False,
+#             'blurry': False,
+#             'too_dark': False,
+#             'too_bright': False,
+#             'frontal_pose': False
+#         }
+
+#         # Lighting check
+#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+#         mean_brightness = np.mean(gray)
+#         result['too_dark'] = mean_brightness < 50
+#         result['too_bright'] = mean_brightness > 200
+
+#         # Blur check
+#         blur_score = cv2.Laplacian(gray, cv2.CV_64F).var()
+#         result['blurry'] = blur_score < 100  # Threshold might be adjusted
+
+#         # Face and pose check
+#         mp_face = mp.solutions.face_detection
+#         with mp_face.FaceDetection(model_selection=1, min_detection_confidence=0.5) as face_detection:
+#             results = face_detection.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+#             if results.detections:
+#                 result['face_detected'] = True
+#                 result['multiple_faces'] = len(results.detections) > 1
+#                 for det in results.detections:
+#                     score = det.location_data.relative_bounding_box
+#                     # Heuristic: assume frontal pose if width ≈ height
+#                     if 0.9 < (score.width / score.height) < 1.1:
+#                         result['frontal_pose'] = True
+
+#         return Response(result)
+
+#     except Exception as e:
+#         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# def estimate_yaw(left_eye, right_eye, nose_tip):
+#     # Approximate the yaw angle using the eye-nose triangle
+#     eye_center_x = (left_eye[0] + right_eye[0]) / 2
+#     dx = nose_tip[0] - eye_center_x
+#     dy = abs(left_eye[1] - right_eye[1]) + 1e-5  # Avoid division by zero
+#     yaw_angle = math.degrees(math.atan(dx / dy))
+#     return yaw_angle
+
+# @api_view(['POST'])
+# def validate_camera_frame(request):
+#     try:
+#         image_data = request.data.get('image')
+#         if not image_data:
+#             return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Decode base64 image
+#         content = image_data.split(';base64,')[-1]
+#         image_bytes = base64.b64decode(content)
+#         np_arr = np.frombuffer(image_bytes, np.uint8)
+#         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+#         result = {
+#             'face_detected': False,
+#             'multiple_faces': False,  # not supported in this version
+#             'blurry': False,
+#             'too_dark': False,
+#             'too_bright': False,
+#             'frontal_pose': False
+#         }
+
+#         # Lighting check
+#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+#         mean_brightness = np.mean(gray)
+#         result['too_dark'] = mean_brightness < 50
+#         result['too_bright'] = mean_brightness > 200
+
+#         # Blur check
+#         blur_score = cv2.Laplacian(gray, cv2.CV_64F).var()
+#         result['blurry'] = blur_score < 100
+
+#         mp_face_mesh = mp.solutions.face_mesh
+#         with mp_face_mesh.FaceMesh(static_image_mode=True, max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5) as face_mesh:
+#             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#             results_mesh = face_mesh.process(rgb_frame)
+
+#             if results_mesh.multi_face_landmarks:
+#                 result['face_detected'] = True
+#                 face_landmarks = results_mesh.multi_face_landmarks[0]
+
+#                 # Get key landmarks (indexes from MediaPipe docs)
+#                 left_eye_idx = 33
+#                 right_eye_idx = 263
+#                 nose_tip_idx = 1
+
+#                 h, w, _ = frame.shape
+
+#                 left_eye = face_landmarks.landmark[left_eye_idx]
+#                 right_eye = face_landmarks.landmark[right_eye_idx]
+#                 nose_tip = face_landmarks.landmark[nose_tip_idx]
+
+#                 # Convert to image coordinates
+#                 left_eye_coords = (left_eye.x * w, left_eye.y * h)
+#                 right_eye_coords = (right_eye.x * w, right_eye.y * h)
+#                 nose_coords = (nose_tip.x * w, nose_tip.y * h)
+
+#                 yaw = estimate_yaw(left_eye_coords, right_eye_coords, nose_coords)
+
+#                 # Frontal if yaw angle is small (within ±15°)
+#                 result['frontal_pose'] = abs(yaw) < 15
+
+#         return Response(result)
+
+#     except Exception as e:
+#         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def validate_camera_frame(request):
