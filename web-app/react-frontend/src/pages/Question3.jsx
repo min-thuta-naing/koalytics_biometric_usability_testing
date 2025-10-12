@@ -32,81 +32,59 @@ export default function ProfessionQuestion() {
     );
   };
 
-  // const handleConfirm = async () => {
-  //   try {
-  //     const userId = localStorage.getItem('user_id');
+  const handleConfirm = async () => {
+    try {
+      // Get user data from localStorage
+      const storedUser = localStorage.getItem("user");
+      let userId;
       
-  //     if (!userId) {
-  //       alert('User ID not found. Please sign up again.');
-  //       navigate("/signup");
-  //       return;
-  //     }
+      // if (storedUser) {
+      //   const userData = JSON.parse(storedUser);
+      //   // Handle both nested and direct user structures
+      //   if (userData.user && userData.user.id) {
+      //     userId = userData.user.id;
+      //   } else if (userData.id) {
+      //     userId = userData.id;
+      //   } else {
+      //     // Try to get from user_id storage
+      //     userId = localStorage.getItem('user_id');
+      //   }
+      // } else {
+      //   // Fallback to user_id
+      //   userId = localStorage.getItem('user_id');
+      // }
 
-  //     const response = await fetch(`/api/save_profession/${userId}/`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ profession: selectedProfession }),
-  //     });
-
-  //     if (response.ok) {
-  //       alert('Profession saved successfully!');
-  //       navigate("/question4");
-  //     } else {
-  //       const data = await response.json();
-  //       alert(`Error: ${data.error}`);
-  //     }
-  //   } catch (error) {
-  //     alert('Something went wrong. Please try again.');
-  //     console.error('Save Profession Error:', error);
-  //   }
-  // };
-
-const handleConfirm = async () => {
-  try {
-    // Get user data from localStorage
-    const storedUser = localStorage.getItem("user");
-    let userId;
-    
-    if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      // Handle both nested and direct user structures
-      if (userData.user && userData.user.id) {
-        userId = userData.user.id;
-      } else if (userData.id) {
-        userId = userData.id;
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        userId = userData.id; 
       } else {
-        // Try to get from user_id storage
         userId = localStorage.getItem('user_id');
       }
-    } else {
-      // Fallback to user_id
-      userId = localStorage.getItem('user_id');
-    }
-    
-    if (!userId) {
-      alert('User ID not found. Please sign up again.');
-      navigate("/signup");
-      return;
-    }
+      
+      if (!userId) {
+        alert('User ID not found. Please sign up again.');
+        navigate("/signup");
+        return;
+      }
 
-    const response = await fetch(`/api/save_profession/${userId}/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ profession: selectedProfession }),
-    });
+      const response = await fetch(`/api/save_profession/${userId}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ profession: selectedProfession }),
+      });
 
-    if (response.ok) {
-      alert('Profession saved successfully!');
-      navigate("/question4");
-    } else {
-      const data = await response.json();
-      alert(`Error: ${data.error}`);
+      if (response.ok) {
+        //alert('Profession saved successfully!');
+        navigate("/question4");
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+      console.error('Save Profession Error:', error);
     }
-  } catch (error) {
-    alert('Something went wrong. Please try again.');
-    console.error('Save Profession Error:', error);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center bg-[#F0EEED] p-4">

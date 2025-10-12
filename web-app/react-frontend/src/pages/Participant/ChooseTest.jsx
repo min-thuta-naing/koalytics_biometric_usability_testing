@@ -151,7 +151,7 @@ const ChooseTest = () => {
                     </div>
                 </div>
 
-                {/*form section*/}
+                {/*sus form section*/}
                 <div className="font-funnel bg-white rounded-xl shadow-lg p-8 space-y-6">
                     <h1 className="text-2xl font-semibold mb-6">System Usability Scale (SUS) Questionnaire</h1>
                     <p className="text-gray-700 text-lg leading-relaxed">

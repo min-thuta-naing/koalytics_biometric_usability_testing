@@ -11,7 +11,7 @@ const LoginPage = () => {
   // function to handle the login logic 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError(""); 
 
     try {
       const response = await fetch("/api/login/", {
@@ -27,7 +27,9 @@ const LoginPage = () => {
       if (response.ok) {
         console.log("Login successful:", data);
         // ✅ Save user data to localStorage
-        localStorage.setItem("user", JSON.stringify(data));
+        //localStorage.setItem("user", JSON.stringify(data));
+        // ✅ Save ONLY the user data to localStorage (not the entire response)
+        localStorage.setItem("user", JSON.stringify(data.user));
         //localStorage.setItem("user_id", data.user_id);
         navigate("/homepage"); 
       } else {

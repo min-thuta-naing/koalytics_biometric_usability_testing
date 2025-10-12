@@ -96,7 +96,7 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
             setWebsiteLink("");
             setFigmaEmbedCode("");
             onUsabilityTestingCreated();
-            onClose(); // Close modal after success
+            onClose(); 
         } catch (err) {
             console.error("Error creating usability testing:", err);
             setError(err.message || "Error creating usability testing.");

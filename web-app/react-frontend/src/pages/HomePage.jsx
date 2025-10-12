@@ -3,15 +3,16 @@ import { useState, useEffect} from "react";
 import { Info } from "lucide-react";
 
 const HomePage = () => {
+    const [userId, setUserId] = useState(null);
+    const [user, setUser] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [showSwitchPopup, setShowSwitchPopup] = useState(false);
     const [isSwitching, setIsSwitching] = useState(false);
-    const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const [showLogoutPopup, setShowLogoutPopup] = useState(false);
     const [projects, setProjects] = useState([]);
 
-
+    //fetching logged in user data from local storage
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -21,7 +22,6 @@ const HomePage = () => {
             navigate("/loginpage");
         }
     }, [navigate]);
- 
 
 
     //feching all projects 
@@ -29,7 +29,7 @@ const HomePage = () => {
         fetch("http://127.0.0.1:8000/api/projects/")
             .then(response => response.json())
             .then(data => setProjects(data))
-            .catch(error => console.error("Error fetching projects:", error)); 
+            .catch(error => console.error("Error happened while fetching projects:", error)); 
     }, []); 
 
     //sign out 
@@ -37,6 +37,7 @@ const HomePage = () => {
         localStorage.removeItem("user"); // Clear user session
         navigate("/loginpage"); // Redirect to login page
     };
+
     //sign out confirmation 
     const LogoutConfirmation = ({ onConfirm, onCancel }) => (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -67,7 +68,7 @@ const HomePage = () => {
         setIsSwitching(true);
         setTimeout(() => {
             navigate("/researcher-dashboard");
-        }, 4000); // 4 seconds delay
+        }, 3000); 
     };
 
     return (
@@ -104,9 +105,6 @@ const HomePage = () => {
                                     </button>
                                 </div>
                             )}
-
-                            
-                           
 
                            {/* Profile Picture */}
                            <img
@@ -149,16 +147,15 @@ const HomePage = () => {
                     {/* main content */}
                     <main className="flex-1 bg-[#F0EEED] overflow-y-auto pt-[4rem]">
                         <p className='p-4 mx-8 mt-8 font-funnel text-xl border-b border-gray-400'>Welcome back!<br/>{user ? `${user.first_name} ${user.last_name}` : "Loading..."}</p>
+                        
                         <p className='p-4 mx-8 mt-1 font-funnel '>These are the surveys related to usability of websites and mobile apps from the researchers. <br/>You can choose whatever you like to participate in the survey.<br/>And enjoy your survey! </p>
                         <div className="grid grid-cols-4 gap-6 p-8 place-items-center">
                             {projects.map(project => (
                                 <div 
                                     key={project.id} 
-                                    // className="w-80 h-56 flex items-center justify-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400 transition-transform duration-300 hover:-translate-y-2 bg-cover bg-center"
                                     className="w-80 h-56 relative rounded-lg shadow-md hover:shadow-lg cursor-pointer border border-gray-400 transition-transform duration-300 hover:-translate-y-2 bg-cover bg-center"
                                     onClick={() => navigate(`/all-project/${project.id}`)}
                                     style={{ backgroundImage: "url('/static/images/projectbg.png')" }}
-
                                 >
                                     <h2 className="absolute bottom-4 left-4 font-semibold font-funnel text-lg text-black bg-[#C4BDED] px-3 py-1 rounded-lg">{project.name}</h2>
                                 </div>
