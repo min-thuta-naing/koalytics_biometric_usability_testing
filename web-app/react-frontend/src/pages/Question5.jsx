@@ -41,82 +41,58 @@ export default function IndustryQuestion() {
     );
   };
   
-  // const handleConfirm = async () => {
-  //   try {
-  //     const userId = localStorage.getItem('user_id');
+  const handleConfirm = async () => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      let userId;
       
-  //     if (!userId) {
-  //       alert('User ID not found. Please sign up again.');
-  //       navigate("/signup");
-  //       return;
-  //     }
+      // if (storedUser) {
+      //   const userData = JSON.parse(storedUser);
+      //   // Handle both nested and direct user structures
+      //   if (userData.user && userData.user.id) {
+      //     userId = userData.user.id;
+      //   } else if (userData.id) {
+      //     userId = userData.id;
+      //   } else {
+      //     // Try to get from user_id storage
+      //     userId = localStorage.getItem('user_id');
+      //   }
+      // } else {
+      //   // Fallback to user_id
+      //   userId = localStorage.getItem('user_id');
+      // }
 
-  //     const response = await fetch(`/api/save_industry/${userId}/`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ industry: selectedIndustry }),
-  //     });
-
-  //     if (response.ok) {
-  //       alert('Industry saved successfully!');
-  //       navigate("/homepage");
-  //     } else {
-  //       const data = await response.json();
-  //       alert(`Error: ${data.error}`);
-  //     }
-  //   } catch (error) {
-  //     alert('Something went wrong. Please try again.');
-  //     console.error('Save Industry Error:', error);
-  //   }
-  // };
-
-// In HobbyQuestion.js - update the handleConfirm function
-const handleConfirm = async () => {
-  try {
-    // Get user data from localStorage
-    const storedUser = localStorage.getItem("user");
-    let userId;
-    
-    if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      // Handle both nested and direct user structures
-      if (userData.user && userData.user.id) {
-        userId = userData.user.id;
-      } else if (userData.id) {
-        userId = userData.id;
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        userId = userData.id; 
       } else {
-        // Try to get from user_id storage
         userId = localStorage.getItem('user_id');
       }
-    } else {
-      // Fallback to user_id
-      userId = localStorage.getItem('user_id');
-    }
-    
-    if (!userId) {
-      alert('User ID not found. Please sign up again.');
-      navigate("/signup");
-      return;
-    }
+      
+      if (!userId) {
+        alert('User ID not found. Please sign up again.');
+        navigate("/signup");
+        return;
+      }
 
-    const response = await fetch(`/api/save_industry/${userId}/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ industry: selectedIndustry }),
-    });
+      const response = await fetch(`/api/save_industry/${userId}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ industry: selectedIndustry }),
+      });
 
-    if (response.ok) {
-      alert('Industry saved successfully!');
-      navigate("/homepage");
-    } else {
-      const data = await response.json();
-      alert(`Error: ${data.error}`);
+      if (response.ok) {
+        //alert('Industry saved successfully!');
+        navigate("/homepage");
+      } else {
+        const data = await response.json();
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+      console.error('Save industry Error:', error);
     }
-  } catch (error) {
-    alert('Something went wrong. Please try again.');
-    console.error('Save industry Error:', error);
-  }
-};
+  };
 
 
   return (

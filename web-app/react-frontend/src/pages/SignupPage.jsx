@@ -54,10 +54,11 @@ export default function SignUpLayout() {
         // // Also store as signupData for backup
         // localStorage.setItem("signupData", JSON.stringify(data));
 
-        localStorage.setItem("user", JSON.stringify({
-          user: data.user,
-          message: data.message
-        }));
+        // localStorage.setItem("user", JSON.stringify({
+        //   user: data.user,
+        //   message: data.message
+        // }));
+        localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("user_id", data.user.id.toString());
 
         // const userResponse = await fetch(`/api/user/${data.user_id}/`);
@@ -66,7 +67,7 @@ export default function SignUpLayout() {
         //   localStorage.setItem("user", JSON.stringify(userData));
         // }
 
-        alert("User registered successfully!");
+        //alert("User registered successfully!");
         navigate("/question1");
       } else {
         const data = await response.json();

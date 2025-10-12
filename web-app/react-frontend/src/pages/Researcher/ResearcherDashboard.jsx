@@ -4,6 +4,7 @@ import CreateProjects from "./Project/CreateProjects";
 import { EllipsisVertical,X } from "lucide-react";
 
 const ResearcherDashboard = () => {
+    const [user, setUser] = useState(null);
     const [userId, setUserId] = useState(null);
     const [showProjectForm, setShowProjectForm] = useState(false);
     const [projects, setProjects] = useState([]);
@@ -23,13 +24,50 @@ const ResearcherDashboard = () => {
     };
 
     // RETRIEVE USER FROM LOCAL STORAGE ////////////////////////////////////////////////
+    // useEffect(() => {
+    //     const user = JSON.parse(localStorage.getItem("user"));
+    //     if (user && user.id) {
+    //         setUserId(user.id);
+    //         fetchProjects(user.id);
+    //         fetchSharedProjects(user.id);
+    //     }
+    // }, []);
+
+    // Retrive user from local storage ////////////////////////////////////////////////
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (user && user.id) {
-            setUserId(user.id);
-            fetchProjects(user.id);
-            fetchSharedProjects(user.id);
-        }
+        const getUserData = async () => {
+            try {
+                const storedUser = localStorage.getItem("user");
+                if (!storedUser) {
+                    console.error("No user data found in localStorage");
+                    return;
+                }
+
+                const userData = JSON.parse(storedUser);
+                let userId;
+                
+                // Handle both nested and direct user structures
+                if (userData.user && userData.user.id) {
+                    userId = userData.user.id;
+                    setUser(userData.user);
+                } else if (userData.id) {
+                    userId = userData.id;
+                    setUser(userData); 
+                } else {
+                    console.error("User ID not found in stored data");
+                    return;
+                }
+
+                setUserId(userId);
+                await fetchProjects(userId);
+                await fetchSharedProjects(userId);
+                
+            } catch (error) {
+                console.error("Error retrieving user data:", error);
+            }
+        };
+
+        getUserData();
     }, []);
 
     // FETCH PROJECTS with user id ////////////////////////////////////////////////
@@ -99,7 +137,8 @@ const ResearcherDashboard = () => {
             {/* New project creation button */}
             <div className="flex justify-between items-center py-3 px-12 border-b border-gray-400">
                 <div className="flex flex-col gap-2">
-                    <h1 className="font-funnel font-semibold text-xl">Create a New Project</h1>
+                    <h1 className="font-funnel font-semibold text-xl">{user ? `Welcome Back ${user.first_name}!` : "loading ..."}</h1>
+                    <h1 className="font-funnel font-semibold text-xl">Create your new projects here.</h1>
                     <p className="font-funnel">Let's get started with Koalytics!</p>
                 </div>
                 <button

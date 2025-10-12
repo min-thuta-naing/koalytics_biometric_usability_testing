@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const AnswerForm = () => {
     const { formId } = useParams();
@@ -10,6 +10,7 @@ const AnswerForm = () => {
     const [userEmail, setUserEmail] = useState("");
     const [currentStep, setCurrentStep] = useState(0);
     const [showValidationMessage, setShowValidationMessage] = useState(false);
+    const navigate = useNavigate();
 
     // Fetch the user email from localStorage or session
     useEffect(() => {
@@ -81,6 +82,7 @@ const AnswerForm = () => {
         }
 
         alert("Answers submitted/updated successfully!");
+        //navigate(`/choose-test/${projectId}`); 
     };
 
     if (loading || !questions.length) {
@@ -108,58 +110,6 @@ const AnswerForm = () => {
     const isLastStep = currentStep === questions.length - 1;
 
     return (
-    //     <div 
-    //         className="fixed inset-0 bg-cover bg-center"
-    //         style={{ backgroundImage: 'url(/static/images/backgroundform.png)' }}
-    //     >
-    //         <div className="h-screen w-full flex flex-col items-center pt-8 font-funnel overflow-hidden">
-    //             <div className="w-full max-w-2xl px-4">
-    //             <h1 className="text-xl font-bold mb-4">System Usability Scale (SUS) Questionnaire</h1>
-    //             </div>
-
-    //             <div className="w-full max-w-2xl flex-1 overflow-y-auto px-4 pb-8">
-    //             <h2 className="text-lg font-semibold mb-3">Answer the following ten questions.</h2>
-    //             <div className="bg-white rounded-lg shadow-md border border-gray-400 p-6 mb-6">
-    //                 {questions.map((q, index) => (
-    //                 <div key={q.id} className="mb-10 last:mb-0">
-    //                     <div className="flex items-start mb-4">
-    //                     <span className="font-semibold mr-3 text-gray-700">{index + 1}.</span>
-    //                     <h3 className="font-semibold">{q.question_text}</h3>
-    //                     </div>
-
-    //                     <div className="flex justify-between w-full">
-    //                     {[1, 2, 3, 4, 5].map((num) => (
-    //                         <div key={num} className="flex flex-col items-center w-1/5">
-    //                         <button
-    //                             onClick={() => handleAnswerChange(q.id, num)}
-    //                             className={`w-10 h-10 flex items-center justify-center border rounded-full text-lg ${
-    //                             answers[q.id] === num ? "bg-[#ACA3E3] text-black" : "border-gray-500"
-    //                             }`}
-    //                         >
-    //                             {num}
-    //                         </button>
-    //                         <span className="text-xs mt-1 text-gray-600 text-center">
-    //                             {num === 1 && "Strongly Disagree"}
-    //                             {num === 2 && "Somewhat Disagree"}
-    //                             {num === 3 && "Neutral"}
-    //                             {num === 4 && "Somewhat Agree"}
-    //                             {num === 5 && "Strongly Agree"}
-    //                         </span>
-    //                         </div>
-    //                     ))}
-    //                     </div>
-    //                 </div>
-    //                 ))}
-    //             </div>
-    //                 <button
-    //                     onClick={submitAnswers}
-    //                     className="w-full bg-[#C4BDED] text-black px-6 py-3 rounded-lg shadow-md hover:bg-[#ACA3E3]"
-    //                 >
-    //                     Submit Answers
-    //                 </button>
-    //             </div>
-    //         </div>
-    //     </div>
         <div 
             className="fixed inset-0 bg-cover bg-center"
             style={{ backgroundImage: 'url(/static/images/backgroundform.png)' }}
