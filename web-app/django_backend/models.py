@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
 
-# ✅ User model for sign up and login 
+# User #################################################################################################
+# ✅ user 
 class User(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -34,35 +35,35 @@ class User(models.Model):
     def __str__(self):
         return self.email
 
-# for hobbies
+# ✅ hobbies
 class Hobby(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
 
-# for employement status 
+# ✅ employement status 
 class EmploymentStatus (models.Model):
     employmentStatuses = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.employmentStatuses
 
-# for profession
+# ✅ profession
 class Profession (models.Model):
     profession = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.profession
     
-# for position
+# ✅ position
 class Position (models.Model):
     position = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.position
     
-# for industry
+# ✅ industry
 class Industry (models.Model):
     industry = models.CharField(max_length=200, unique=True)
 
@@ -70,7 +71,7 @@ class Industry (models.Model):
         return self.industry
     
     
-# for projects #################################################################################################
+# projects #################################################################################################
 # ✅ project model 
 class Project(models.Model):
     name = models.CharField(max_length=200)

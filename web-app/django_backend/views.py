@@ -67,11 +67,22 @@ def signup(request):
                 password=make_password(data['password'])  # Hash the password
             )
 
-           
-            # return JsonResponse({'message': 'User registered successfully!', 'user_id': user.id}, status=201)
-            return JsonResponse({
-                'message': 'User registered successfully!',
-                'user_id': user.id,
+            # return JsonResponse({
+            #     'message': 'User registered successfully!',
+            #     'user_id': user.id,
+            #     'first_name': user.first_name,
+            #     'last_name': user.last_name,
+            #     'email': user.email,
+            #     'birthday': user.birthday,
+            #     'gender': user.gender,
+            #     'marital_status': user.marital_status,
+            #     'country': user.country,
+            #     'zip_code': user.zip_code,
+            #     'hobbies': list(user.hobbies.values_list('name', flat=True))  # Empty initially
+                
+            # }, status=201)
+            user_data = {
+                'id': user.id,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
                 'email': user.email,
@@ -80,9 +91,19 @@ def signup(request):
                 'marital_status': user.marital_status,
                 'country': user.country,
                 'zip_code': user.zip_code,
-                'hobbies': list(user.hobbies.values_list('name', flat=True))  # Empty initially
-                
+                'hobbies': [],
+                'employmentStatuses': [],
+                'profession': [],
+                'position': [],
+                'industry': [],
+                'projects': []
+            }
+            
+            return JsonResponse({
+                'message': 'User registered successfully!',
+                'user': user_data  
             }, status=201)
+        
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -214,12 +235,30 @@ def login(request):
 
             # return JsonResponse({'message': 'Login successful', 'user_id': user.id}, status=200)
             # Return user details
-            return JsonResponse({
-                'message': 'Login successful',
+            user_data = {
                 'id': user.id,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-                'email': user.email
+                'email': user.email,
+                'birthday': user.birthday,
+                'gender': user.gender,
+                'marital_status': user.marital_status,
+                'country': user.country,
+                'zip_code': user.zip_code,
+                'hobbies': list(user.hobbies.values('id', 'name')),
+                'employmentStatuses': list(user.employmentStatuses.values('id', 'employmentStatuses')),
+                'profession': list(user.profession.values('id', 'profession')),
+                'position': list(user.position.values('id', 'position')),
+                'industry': list(user.industry.values('id', 'industry')),
+                'projects': list(user.projects.values('id', 'name'))
+            }
+            return JsonResponse({
+                'message': 'Login successful',
+                # 'id': user.id,
+                # 'first_name': user.first_name,
+                # 'last_name': user.last_name,
+                # 'email': user.email
+                'user': user_data 
             }, status=200)
 
         except Exception as e:
@@ -1371,11 +1410,40 @@ def get_all_forms(request):
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
 # ✅ Get user by ID to display in MyAccount page
+# @csrf_exempt
+# def get_user(request, user_id):
+#     try:
+#         user = User.objects.get(id=user_id)
+#         user_data = {
+#             "first_name": user.first_name,
+#             "last_name": user.last_name,
+#             "email": user.email,
+#             "birthday": user.birthday,
+#             "gender": user.gender,
+#             "marital_status": user.marital_status,
+#             "country": user.country,
+#             "zip_code": user.zip_code,
+#             "hobbies": list(user.hobbies.values("id", "name")), 
+#             "employmentStatuses" : list(user.employmentStatuses.values("id", "employmentStatuses")),
+#             "profession" : list(user.profession.values("id", "profession")),
+#             "position" : list(user.position.values("id", "position")),
+#             "industry" : list(user.industry.values("id", "industry")),
+
+#             "projects": list(user.projects.values(
+#                 "id", "name", "description", "organization", 
+#                 "max_participants", "start_date", "end_date", "side_notes"
+#             )),
+#         }
+#         return JsonResponse(user_data, status=200)
+#     except User.DoesNotExist:
+#         return JsonResponse({"error": "User not found"}, status=404)
+
 @csrf_exempt
 def get_user(request, user_id):
     try:
         user = User.objects.get(id=user_id)
         user_data = {
+            "id": user.id,  # Add ID to response
             "first_name": user.first_name,
             "last_name": user.last_name,
             "email": user.email,
@@ -1385,11 +1453,10 @@ def get_user(request, user_id):
             "country": user.country,
             "zip_code": user.zip_code,
             "hobbies": list(user.hobbies.values("id", "name")), 
-            "employmentStatuses" : list(user.employmentStatuses.values("id", "employmentStatuses")),
-            "profession" : list(user.profession.values("id", "profession")),
-            "position" : list(user.position.values("id", "position")),
-            "industry" : list(user.industry.values("id", "industry")),
-
+            "employmentStatuses": list(user.employmentStatuses.values("id", "employmentStatuses")),
+            "profession": list(user.profession.values("id", "profession")),
+            "position": list(user.position.values("id", "position")),
+            "industry": list(user.industry.values("id", "industry")),
             "projects": list(user.projects.values(
                 "id", "name", "description", "organization", 
                 "max_participants", "start_date", "end_date", "side_notes"
@@ -1398,6 +1465,9 @@ def get_user(request, user_id):
         return JsonResponse(user_data, status=200)
     except User.DoesNotExist:
         return JsonResponse({"error": "User not found"}, status=404)
+    
+
+# ✅ Update user information from MyAccount page 
 
 
 #########################################################################################################################################################################################################################################################

@@ -1,24 +1,56 @@
 from django.conf import settings
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from .models import User, Hobby, Project, Form, Question, Answer, Consent, TestingConsent, SUSForm, SUSQuestion, SUSQAnswer,Gender, AgeGroup, Interest, ProjectCriteria,EmotionCapture, Collaboration
+from .models import User, Hobby, EmploymentStatus, Profession, Position, Industry, Project, Form, Question, Answer, Consent, TestingConsent, SUSForm, SUSQuestion, SUSQAnswer,Gender, AgeGroup, Interest, ProjectCriteria,EmotionCapture, Collaboration
 
 from .models import UsabilityTestRecordingV4
 from .models import UsabilityTesting
 
-
 class HobbySerializer(serializers.ModelSerializer):
     class Meta:
         model = Hobby
-        fields = ['id','name']
+        fields = ['id', 'name']
+
+class EmploymentStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmploymentStatus
+        fields = ['id', 'employmentStatuses']
+
+class ProfessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profession
+        fields = ['id', 'profession']
+
+class PositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = ['id', 'position']
+
+class IndustrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Industry
+        fields = ['id', 'industry']
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'name']
 
 class UserSerializer(serializers.ModelSerializer):
+    hobbies = HobbySerializer(many=True, read_only=True)
+    employmentStatuses = EmploymentStatusSerializer(many=True, read_only=True)
+    profession = ProfessionSerializer(many=True, read_only=True)
+    position = PositionSerializer(many=True, read_only=True)
+    industry = IndustrySerializer(many=True, read_only=True)
+    projects = ProjectSerializer(many=True, read_only=True)
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'password', 'birthday', 
-                  'gender', 'marital_status', 'country', 'zip_code', 'hobbies']
+                  'gender', 'marital_status', 'country', 'zip_code', 'hobbies',
+                  'employmentStatuses', 'profession', 'position', 'industry', 'projects'
+        ]
 
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])

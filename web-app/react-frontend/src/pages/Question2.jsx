@@ -25,9 +25,57 @@ export default function EmploymentStatusQuestion() {
     );
   };
 
+  // const handleConfirm = async () => {
+  //   try {
+  //     const userId = localStorage.getItem('user_id');
+      
+  //     if (!userId) {
+  //       alert('User ID not found. Please sign up again.');
+  //       navigate("/signup");
+  //       return;
+  //     }
+
+  //     const response = await fetch(`/api/save_employment_status/${userId}/`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ employmentStatuses: selectedStatus }),
+  //     });
+
+  //     if (response.ok) {
+  //       alert('Employment status saved successfully!');
+  //       navigate("/question3");
+  //     } else {
+  //       const data = await response.json();
+  //       alert(`Error: ${data.error}`);
+  //     }
+  //   } catch (error) {
+  //     alert('Something went wrong. Please try again.');
+  //     console.error('Save Employment Status Error:', error);
+  //   }
+  // };
+
+  // In HobbyQuestion.js - update the handleConfirm function
   const handleConfirm = async () => {
     try {
-      const userId = localStorage.getItem('user_id');
+      // Get user data from localStorage
+      const storedUser = localStorage.getItem("user");
+      let userId;
+      
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        // Handle both nested and direct user structures
+        if (userData.user && userData.user.id) {
+          userId = userData.user.id;
+        } else if (userData.id) {
+          userId = userData.id;
+        } else {
+          // Try to get from user_id storage
+          userId = localStorage.getItem('user_id');
+        }
+      } else {
+        // Fallback to user_id
+        userId = localStorage.getItem('user_id');
+      }
       
       if (!userId) {
         alert('User ID not found. Please sign up again.');
@@ -38,11 +86,11 @@ export default function EmploymentStatusQuestion() {
       const response = await fetch(`/api/save_employment_status/${userId}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ employmentStatuses: selectedStatus }),
+        body: JSON.stringify({ employmentStatuses: selectedStatus  }),
       });
 
       if (response.ok) {
-        alert('Employment status saved successfully!');
+        alert('Employement status saved successfully!');
         navigate("/question3");
       } else {
         const data = await response.json();
@@ -50,7 +98,7 @@ export default function EmploymentStatusQuestion() {
       }
     } catch (error) {
       alert('Something went wrong. Please try again.');
-      console.error('Save Employment Status Error:', error);
+      console.error('Save Employment status Error:', error);
     }
   };
 

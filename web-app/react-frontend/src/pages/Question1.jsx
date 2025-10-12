@@ -27,9 +27,56 @@ export default function HobbyQuestion() {
     );
   };
 
+  // const handleConfirm = async () => {
+  //   try {
+  //     const userId = localStorage.getItem('user_id');
+      
+  //     if (!userId) {
+  //       alert('User ID not found. Please sign up again.');
+  //       navigate("/signup");
+  //       return;
+  //     }
+
+  //     const response = await fetch(`/api/save-hobbies/${userId}/`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ hobbies: selectedHobbies }),
+  //     });
+
+  //     if (response.ok) {
+  //       alert('Hobbies saved successfully!');
+  //       navigate("/question2");
+  //     } else {
+  //       const data = await response.json();
+  //       alert(`Error: ${data.error}`);
+  //     }
+  //   } catch (error) {
+  //     alert('Something went wrong. Please try again.');
+  //     console.error('Save Hobbies Error:', error);
+  //   }
+  // };
+
   const handleConfirm = async () => {
     try {
-      const userId = localStorage.getItem('user_id');
+      // Get user data from localStorage
+      const storedUser = localStorage.getItem("user");
+      let userId;
+      
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        // Handle both nested and direct user structures
+        if (userData.user && userData.user.id) {
+          userId = userData.user.id;
+        } else if (userData.id) {
+          userId = userData.id;
+        } else {
+          // Try to get from user_id storage
+          userId = localStorage.getItem('user_id');
+        }
+      } else {
+        // Fallback to user_id
+        userId = localStorage.getItem('user_id');
+      }
       
       if (!userId) {
         alert('User ID not found. Please sign up again.');
