@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, Info, FolderOpenDot, LogOut, CircleUserRound, UserCircle } from "lucide-react";
+import { Menu, Info, FolderOpenDot, LogOut, CircleUserRound, User } from "lucide-react";
 import ResearcherGuideline from "./ResearcherGuideline";
 import ResearcherDashboard from "./ResearcherDashboard";
 import { Link, useNavigate } from "react-router-dom";
@@ -119,7 +119,7 @@ const SideandTopBar = () => {
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[#C4BDED] cursor-pointer hover:bg-[#ACA3E3]"
                 onClick={() => navigate("/my-account")}
               >
-                <UserCircle size={22} className="text-black" />
+                <User size={22} className="text-black" />
               </div>
             </div>
           </div>
