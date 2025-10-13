@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect} from "react";
-import { Info } from "lucide-react";
+import { Info, UserCircle } from "lucide-react";
+
 
 const HomePage = () => {
     const [showPopup, setShowPopup] = useState(false);
@@ -105,25 +106,21 @@ const HomePage = () => {
                                 </div>
                             )}
 
-                            
-                           
-
-                           {/* Profile Picture */}
-                           <img
-                               src={localStorage.getItem("profilePic") || "/static/images/user1.jpg"}
-                               alt="Profile"
-                               className="h-10 w-10 rounded-full border-2 border-gray-300 object-cover cursor-pointer"
-                               onClick={() => setShowPopup(!showPopup)}
-                           />
+                            {/* Profile */}
+                            <div
+                                className="h-10 w-10 flex items-center justify-center rounded-full bg-[#C4BDED] cursor-pointer hover:bg-[#ACA3E3]"
+                                onClick={() => setShowPopup(!showPopup)}
+                            >
+                                <UserCircle size={24} className="text-black" />
+                            </div>
 
                             {showPopup && (
                                 <div className="absolute right-0 top-full mt-7 w-64 bg-[#DCD6F7] shadow-lg rounded-lg py-2  z-50 border border-gray-400">
                                     <div className="flex px-4 py-4 items-center gap-4 border-b border-gray-400">
-                                    <img
-                                           src={localStorage.getItem("profilePic") || "/static/images/user1.png"}
-                                           alt="Profile"
-                                           className="h-16 w-16 rounded-full border-2 border-gray-400 object-cover"
-                                       />
+                                        <div className="h-16 w-16 flex items-center justify-center rounded-full border-2 border-gray-400 bg-[#E5E4F7]">
+                                            <UserCircle size={40} className="text-black" />
+                                        </div>
+
 
                                         <p className="block text-gray-700">
                                             Welcome!<br />

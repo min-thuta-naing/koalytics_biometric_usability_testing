@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 const AnswerForm = () => {
-    const { formId } = useParams();
+    const { formId, projectId } = useParams();
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -82,7 +82,7 @@ const AnswerForm = () => {
         }
 
         alert("Answers submitted/updated successfully!");
-        //navigate(`/choose-test/${projectId}`); 
+        navigate(`../all-project/${projectId}`);
     };
 
     if (loading || !questions.length) {
