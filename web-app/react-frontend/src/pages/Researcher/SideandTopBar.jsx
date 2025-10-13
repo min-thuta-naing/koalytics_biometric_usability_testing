@@ -167,7 +167,7 @@ const SideandTopBar = () => {
               {/* User Info */}
               <div className="flex flex-col items-left mt-auto">
                 
-                <p>{user ? `Hey ${user.first_name}` : "loading ..."}</p>
+                {/* <p>{user ? `Hey ${user.first_name}` : "loading ..."}</p> */}
 
 
                 <div
