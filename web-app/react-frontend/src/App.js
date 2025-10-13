@@ -54,7 +54,7 @@ function App() {
         <Route path="/form/:formId" element={<FormDetail />} />
         <Route path="/usability_testing/:usabilityTestingId" element={<UsabilityTestingDetail />} />
         <Route path="/all-project/:projectId" element={<ChooseTest />} />
-        <Route path="/related-form/:formId" element={<AnswerForm />} />
+        <Route path="/related-form/:formId/:projectId" element={<AnswerForm />} />
         <Route path="/related-usability-testing/:usabilityTestingId" element={<TestInfo/>}/>
         <Route path="/calibration-pop-up" element={<CalibrationPopUp/>}/> 
         <Route path="/usability-testing/:usabilityTestingId/emotion-details" element={<DetailedEmotion />} />

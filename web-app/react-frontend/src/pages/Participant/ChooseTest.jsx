@@ -173,7 +173,7 @@ const ChooseTest = () => {
                                     // }}
                                     className="p-10 relative bg-cover bg-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400 flex items-center justify-center"
                                     style={{ backgroundImage: "url('/static/images/choosetest/susform.png')" }}
-                                    onClick={() => navigate(`/related-form/${form.id}`)}
+                                    onClick={() => navigate(`/related-form/${form.id}/${projectId}`)}
                                 >
                                     <h2 className="font-semibold text-xl text-black">{form.susform_title}</h2>
                                 </div>

@@ -7,13 +7,12 @@ const CalibrationPopUp = () => {
     const [showCalibrationModal, setShowCalibrationModal] = useState(false);
     const [step, setStep] = useState(1);
     const [isFrameValid, setIsFrameValid] = useState(false);
-    const cameraRef = useRef(null); // 👈 reference to access stopCamera
-
+    const cameraRef = useRef(null); 
     const handleClose = () => {
         if (cameraRef.current) {
-            cameraRef.current.stopCamera(); // 👈 stop the camera when modal closes
+            cameraRef.current.stopCamera(); 
         }
-        setStep(1); // Reset to step 0 when closing
+        setStep(1); 
         setShowCalibrationModal(false);
     };
 
@@ -31,7 +30,7 @@ const CalibrationPopUp = () => {
                     <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full relative flex flex-col">
                         {/* Header */}
                         <div className="flex items-center justify-between p-3 bg-gray-100 rounded-t-lg">
-                            <h2 className="font-semibold font-funnel text-lg">Camera Calibration</h2>
+                            <h2 className="font-semibold font-funnel text-lg">Let's check your camera!</h2>
                             <button
                                 onClick={handleClose}
                                 className="text-black bg-white hover:bg-gray-200 rounded-lg border border-gray-300 p-1"
@@ -61,13 +60,13 @@ const CalibrationPopUp = () => {
                                                     ? 'bg-gray-300 hover:bg-gray-400' 
                                                     : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
                                         >
-                                            Next
+                                            ③ Next
                                         </button>
 
                                         {/* 👇 Conditional Message */}
                                         {!isFrameValid && (
                                             <p className="text-sm text-red-500">
-                                                Please pass all validation checks to continue.
+                                                Please pass all camera checks to continue.
                                             </p>
                                         )}
  

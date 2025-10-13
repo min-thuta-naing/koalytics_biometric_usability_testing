@@ -513,20 +513,6 @@ const ProjectDashboard = () => {
 
             {/* scrollable content */}
             <div className="mx-44 relative z-20 overflow-y-auto h-screen pt-[22vh]-30 font-funnel hide-scrollbar scroll-smooth">
-                {/* <div className="flex justify-between">
-                    <h1 className="font-bold text-5xl mx-10 my-5 p-8 text-white shadwo-xl">{project.name}</h1>
-                    <div className="flex justify-end gap-1 py-2"> 
-                        <button className="flex items-center mx-10 my-5 py-2 px-6 gap-2 bg-[#9EC6F3] rounded-2xl shadow-md ">
-                            <UsersRound className="w-h h-4"/>
-                            <span>Collaborate</span>
-                        </button>
-                        <button className="flex items-center mx-10 my-5 py-2 px-6 gap-2 bg-[#A1EEBD] rounded-2xl shadow-md ">
-                            <Share className="w-h h-4"/>
-                            <span>Publish</span>
-                        </button>
-                    </div>
-                    
-                </div> */}
                 <div className="flex justify-between items-center mt-32 px-10">
                     <h1 className="font-bold text-5xl text-white drop-shadow-xl">
                         {project.name}
@@ -601,17 +587,7 @@ const ProjectDashboard = () => {
                                             <div className="mt-6">
                                                 <h4 className="text-sm font-semibold mb-2">Current Collaborators</h4>
                                                 <ul className="max-h-40 overflow-y-auto border rounded p-2 text-sm">
-                                                    {/* {collaborators.map((c) => (
-                                                        <li key={c.id} className="flex justify-between items-center py-1 border-b">
-                                                            <span>{c.collaborator_email}</span>
-                                                            <button
-                                                                onClick={() => handleRemoveCollaborator(c.id)}
-                                                                className="text-red-500 text-xs hover:underline"
-                                                            >
-                                                                Remove
-                                                            </button>
-                                                        </li>
-                                                    ))} */}
+            
                                                     {collaborators.map((c) => (
                                                         <div key={c.id} className="mb-2">
                                                             <div className="flex justify-between items-center py-2">
@@ -746,7 +722,7 @@ const ProjectDashboard = () => {
                 {/* Project Details */}
                 <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
                     <div className="flex justify-between items-center border-b pb-4 mb-6">
-                        <h2 className="text-2xl font-semibold text-gray-800">📁 Project Overview</h2>
+                        <h2 className="text-2xl font-semibold text-gray-800">Project Overview</h2>
                         <button
                             className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
                             onClick={() => setShowEditModal(true)}
@@ -758,15 +734,14 @@ const ProjectDashboard = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-gray-700">
                         {/* First row: 2 columns */}
-                        <DetailCard icon="📝" label="Project Name" value={project.name} />
+                        <DetailCard label="Project Name" value={project.name} />
                         <div className="lg:col-span-2">
-                            <DetailCard icon="🏷️" label="Category" value={project.category} />
+                            <DetailCard label="Category" value={project.category} />
                         </div>
 
                         {/* Second row: 3 columns */}
-                        <DetailCard icon="🏢" label="Organization" value={project.organization} />
+                        <DetailCard label="Organization" value={project.organization} />
                         <DetailCard
-                            icon="📅"
                             label="Project Duration"
                             value={
                                 <>
@@ -775,15 +750,15 @@ const ProjectDashboard = () => {
                                 </>
                             }
                         />
-                        <DetailCard icon="👥" label="Max Participants" value={project.max_participants} />
+                        <DetailCard label="Max Participants" value={project.max_participants} />
 
 
                         {/* Full-width rows */}
                         <div className="lg:col-span-3">
-                            <DetailCard icon="💬" label="Description" value={project.description} />
+                            <DetailCard label="Description" value={project.description} />
                         </div>
                         <div className="lg:col-span-3">
-                            <DetailCard icon="🗒️" label="Side Note" value={project.side_notes || "—"} />
+                            <DetailCard label="Side Note" value={project.side_notes || "—"} />
                         </div>
                     </div>
                 </div>
@@ -800,7 +775,7 @@ const ProjectDashboard = () => {
                 {/* project criteria */}
                 <div className="mx-10 my-10 bg-white p-8 rounded-2xl shadow-md border border-gray-100">
                     <div className="flex justify-between items-center border-b pb-4 mb-6">
-                        <h2 className="text-2xl font-semibold text-gray-800">🎯 Project Criteria</h2>
+                        <h2 className="text-2xl font-semibold text-gray-800">Project Criteria</h2>
                         <button
                             className="flex items-center gap-2 bg-[#C4BDED] hover:bg-[#ACA3E3] text-black px-4 py-2 rounded-lg rounded-lg shadow transition"
                             onClick={() => {
@@ -816,10 +791,10 @@ const ProjectDashboard = () => {
                     <h3 className="text-xl font-medium text-gray-700 mb-6">Edit Project Criteria</h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700">
-                        <CriteriaCard label="Gender" options={selectedCriteria.gender} icon="🚻" />
-                        <CriteriaCard label="Age Group" options={selectedCriteria.ageGroup} icon="👶👦🧓" />
+                        <CriteriaCard label="Gender" options={selectedCriteria.gender} />
+                        <CriteriaCard label="Age Group" options={selectedCriteria.ageGroup}/>
                         <div className="sm:col-span-2">
-                            <CriteriaCard label="Interest" options={selectedCriteria.interest} icon="✨" />
+                            <CriteriaCard label="Interest" options={selectedCriteria.interest} />
                         </div>
                     </div>
                 </div>
@@ -836,7 +811,7 @@ const ProjectDashboard = () => {
                     {/* Header */}
                     <div className="flex justify-between items-center border-b pb-6 mb-6">
                         <div>
-                            <h1 className="text-2xl font-semibold text-gray-800">📋 Create SUS Questionnaire</h1>
+                            <h1 className="text-2xl font-semibold text-gray-800">Create SUS Questionnaire</h1>
                             <p className="text-gray-500 mt-1">You can create System Usability Scale (SUS) forms using ten questions.</p>
                         </div>
                         <button
@@ -928,7 +903,7 @@ const ProjectDashboard = () => {
                     {/* Header */}
                     <div className="flex justify-between items-center border-b pb-6 mb-6">
                         <div>
-                            <h1 className="text-2xl font-semibold text-gray-800">🧪 Create Usability Testings</h1>
+                            <h1 className="text-2xl font-semibold text-gray-800">Create Usability Testings</h1>
                             <p className="text-gray-500 mt-1">You can create and manage biometric usability tests.</p>
                         </div>
                         <button
