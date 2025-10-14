@@ -50,7 +50,7 @@ const CalibrationPopUp = () => {
                                         <button
                                             onClick={() => {
                                                 if (cameraRef.current) {
-                                                    cameraRef.current.stopCamera(); // 👈 stop the camera when Next is clicked
+                                                    cameraRef.current.stopCamera(); 
                                                 }
                                                 setStep(step + 1);
                                             }}

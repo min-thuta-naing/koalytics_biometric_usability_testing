@@ -5,6 +5,7 @@ import {getConsentTemplate} from "./templates";
 
 
 const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const [currentStep, setCurrentStep] = useState(1);
     const [projectName, setProjectName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -16,11 +17,8 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
     const [sideNotes, setSideNotes] = useState("");
     const [error, setError] = useState("");
     const [isSubmitted, setIsSubmitted] = useState(false);
-
     const [imagePath, setImagePath] = useState("");
-   
     const [consentContent, setConsentContent] = useState(getConsentTemplate('biometric'));
-
     const getRandomImages = () => {
         const allImages = Array.from({ length: 44 }, (_, i) => `/static/images/projectcategory/${i + 1}.png`);
         return allImages.sort(() => Math.random() - 0.5);
@@ -29,8 +27,6 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
     const refreshImages = () => {
         setImages(getRandomImages());
     };
-
-
     const steps = [
         {
             id: 1,
@@ -363,7 +359,6 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         let errorMessage = "";
         if (requiredErrors.length > 0) {
             errorMessage = requiredErrors.join(", ");
-            // Add "are required" or "is required" based on number of errors
             errorMessage += requiredErrors.length > 1 ? " are required." : " is required.";
         }
         
@@ -411,14 +406,14 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         }
 
         if (!userId) {
-            setError("User not found. Please log in.");
+            setError("Please log in first to create a project.");
             return;
         }
 
         console.log("Submitting with consent:", consentContent);
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/create_project/${userId}/`, {
+            const response = await fetch(`${API_URL}/api/create_project/${userId}/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

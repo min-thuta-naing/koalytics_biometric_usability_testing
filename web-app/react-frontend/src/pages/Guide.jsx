@@ -1,24 +1,17 @@
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import HeaderBar from "../components/HeaderBar";
 
 const Guide = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="p-6 relative">
-            {/* Back Arrow Button */}
-            <button
-                onClick={() => navigate("/homepage")}
-                className="absolute top-6 left-6 flex items-center text-gray-700 hover:text-[#8B82BB] transition-colors"
-            >
-                <ArrowLeft size={24} className="mr-2" />
-                <span className="font-medium">Back</span>
-            </button>
-
-            <h1 className="text-3xl font-bold text-center mb-8">Participants User Guide</h1>
+        <div className="font-funnel p-6 relative">
+            <HeaderBar />
 
             {/* Participant Guide Section */}
-            <div className="max-w-3xl mx-auto">
+            <div className="pt-20 max-w-3xl mx-auto">
+                <h1 className="text-3xl font-bold text-center mb-8">Participants User Guide</h1>
                 <ul className="list-disc list-inside space-y-3 text-gray-700">
                     <li>
                         Participate in tests posted by researchers, including:

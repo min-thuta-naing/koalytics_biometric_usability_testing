@@ -7,7 +7,8 @@ import AddCriteriaForm from './AddCriteriaForm';
 import CreateUsabilityTesting from "./UsabilityTest/CreateUsabilityTesting";
 
 const ProjectDashboard = () => {
-    const { projectId } = useParams(); // Get projectId from URL
+    const API_URL = process.env.REACT_APP_API_URL;
+    const { projectId } = useParams(); 
     const navigate = useNavigate();
     const [project, setProject] = useState(null);
 
@@ -502,14 +503,12 @@ const ProjectDashboard = () => {
             <div className="fixed top-0 left-0 w-full h-full z-10">
                 {/* Dark Overlay */}
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-                
+                {/* <img src={`${API_URL}/${project.image_path}`} alt="Project Image" /> */}
                 <img
-                    src={`http://127.0.0.1:8000${project.image_path}`}
+                    src={project.image_path ? `${API_URL}/${project.image_path}` : "/static/images/projectbg.png"}
                     alt="Project Image"
-                    className="w-full h-full object-cover"
                 />
             </div>
-
 
             {/* scrollable content */}
             <div className="mx-44 relative z-20 overflow-y-auto h-screen pt-[22vh]-30 font-funnel hide-scrollbar scroll-smooth">

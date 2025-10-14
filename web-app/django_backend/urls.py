@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.conf import settings
 from django.urls import path
 from django.urls import path, re_path
 from django.views.generic import TemplateView
@@ -28,7 +29,7 @@ from .views import create_form, update_form, delete_form
 
 from .views import create_usability_testing, get_usability_testing, usability_testing_detail
 
-from .views import get_all_projects, get_all_forms, get_project_forms, get_project_usabilitytesting, delete_usability_testing
+from .views import get_all_forms, get_project_forms, get_project_usabilitytesting, delete_usability_testing
 
 from .views import save_recording
 
@@ -53,7 +54,7 @@ urlpatterns = [
     path('api/save_industry/<int:user_id>/', save_industry, name='save_industry'), 
     
     # project related 
-    path('create_project/<int:user_id>/', create_project, name='create_project'), 
+    path('api/create_project/<int:user_id>/', views.create_project, name='create_project'), 
     path('api/search-users-by-email', views.search_users_by_email, name='search_users_by_email'), # searching people email on ProjectDashboard.jsx
     path('api/add-collaborator/', views.add_collaborator, name='add_collaborator'), # adding collaborators on ProjectDashboard.jsx
     path('api/get-collaborators/<int:project_id>/', views.get_collaborators), # list of collaborators in the project
@@ -126,7 +127,7 @@ urlpatterns = [
     path('forms/<int:form_id>/answers/', views.get_form_answers, name='get-form-answers'),
 
     # participant side 
-    path("api/all-published-projects/", get_all_projects, name="get_all_project"), 
+    path("api/all-published-projects/", views.get_all_published_projects, name="get_all_project"), 
     path('api/projects/<int:project_id>/details/', views.get_project_details),
     path("api/projects/<int:project_id>/related_forms/", get_project_forms, name="get_project_forms"),
     path("api/projects/<int:project_id>/related_usability_testing/", get_project_usabilitytesting, name="get_project_usabilitytesting"),
@@ -155,8 +156,16 @@ urlpatterns = [
 
 # Static files URL handling
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+
 
 # Catch-all route should be placed at the end of urlpatterns
-urlpatterns += [
-    re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
-]
+# urlpatterns += [
+#     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
+# ]
+
+#only for the production build 'npm run build'
+# if not settings.DEBUG:
+#     urlpatterns += [
+#         re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
+#     ]

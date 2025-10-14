@@ -88,10 +88,6 @@ const TestInfo = () => {
   
       mediaRecorder.start();
       console.log("Recording started...");
-  
-      // setTimeout(() => {
-      //   mediaRecorder.stop();
-      // }, 4000); // Stop recording after 4 seconds
 
       // Stop recording after usabilityTesting.duration minutes
       setTimeout(() => {
@@ -136,26 +132,6 @@ const TestInfo = () => {
     );
   }
 
-  // return (
-  //   <div className="bg-[#F0EEED] h-screen">
-  //     <div className="p-8 border-b border-gray-400">
-  //       <p className="font-funnel font-3xl">{usabilityTesting.id}</p>
-  //       <p className="font-funnel font-3xl">Title: {usabilityTesting.title}</p>
-  //       <p className="font-funnel font-3xl">Task: {usabilityTesting.task}</p>
-  //       <p className="font-funnel font-3xl">Duration: {usabilityTesting.duration}</p>
-  //       <p className="font-funnel font-3xl">
-  //         Website: <a href={usabilityTesting.website_link} target="_blank" rel="noopener noreferrer">{usabilityTesting.website_link}</a>
-  //       </p>
-  //       <p className="font-funnel font-3xl">Figma Embed Code: {usabilityTesting.figma_embed_code}</p>
-  //       <button
-  //         onClick={startRecording}
-  //         className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
-  //       >
-  //         Start Testing
-  //       </button>
-  //     </div>
-  //   </div>
-  // );
   return (
     <div 
             className="fixed inset-0 bg-cover bg-center min-h-screen flex items-center justify-center px-4"
@@ -204,7 +180,6 @@ const TestInfo = () => {
               </div>
             </div>
           )}
-        
         </div>
   
         <div className="flex justify-center pt-4">
@@ -212,7 +187,7 @@ const TestInfo = () => {
             onClick={() => setShowCalibrationModal(true)}
             className="px-6 py-3 bg-[#C4BDED] text-black rounded-lg shadow-md hover:bg-[#ACA3E3] transition duration-300"
           >
-            🚀 Start
+            Start
           </button>
           {showCalibrationModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

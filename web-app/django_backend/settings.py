@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-$y)%w$j261!zy@&l-y_6+zm+1t#hafsj00wk-cd%ixggzq_p=v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -42,10 +42,6 @@ INSTALLED_APPS = [
     "rest_framework",
     'corsheaders',
 ]
-
-
-
-
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -66,7 +62,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'react-frontend/build')],
+        #"DIRS": [os.path.join(BASE_DIR, 'react-frontend/build')], # only for production 'npm run build'
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -87,8 +84,14 @@ WSGI_APPLICATION = "django_backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        #"ENGINE": "django.db.backends.sqlite3", #using sqlite3 
+        #"NAME": BASE_DIR / "db.sqlite3", #using sqlite3 
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'koalytics_db',
+        'USER': 'minthutanaing',
+        'PASSWORD': '6531503157',
+        'HOST': 'localhost',
+        'PORT': '5432',  # default PostgreSQL port
     }
 }
 
@@ -127,15 +130,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
+# STATIC_URL = "static/"
+# STATICFILES_DIRS = []
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static"] # only for development 
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATIC_URL = "static/"
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'react-frontend/build/static'),
-]
+#only for production 'npm run build'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'react-frontend/build/static'),
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
