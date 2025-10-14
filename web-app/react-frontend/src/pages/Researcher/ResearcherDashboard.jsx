@@ -4,6 +4,7 @@ import CreateProjects from "./Project/CreateProjects";
 import { EllipsisVertical,X } from "lucide-react";
 
 const ResearcherDashboard = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const [user, setUser] = useState(null);
     const [userId, setUserId] = useState(null);
     const [showProjectForm, setShowProjectForm] = useState(false);
@@ -22,16 +23,6 @@ const ResearcherDashboard = () => {
             .find((row) => row.startsWith("csrftoken="));
         return cookie ? cookie.split("=")[1] : "";
     };
-
-    // RETRIEVE USER FROM LOCAL STORAGE ////////////////////////////////////////////////
-    // useEffect(() => {
-    //     const user = JSON.parse(localStorage.getItem("user"));
-    //     if (user && user.id) {
-    //         setUserId(user.id);
-    //         fetchProjects(user.id);
-    //         fetchSharedProjects(user.id);
-    //     }
-    // }, []);
 
     // Retrive user from local storage ////////////////////////////////////////////////
     useEffect(() => {
@@ -173,30 +164,29 @@ const ResearcherDashboard = () => {
                 {/* Tab Content */}
                 {selectedTab === "projects" && (
                     <>
-                        <h1 className="font-funnel font-semibold text-xl gap-2">Projects</h1>
-                        <p className="font-funnel">Here are your current projects...</p>
+                        {/* <h1 className="font-funnel font-semibold text-xl gap-2">Projects</h1> */}
+                        <p className="font-funnel">Here are your own current projects...</p>
                         <div className="relative z-0 grid grid-cols-3 gap-6 mt-6">
                             {projects.map((project) => (
-                                <div key={project.id} className="relative z-0 p-6 bg-white border rounded-lg shadow-md">
-                                    <div className="absolute top-3 right-3">
-                                        <button onClick={() => setShowDropdown(showDropdown === project.id ? null : project.id)} className="p-2 rounded-full hover:bg-gray-200">
-                                            <EllipsisVertical size={20} />
-                                        </button>
-                                        {showDropdown === project.id && (
-                                            <div className="absolute right-0 mt-2 bg-white border rounded shadow-md">
-                                                <button
-                                                    onClick={() => handleDeleteClick(project.id)}
-                                                    className="block w-full px-4 py-2 text-red-600 hover:bg-gray-100"
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
+                                <div
+                                    key={project.id}
+                                    className="w-80 cursor-pointer transition-transform duration-300 hover:-translate-y-2"
+                                    onClick={() => navigate(`/project/${project.id}`)}
+                                >
+        
+                                    <div
+                                        className="h-56 rounded-t-lg shadow-md hover:shadow-lg border border-gray-400 bg-cover bg-center"
+                                        style={{ 
+                                            backgroundImage: project.image_path 
+                                                ? `url(${API_URL}${project.image_path})`
+                                                : "url('/static/images/projectbg.png')"
+                                        }}
+                                    />
 
-                                    <div onClick={() => navigate(`/project/${project.id}`)} className="cursor-pointer">
-                                        <h2 className="text-xl font-semibold">{project.name}</h2>
-                                        <p className="text-gray-600 mt-2">{project.description}</p>
+                                    <div className="h-14 flex items-center justify-center bg-[#C4BDED] rounded-b-lg border border-t-0 border-gray-400">
+                                        <h2 className="font-semibold font-funnel text-lg text-black text-center truncate px-3">
+                                        {project.name}
+                                        </h2>
                                     </div>
                                 </div>
                             ))}
@@ -206,8 +196,8 @@ const ResearcherDashboard = () => {
 
                 {selectedTab === "shared" && (
                     <>
-                        <h1 className="font-funnel font-semibold text-xl gap-2">Shared Projects</h1>
-                        <p className="font-funnel">Here are the shared projects by other researchers with you ...</p>
+                        {/* <h1 className="font-funnel font-semibold text-xl gap-2">Shared Projects</h1> */}
+                        <p className="font-funnel">Here are the projects shared by other researchers with you ...</p>
                         <div className="relative z-0 grid grid-cols-3 gap-6 mt-6">
                             {sharedProjects.map((project) => (
                                 <div key={project.id} className="relative z-0 p-6 bg-white border rounded-lg shadow-md">

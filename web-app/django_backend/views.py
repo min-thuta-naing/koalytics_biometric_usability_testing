@@ -48,7 +48,7 @@ def index(request):
     return render (request, 'index.html')
 
 # AUTENTICATION RELATED METHODS ###################################################################################################################
-# for sign up 
+# for sign up [Done]
 @csrf_exempt
 def signup(request):
     if request.method == 'POST':
@@ -67,20 +67,6 @@ def signup(request):
                 password=make_password(data['password'])  # Hash the password
             )
 
-            # return JsonResponse({
-            #     'message': 'User registered successfully!',
-            #     'user_id': user.id,
-            #     'first_name': user.first_name,
-            #     'last_name': user.last_name,
-            #     'email': user.email,
-            #     'birthday': user.birthday,
-            #     'gender': user.gender,
-            #     'marital_status': user.marital_status,
-            #     'country': user.country,
-            #     'zip_code': user.zip_code,
-            #     'hobbies': list(user.hobbies.values_list('name', flat=True))  # Empty initially
-                
-            # }, status=201)
             user_data = {
                 'id': user.id,
                 'first_name': user.first_name,
@@ -108,7 +94,7 @@ def signup(request):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# for saving hobbies 
+# for saving hobbies [Done]
 @csrf_exempt
 def save_hobbies(request, user_id):
     if request.method == 'POST':
@@ -121,12 +107,6 @@ def save_hobbies(request, user_id):
                 hobby, created = Hobby.objects.get_or_create(name=name)
                 user.hobbies.add(hobby)
 
-            # Include updated hobby list
-            # return JsonResponse({
-            #     'message': 'Hobbies saved successfully!',
-            #     'hobbies': list(user.hobbies.values_list('name', flat=True))
-            # })
-
             return JsonResponse({'message': 'Hobbies saved successfully!'})
         except User.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
@@ -135,7 +115,7 @@ def save_hobbies(request, user_id):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-# for saving employment status 
+# for saving employment status [Done]
 @csrf_exempt
 def save_employment_status (request, user_id):
     if request.method == 'POST':
@@ -155,7 +135,7 @@ def save_employment_status (request, user_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# for saving profession
+# for saving profession [Done]
 @csrf_exempt
 def save_profession (request, user_id):
     if request.method == 'POST':
@@ -175,7 +155,7 @@ def save_profession (request, user_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# for saving position
+# for saving position [Done]
 @csrf_exempt
 def save_position (request, user_id):
     if request.method == 'POST':
@@ -195,7 +175,7 @@ def save_position (request, user_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# for saving Industry
+# for saving Industry [Done]
 @csrf_exempt
 def save_industry (request, user_id):
     if request.method == 'POST':
@@ -215,7 +195,7 @@ def save_industry (request, user_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# for login
+# for login [Done]
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
@@ -231,9 +211,8 @@ def login(request):
 
             # Check password
             if not check_password(password, user.password):  # ✅ Fixed check_password
-                return JsonResponse({'error': 'Invalid email or password'}, status=400)
+                return JsonResponse({'error': 'Wrong password! Please try again.'}, status=400)
 
-            # return JsonResponse({'message': 'Login successful', 'user_id': user.id}, status=200)
             # Return user details
             user_data = {
                 'id': user.id,
@@ -254,10 +233,6 @@ def login(request):
             }
             return JsonResponse({
                 'message': 'Login successful',
-                # 'id': user.id,
-                # 'first_name': user.first_name,
-                # 'last_name': user.last_name,
-                # 'email': user.email
                 'user': user_data 
             }, status=200)
 
@@ -266,9 +241,39 @@ def login(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+# fetch the users together with their projects to display on ResearcherDashboard.jsx [Done] 
+@csrf_exempt
+def get_user(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        user_data = {
+            "id": user.id,  # Add ID to response
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "birthday": user.birthday,
+            "gender": user.gender,
+            "marital_status": user.marital_status,
+            "country": user.country,
+            "zip_code": user.zip_code,
+            "hobbies": list(user.hobbies.values("id", "name")), 
+            "employmentStatuses": list(user.employmentStatuses.values("id", "employmentStatuses")),
+            "profession": list(user.profession.values("id", "profession")),
+            "position": list(user.position.values("id", "position")),
+            "industry": list(user.industry.values("id", "industry")),
+            "projects": list(user.projects.values(
+                "id", "name", "description", "organization",
+                "max_participants", "start_date", "end_date", "side_notes",
+                "image_path", "category", "is_shared"
+            )),
+        }
+        return JsonResponse(user_data, status=200)
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+
 
 # PROJECT RELATED METHODS (RESEARCER SIDE) ####################################################################################################################
-# ✅ for creating projects
+# for creating projects [Done]
 @api_view(['POST'])
 def create_project(request, user_id):
     try:
@@ -297,16 +302,16 @@ def create_project(request, user_id):
             end_date=data.get('end_date'),
             side_notes=data.get('side_notes'),
             image_path=data.get('image_path'),
-            consent_text=consent_text  # Make sure this is included
+            consent_text=consent_text  
         )
         
         user.projects.add(project)
-        print("Project created with consent:", project.consent_text)  # Debug log
+        print("Project created with consent:", project.consent_text) 
 
         return Response({
             'message': 'Project created successfully!', 
             'project_id': project.id,
-            'has_consent': bool(project.consent_text)  # Debug info
+            'has_consent': bool(project.consent_text)  
         }, status=status.HTTP_201_CREATED)
 
     except User.DoesNotExist:
@@ -539,6 +544,7 @@ def get_project(request, project_id):
         })
     except Project.DoesNotExist:
         return JsonResponse({"error": "Project not found"}, status=404)
+    
     
 # ✅ for deleting the projects (when delete the proj, it will detele its related susforms, questions and answers and usability testings)
 @csrf_exempt
@@ -1005,131 +1011,6 @@ def check_recording(request, usability_testing_id):
     has_recording = UsabilityTestRecordingV4.objects.filter(user=user, usability_testing_id=usability_testing_id).exists()
     return Response({"hasRecording": has_recording})
 
-# ✅ camera calibration check 
-# @api_view(['POST'])
-# def validate_camera_frame(request):
-#     try:
-#         image_data = request.data.get('image')
-#         if not image_data:
-#             return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
-
-#         # Decode base64 image
-#         content = image_data.split(';base64,')[-1]
-#         image_bytes = base64.b64decode(content)
-#         np_arr = np.frombuffer(image_bytes, np.uint8)
-#         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
-#         result = {
-#             'face_detected': False,
-#             'multiple_faces': False,
-#             'blurry': False,
-#             'too_dark': False,
-#             'too_bright': False,
-#             'frontal_pose': False
-#         }
-
-#         # Lighting check
-#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-#         mean_brightness = np.mean(gray)
-#         result['too_dark'] = mean_brightness < 50
-#         result['too_bright'] = mean_brightness > 200
-
-#         # Blur check
-#         blur_score = cv2.Laplacian(gray, cv2.CV_64F).var()
-#         result['blurry'] = blur_score < 100  # Threshold might be adjusted
-
-#         # Face and pose check
-#         mp_face = mp.solutions.face_detection
-#         with mp_face.FaceDetection(model_selection=1, min_detection_confidence=0.5) as face_detection:
-#             results = face_detection.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-#             if results.detections:
-#                 result['face_detected'] = True
-#                 result['multiple_faces'] = len(results.detections) > 1
-#                 for det in results.detections:
-#                     score = det.location_data.relative_bounding_box
-#                     # Heuristic: assume frontal pose if width ≈ height
-#                     if 0.9 < (score.width / score.height) < 1.1:
-#                         result['frontal_pose'] = True
-
-#         return Response(result)
-
-#     except Exception as e:
-#         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# def estimate_yaw(left_eye, right_eye, nose_tip):
-#     # Approximate the yaw angle using the eye-nose triangle
-#     eye_center_x = (left_eye[0] + right_eye[0]) / 2
-#     dx = nose_tip[0] - eye_center_x
-#     dy = abs(left_eye[1] - right_eye[1]) + 1e-5  # Avoid division by zero
-#     yaw_angle = math.degrees(math.atan(dx / dy))
-#     return yaw_angle
-
-# @api_view(['POST'])
-# def validate_camera_frame(request):
-#     try:
-#         image_data = request.data.get('image')
-#         if not image_data:
-#             return Response({'error': 'No image data provided'}, status=status.HTTP_400_BAD_REQUEST)
-
-#         # Decode base64 image
-#         content = image_data.split(';base64,')[-1]
-#         image_bytes = base64.b64decode(content)
-#         np_arr = np.frombuffer(image_bytes, np.uint8)
-#         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
-#         result = {
-#             'face_detected': False,
-#             'multiple_faces': False,  # not supported in this version
-#             'blurry': False,
-#             'too_dark': False,
-#             'too_bright': False,
-#             'frontal_pose': False
-#         }
-
-#         # Lighting check
-#         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-#         mean_brightness = np.mean(gray)
-#         result['too_dark'] = mean_brightness < 50
-#         result['too_bright'] = mean_brightness > 200
-
-#         # Blur check
-#         blur_score = cv2.Laplacian(gray, cv2.CV_64F).var()
-#         result['blurry'] = blur_score < 100
-
-#         mp_face_mesh = mp.solutions.face_mesh
-#         with mp_face_mesh.FaceMesh(static_image_mode=True, max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5) as face_mesh:
-#             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-#             results_mesh = face_mesh.process(rgb_frame)
-
-#             if results_mesh.multi_face_landmarks:
-#                 result['face_detected'] = True
-#                 face_landmarks = results_mesh.multi_face_landmarks[0]
-
-#                 # Get key landmarks (indexes from MediaPipe docs)
-#                 left_eye_idx = 33
-#                 right_eye_idx = 263
-#                 nose_tip_idx = 1
-
-#                 h, w, _ = frame.shape
-
-#                 left_eye = face_landmarks.landmark[left_eye_idx]
-#                 right_eye = face_landmarks.landmark[right_eye_idx]
-#                 nose_tip = face_landmarks.landmark[nose_tip_idx]
-
-#                 # Convert to image coordinates
-#                 left_eye_coords = (left_eye.x * w, left_eye.y * h)
-#                 right_eye_coords = (right_eye.x * w, right_eye.y * h)
-#                 nose_coords = (nose_tip.x * w, nose_tip.y * h)
-
-#                 yaw = estimate_yaw(left_eye_coords, right_eye_coords, nose_coords)
-
-#                 # Frontal if yaw angle is small (within ±15°)
-#                 result['frontal_pose'] = abs(yaw) < 15
-
-#         return Response(result)
-
-#     except Exception as e:
-#         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def validate_camera_frame(request):
@@ -1348,14 +1229,12 @@ def emotion_data_list(request, usability_testing_id):
 #########################################################################################################################################################################################################################################################
 ######################################################################################### PROJECT RELATED MEHTODS (PARTICIPANT SIDE) ####################################################################################################################
 # ✅ get all projects on the homepage for participant 
-def get_all_projects(request):
+def get_all_published_projects(request):
     if request.method == "GET":
-        # projects = list(Project.objects.values("id", "name", "description", "organization", "start_date", "end_date", "side_notes", "consent_text"))
-        # return JsonResponse(projects, safe=False)
-        # Fetch only projects where is_shared is True
         projects = Project.objects.filter(is_shared=True).values(
-            "id", "name", "description", "organization", "start_date", "end_date",
-            "side_notes", "consent_text"
+            "id", "name", "description", "organization",
+            "max_participants", "start_date", "end_date", "side_notes",
+            "image_path", "category", "is_shared", "consent_text" 
         )
         return JsonResponse(list(projects), safe=False)
     return JsonResponse({"error": "Invalid request method."}, status=405)
@@ -1438,33 +1317,7 @@ def get_all_forms(request):
 #     except User.DoesNotExist:
 #         return JsonResponse({"error": "User not found"}, status=404)
 
-@csrf_exempt
-def get_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        user_data = {
-            "id": user.id,  # Add ID to response
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "email": user.email,
-            "birthday": user.birthday,
-            "gender": user.gender,
-            "marital_status": user.marital_status,
-            "country": user.country,
-            "zip_code": user.zip_code,
-            "hobbies": list(user.hobbies.values("id", "name")), 
-            "employmentStatuses": list(user.employmentStatuses.values("id", "employmentStatuses")),
-            "profession": list(user.profession.values("id", "profession")),
-            "position": list(user.position.values("id", "position")),
-            "industry": list(user.industry.values("id", "industry")),
-            "projects": list(user.projects.values(
-                "id", "name", "description", "organization", 
-                "max_participants", "start_date", "end_date", "side_notes"
-            )),
-        }
-        return JsonResponse(user_data, status=200)
-    except User.DoesNotExist:
-        return JsonResponse({"error": "User not found"}, status=404)
+    
     
 
 # ✅ Update user information from MyAccount page 

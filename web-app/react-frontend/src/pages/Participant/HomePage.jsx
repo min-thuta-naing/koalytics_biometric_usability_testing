@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect} from "react";
-import { Info, UserCircle } from "lucide-react";
+import { Info, User } from "lucide-react";
 
 
 const HomePage = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const [showPopup, setShowPopup] = useState(false);
     const [showSwitchPopup, setShowSwitchPopup] = useState(false);
     const [isSwitching, setIsSwitching] = useState(false);
@@ -27,7 +28,7 @@ const HomePage = () => {
 
     //feching all projects 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/all-published-projects/")
+        fetch(`${API_URL}/api/all-published-projects/`)
             .then(response => response.json())
             .then(data => setProjects(data))
             .catch(error => console.error("Error fetching projects:", error)); 
@@ -111,14 +112,14 @@ const HomePage = () => {
                                 className="h-10 w-10 flex items-center justify-center rounded-full bg-[#C4BDED] cursor-pointer hover:bg-[#ACA3E3]"
                                 onClick={() => setShowPopup(!showPopup)}
                             >
-                                <UserCircle size={24} className="text-black" />
+                                <User size={24} className="text-black" />
                             </div>
 
                             {showPopup && (
                                 <div className="absolute right-0 top-full mt-7 w-64 bg-[#DCD6F7] shadow-lg rounded-lg py-2  z-50 border border-gray-400">
                                     <div className="flex px-4 py-4 items-center gap-4 border-b border-gray-400">
                                         <div className="h-16 w-16 flex items-center justify-center rounded-full border-2 border-gray-400 bg-[#E5E4F7]">
-                                            <UserCircle size={40} className="text-black" />
+                                            <User size={40} className="text-black" />
                                         </div>
 
 
@@ -150,14 +151,22 @@ const HomePage = () => {
                         <div className="grid grid-cols-4 gap-6 p-8 place-items-center">
                             {projects.map(project => (
                                 <div 
-                                    key={project.id} 
-                                    // className="w-80 h-56 flex items-center justify-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400 transition-transform duration-300 hover:-translate-y-2 bg-cover bg-center"
+                                    key={project.id}
                                     className="w-80 h-56 relative rounded-lg shadow-md hover:shadow-lg cursor-pointer border border-gray-400 transition-transform duration-300 hover:-translate-y-2 bg-cover bg-center"
                                     onClick={() => navigate(`/all-project/${project.id}`)}
-                                    style={{ backgroundImage: "url('/static/images/projectbg.png')" }}
-
+                                    style={{ 
+                                        backgroundImage: project.image_path 
+                                            ? `url(${API_URL}${project.image_path})`
+                                            : "url('/static/images/projectbg.png')"
+                                    }}
                                 >
-                                    <h2 className="absolute bottom-4 left-4 font-semibold font-funnel text-lg text-black bg-[#C4BDED] px-3 py-1 rounded-lg">{project.name}</h2>
+                                    {/* Gradient Overlay */}
+                                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/100 to-transparent rounded-b-lg"></div>
+
+                                    {/* Text */}
+                                    <h2 className="absolute bottom-4 left-4 font-semibold font-funnel text-lg text-white">
+                                        {project.name}
+                                    </h2>
                                 </div>
                             ))}
                         </div>
