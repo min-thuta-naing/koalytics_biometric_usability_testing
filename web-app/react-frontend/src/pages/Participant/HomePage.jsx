@@ -1,18 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect} from "react";
-import { Info, User } from "lucide-react";
+import { Info, User, X } from "lucide-react";
 
 
 const HomePage = () => {
     const API_URL = process.env.REACT_APP_API_URL;
+    const [user, setUser] = useState(null);
+    const [projects, setProjects] = useState([]);
+    const [isSwitching, setIsSwitching] = useState(false);
+    const navigate = useNavigate();
     const [showPopup, setShowPopup] = useState(false);
     const [showSwitchPopup, setShowSwitchPopup] = useState(false);
-    const [isSwitching, setIsSwitching] = useState(false);
-    const [user, setUser] = useState(null);
-    const navigate = useNavigate();
     const [showLogoutPopup, setShowLogoutPopup] = useState(false);
-    const [projects, setProjects] = useState([]);
-
+    const [showBrowserBanner, setShowBrowserBanner] = useState(false);
+    
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -22,10 +23,16 @@ const HomePage = () => {
         } else {
             navigate("/loginpage");
         }
+
+        // Detect browser
+        const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+        if (!isChrome) {
+            setShowBrowserBanner(true);
+        }
+
     }, [navigate]);
+
  
-
-
     //feching all projects 
     useEffect(() => {
         fetch(`${API_URL}/api/all-published-projects/`)
@@ -39,6 +46,7 @@ const HomePage = () => {
         localStorage.removeItem("user"); // Clear user session
         navigate("/loginpage"); // Redirect to login page
     };
+
     //sign out confirmation 
     const LogoutConfirmation = ({ onConfirm, onCancel }) => (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -69,7 +77,7 @@ const HomePage = () => {
         setIsSwitching(true);
         setTimeout(() => {
             navigate("/researcher-dashboard");
-        }, 4000); // 4 seconds delay
+        }, 3000); // 3 seconds delay
     };
 
     return (
@@ -80,8 +88,26 @@ const HomePage = () => {
                 </div>
             ) : (
                 <>
+                    {/* Browser notification banner */}
+                    {showBrowserBanner && (
+                        <div 
+                            className="bg-yellow-300 text-red px-6 flex justify-between items-center items-center"
+                            style={{ height: "80px" }}
+                        >
+                            <span>Warnings! Please use Chrome browser for a better experience.</span>
+                            <button 
+                                className="p-1 rounded hover:bg-yellow-500"
+                                onClick={() => setShowBrowserBanner(false)}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                    )}
+                    
                     {/* Header bar */}
-                    <header className="fixed bg-[#DCD6F7] py-3 px-6 top-0 left-0 w-full z-10 flex justify-between items-center shadow-md">
+                    <header className="fixed bg-[#DCD6F7] py-3 px-6 top-0 left-0 w-full z-10 flex justify-between items-center shadow-md"
+                        style={{ top: showBrowserBanner ? '5rem' : '0' }}
+                    >
                         <div className="flex items-center gap-3">
                             <img src="/static/images/logo.png" alt="Logo" className="h-7 w-auto" />
                             <h1 className="font-funnel font-bold text-xl text-black">Koalytics</h1>

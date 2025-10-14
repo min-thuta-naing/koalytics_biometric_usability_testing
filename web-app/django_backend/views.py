@@ -6,16 +6,11 @@ import numpy as np
 import mediapipe as mp
 from deepface import DeepFace
 import math
-
-
-
 import os
 import cv2
 from django.conf import settings
 from django.shortcuts import render 
-
 from rest_framework.views import APIView
-# import for sign up & log in 
 import json
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -27,7 +22,6 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from collections import defaultdict
 from django.utils.timezone import now
-
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -39,15 +33,17 @@ import logging
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 
-
 logger = logging.getLogger(__name__)
-
 
 
 def index(request):
     return render (request, 'index.html')
 
-# AUTENTICATION RELATED METHODS ###################################################################################################################
+
+#########################################################################################################################################################################################################################################################
+#########################################################################################################################################################################################################################################################
+#########################################################################################################################################################################################################################################################
+######################################################################################### AUTH RELATED MEHTODS ##########################################################################################################################################
 # for sign up [Done]
 @csrf_exempt
 def signup(request):
@@ -272,7 +268,11 @@ def get_user(request, user_id):
         return JsonResponse({"error": "User not found"}, status=404)
 
 
-# PROJECT RELATED METHODS (RESEARCER SIDE) ####################################################################################################################
+#########################################################################################################################################################################################################################################################
+#########################################################################################################################################################################################################################################################
+#########################################################################################################################################################################################################################################################
+######################################################################################### PROJECT RELATED MEHTODS (RESEARCHER SIDE) #####################################################################################################################
+
 # for creating projects [Done]
 @api_view(['POST'])
 def create_project(request, user_id):
