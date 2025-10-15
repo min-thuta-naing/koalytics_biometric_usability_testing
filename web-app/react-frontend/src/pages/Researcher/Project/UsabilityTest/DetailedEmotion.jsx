@@ -14,6 +14,7 @@ Plotly.register([box, scatter]);
 const Plot = createPlotlyComponent(Plotly);
 
 const DetailedEmotion = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const location = useLocation();
     const navigate = useNavigate();
     const { testingName, participantEmail, usabilityTestingId } = location.state || {};
@@ -45,7 +46,7 @@ const DetailedEmotion = () => {
         const fetchEmotionData = async () => {
             try {
                 const response = await fetch(
-                    `http://127.0.0.1:8000/api/usability-testing/${usabilityTestingId}/emotion-data/?participant=${participantEmail}`
+                    `${API_URL}/api/usability-testing/${usabilityTestingId}/emotion-data/?participant=${participantEmail}`
                 );
                 if (!response.ok) throw new Error("Failed to fetch emotion data.");
                 const data = await response.json();
