@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import TestingResults from "./TestingResults";
-import TestingInfo from "./TestingInfo";
+import TestingResults from "./UsabilityTestingResults";
+import TestingInfo from "./UsabilityTestingInfo";
 import BIBPreview from "./BIBPreview"; 
 
 const UsabilityTestingDetail = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const { usabilityTestingId } = useParams();
     const [usabilityTesting, setUsabilityTesting] = useState(null);
     const [error, setError] = useState("");
@@ -14,7 +15,7 @@ const UsabilityTestingDetail = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/usability-testing/${usabilityTestingId}/`);
+                const response = await fetch(`${API_URL}/usability-testing/${usabilityTestingId}/`);
                 if (!response.ok) throw new Error("Failed to fetch usability testing details.");
                 const data = await response.json();
                 setUsabilityTesting(data);
@@ -79,17 +80,6 @@ const UsabilityTestingDetail = () => {
                 </div>
             </div>
         </div>
-
-            {/* <div className="p-8 border-b border-gray-400">
-                <p className="font-funnel font-3xl">{usabilityTesting.id}</p>
-                <p className="font-funnel font-3xl">Title: {usabilityTesting.title}</p>
-                <p className="font-funnel font-3xl">Task: {usabilityTesting.task}</p>
-                <p className="font-funnel font-3xl">Duration: {usabilityTesting.duration}</p>
-                <p className="font-funnel font-3xl">
-                    Website: <a href={usabilityTesting.website_link} target="_blank" rel="noopener noreferrer">{usabilityTesting.website_link}</a>
-                </p>
-                <p className="font-funnel font-3xl">Figma Embed Code: {usabilityTesting.figma_embed_code}</p>
-            </div> */}
 
             <div className="mt-[90px] flex-1 overflow-y-auto">
                 {view === "testingdetails" ? (

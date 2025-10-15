@@ -6,7 +6,8 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
     const [step, setStep] = useState(1); // Track the step in the process
     const [testingType, setTestingType] = useState(""); // Track the selected type (Prototype or Website)
     const [title, setTitle] = useState("");
-    const [task, setTask] = useState("");
+    // const [task, setTask] = useState("");
+    const [task, setTask] = useState([""]);
     const [duration, setDuration] = useState("");  
     const [websiteLink, setWebsiteLink] = useState("");  
     const [figmaEmbedCode, setFigmaEmbedCode] = useState(""); 
@@ -157,20 +158,55 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
                                 required
                             />
 
-                            <label className="block mb-2">Task:</label>
-                            <textarea
-                                type="text"
-                                value={task}
-                                onChange={(e) => setTask(e.target.value)}
-                                className="w-full p-2 mb-4 rounded border"
-                                required
-                            />
+                            <label className="block mb-2">Task Steps:</label>
+                            {task.map((step, index) => (
+                                <div key={index} className="flex items-center mb-2">
+                                    <input
+                                        type="text"
+                                        value={step}
+                                        onChange={(e) => {
+                                            const newTasks = [...task];
+                                            newTasks[index] = e.target.value;
+                                            setTask(newTasks);
+                                        }}
+                                        className="w-full p-2 rounded border"
+                                        placeholder={`Step ${index + 1}`}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const newTasks = task.filter((_, i) => i !== index);
+                                            setTask(newTasks);
+                                        }}
+                                        className="ml-2 text-red-500 hover:text-red-700"
+                                    >
+                                    ✕
+                                    </button>
+                                </div>
+                            ))}
+
+                            <button
+                                type="button"
+                                onClick={() => setTask([...task, ""])}
+                                className="mt-2 mb-4 bg-[#C4BDED] text-black py-1 px-3 rounded-lg hover:bg-[#ACA3E3]"
+                            >
+                                + Add Step
+                            </button>
 
                             <label className="block mb-2">Duration of the test:</label>
                             <input
                                 type="number"
                                 value={duration}
-                                onChange={(e) => setDuration(e.target.value)}
+                                min="1"
+                                //onChange={(e) => setDuration(e.target.value)}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    // Prevent negative or zero values
+                                    if (val === "" || parseInt(val) >= 1) {
+                                        setDuration(val);
+                                    }
+                                }}
                                 className="w-full p-2 mb-4 rounded border"
                                 required
                             />
@@ -200,7 +236,11 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
                                 </>
                             )}
 
-                            {error && <p className="text-red-500 mb-4">{error}</p>}
+                            {error && (
+                                <div className="text-red-500 font-funnel mb-4 p-2 bg-red-50 rounded-md">
+                                    {error}
+                                </div>
+                            )}
                             {success && <p className="text-green-500 mb-4">{success}</p>}
 
                             <div className="flex justify-end">

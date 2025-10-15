@@ -12,6 +12,7 @@ Plotly.register([box, scatter, bar]);
 const Plot = createPlotlyComponent(Plotly);
 
 const TestingResults = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const { usabilityTestingId } = useParams();
     const [usabilityTesting, setUsabilityTesting] = useState(null);
@@ -25,7 +26,7 @@ const TestingResults = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/usability-testing/${usabilityTestingId}/`);
+                const response = await fetch(`${API_URL}/usability-testing/${usabilityTestingId}/`);
                 if (!response.ok) throw new Error("Failed to fetch usability testing details.");
                 const data = await response.json();
                 setUsabilityTesting(data);
@@ -36,7 +37,7 @@ const TestingResults = () => {
 
         const fetchRecordings = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/usability-testing/${usabilityTestingId}/recordings/`);
+                const response = await fetch(`${API_URL}/usability-testing/${usabilityTestingId}/recordings/`);
                 if (!response.ok) throw new Error("Failed to fetch recordings.");
                 const data = await response.json();
                 setRecordings(data);
@@ -47,7 +48,7 @@ const TestingResults = () => {
 
         const fetchEmotions = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/usability-testing/${usabilityTestingId}/emotion-data/`);
+                const response = await fetch(`${API_URL}/api/usability-testing/${usabilityTestingId}/emotion-data/`);
                 if (!response.ok) throw new Error("Failed to fetch emotion data.");
                 const data = await response.json();
                 setEmotions(data);
@@ -175,94 +176,94 @@ const TestingResults = () => {
     return (
         <div className="flex h-screen overflow-hidden">
             <div className="flex-grow overflow-y-auto">
-            <div className="mx-5 my-20 px-1">
-  {/* Summary Section (Top) */}
-  <div className="p-8 bg-white rounded-lg shadow-md mb-6">
-    <h2 className="text-2xl font-semibold mb-4 text-gray-800">Overall Emotion Analysis Summary</h2>
-    <div className="flex flex-col md:flex-row gap-6">
-      {/* Left side - Stats */}
-      <div className="bg-gray-50 p-4 rounded-lg flex flex-col md:flex-row gap-4">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold">Participants:</span>
-          <span>{new Set(emotion.map(e => e.participant_email)).size}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-semibold">Frames Analyzed:</span>
-          <span>{summary.totalFrames}</span>
-        </div>
-      </div>
+                <div className="mx-5 my-20 px-1">
+                    {/* Summary Section (Top) */}
+                    <div className="p-8 bg-white rounded-lg shadow-md mb-6">
+                        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Overall Emotion Analysis Summary</h2>
+                        <div className="flex flex-col md:flex-row gap-6">
+                            {/* Left side - Stats */}
+                            <div className="bg-gray-50 p-4 rounded-lg flex flex-col md:flex-row gap-4">
+                                <div className="flex items-center gap-2">
+                                    <span className="font-semibold">Participants:</span>
+                                    <span>{new Set(emotion.map(e => e.participant_email)).size}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-semibold">Frames Analyzed:</span>
+                                    <span>{summary.totalFrames}</span>
+                                </div>
+                            </div>
 
-      {/* Right side - Dominant emotions */}
-      <div className="bg-gray-50 p-4 rounded-lg flex-1">
-        <h3 className="text-lg font-medium text-gray-800 mb-2">Dominant Emotions:</h3>
-        <div className="flex flex-wrap gap-2">
-          {Object.entries(summary.dominantCounts)
-            .sort((a, b) => b[1] - a[1])
-            .map(([emotion, count]) => {
-              const colorIndex = emotionLabels.indexOf(emotion);
-              const color = emotionColors[colorIndex] || '#CCCCCC';
-              
-              return (
-                <div 
-                  key={emotion} 
-                  className="flex items-center px-3 py-1 rounded-full shadow-sm"
-                  style={{
-                    backgroundColor: `${color}20`,
-                    border: `1px solid ${color}`,
-                    color: '#333'
-                  }}
-                >
-                  <span className="capitalize mr-1">{emotion}:</span>
-                  <span className="font-medium">{count}</span>
-                </div>
-              );
-            })}
-        </div>
-      </div>
-    </div>
-  </div>
+                            {/* Right side - Dominant emotions */}
+                            <div className="bg-gray-50 p-4 rounded-lg flex-1">
+                                <h3 className="text-lg font-medium text-gray-800 mb-2">Dominant Emotions:</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {Object.entries(summary.dominantCounts)
+                                        .sort((a, b) => b[1] - a[1])
+                                        .map(([emotion, count]) => {
+                                        const colorIndex = emotionLabels.indexOf(emotion);
+                                        const color = emotionColors[colorIndex] || '#CCCCCC';
+                                        
+                                        return (
+                                            <div 
+                                                key={emotion} 
+                                                className="flex items-center px-3 py-1 rounded-full shadow-sm"
+                                                style={{
+                                                    backgroundColor: `${color}20`,
+                                                    border: `1px solid ${color}`,
+                                                    color: '#333'
+                                                }}
+                                            >
+                                                <span className="capitalize mr-1">{emotion}:</span>
+                                                <span className="font-medium">{count}</span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-  {/* Visualization Section (Bottom) */}
-  <div className="p-8 bg-white rounded-lg shadow-md mb-6">
-    <h3 className="text-xl font-medium mb-4 text-gray-800">Emotion Distribution Visualization</h3>
-    <div className="flex flex-col lg:flex-row gap-8">
-      {/* Bar Chart */}
-      <div className="flex-1">
-        <div className="w-full h-96">
-          <Plot
-            data={barChartData}
-            layout={{
-              ...barChartLayout,
-              showlegend: false,
-              margin: { l: 60, r: 20, b: 80, t: 40, pad: 4 }
-            }}
-            config={{
-              responsive: true,
-              displayModeBar: true,
-              displaylogo: false,
-              modeBarButtonsToRemove: ['toImage', 'sendDataToCloud']
-            }}
-          />
-        </div>
-      </div>
-      
-      {/* Color Legend */}
-      <div className="lg:w-64 flex-shrink-0">
-        <h3 className="text-xl font-medium mb-4 text-gray-800">Emotion Colors</h3>
-        <div className="space-y-2">
-          {emotionLabels.map((label, index) => (
-            <div key={label} className="flex items-center">
-              <div 
-                className="w-4 h-4 rounded-full mr-2" 
-                style={{ backgroundColor: emotionColors[index] }}
-              ></div>
-              <span className="capitalize">{label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </div>
+                    {/* Visualization Section (Bottom) */}
+                    <div className="h-[560px] p-8 bg-white rounded-lg shadow-md mb-6">
+                        <h3 className="text-xl font-medium mb-4 text-gray-800">Emotion Distribution Visualization</h3>
+                        <div className="flex flex-col lg:flex-row gap-8">
+                            {/* Bar Chart */}
+                            <div className="flex-1">
+                                <div className="w-full h-96">
+                                    <Plot
+                                        data={barChartData}
+                                        layout={{
+                                        ...barChartLayout,
+                                        showlegend: false,
+                                        margin: { l: 60, r: 20, b: 80, t: 40, pad: 4 }
+                                        }}
+                                        config={{
+                                        responsive: true,
+                                        displayModeBar: true,
+                                        displaylogo: false,
+                                        modeBarButtonsToRemove: ['toImage', 'sendDataToCloud']
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        
+                            {/* Color Legend */}
+                            <div className="lg:w-64 flex-shrink-0">
+                                <h3 className="text-xl font-medium mb-4 text-gray-800">Emotion Colors</h3>
+                                <div className="space-y-2">
+                                    {emotionLabels.map((label, index) => (
+                                        <div key={label} className="flex items-center">
+                                        <div 
+                                            className="w-4 h-4 rounded-full mr-2" 
+                                            style={{ backgroundColor: emotionColors[index] }}
+                                        ></div>
+                                        <span className="capitalize">{label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* Recordings Table */}
                     <div className="p-8 bg-white rounded-lg shadow-md">

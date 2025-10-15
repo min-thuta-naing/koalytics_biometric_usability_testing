@@ -14,10 +14,18 @@ const TestingInfo = ({ usabilityTesting, usabilityTestingId }) => {
                         </div>
 
                         {/* Task */}
-                        <div className="mb-2">
-                            <p className="font-semibold text-gray-600 mb-1">Task:</p>
-                            <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-2 text-gray-800">
-                                {usabilityTesting.task}
+                        <div className="mb-4">
+                            <p className="font-semibold text-gray-600 mb-1">Tasks:</p>
+                            <div className="bg-gray-50 border border-gray-100 rounded-lg px-4 py-3 text-gray-800">
+                                {Array.isArray(usabilityTesting.task) && usabilityTesting.task.length > 0 ? (
+                                <ol className="list-decimal list-inside space-y-1">
+                                    {usabilityTesting.task.map((step, index) => (
+                                    <li key={index}>{step}</li>
+                                    ))}
+                                </ol>
+                                ) : (
+                                <p className="text-gray-500 italic">No tasks available</p>
+                                )}
                             </div>
                         </div>
 
