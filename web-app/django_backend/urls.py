@@ -45,37 +45,38 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index, name='index'),
-    path('api/signup/', signup, name='signup'),
-
-    path('api/save-hobbies/<int:user_id>/', save_hobbies, name='save-hobbies'),
-    path('api/save_employment_status/<int:user_id>/', save_employment_status, name='save-employment-status'),
-    path('api/save_profession/<int:user_id>/', save_profession, name='save-profession'),
-    path('api/save_position/<int:user_id>/', save_position, name='save_position'),
-    path('api/save_industry/<int:user_id>/', save_industry, name='save_industry'), 
+    path('api/login/', login, name='login'), # [Done] 
+    path('api/signup/', signup, name='signup'), # [Done]
+    path('api/save-hobbies/<int:user_id>/', save_hobbies, name='save-hobbies'), # [Done] 
+    path('api/save_employment_status/<int:user_id>/', save_employment_status, name='save-employment-status'), # [Done] 
+    path('api/save_profession/<int:user_id>/', save_profession, name='save-profession'), # [Done] 
+    path('api/save_position/<int:user_id>/', save_position, name='save_position'), # [Done] 
+    path('api/save_industry/<int:user_id>/', save_industry, name='save_industry'), # [Done] 
     
     # project related 
-    path('api/create_project/<int:user_id>/', views.create_project, name='create_project'), 
-    path('api/search-users-by-email', views.search_users_by_email, name='search_users_by_email'), # searching people email on ProjectDashboard.jsx
-    path('api/add-collaborator/', views.add_collaborator, name='add_collaborator'), # adding collaborators on ProjectDashboard.jsx
-    path('api/get-collaborators/<int:project_id>/', views.get_collaborators), # list of collaborators in the project
-    path('api/delete-collaborator/<int:collaboration_id>/', views.delete_collaborator), # remove the collaborator in the project
-    path('api/projects/<int:project_id>/publish/', views.publish_project, name="publish_project"), # publishing the project on ProjectDashboard.jsx
-    path('api/projects/<int:project_id>/unpublish/', views.unpublish_project, name="unpublish_project"), # unpublising the project on ProjectDashboard.jsx
+    path('api/shared_projects/<int:user_id>/', views.get_shared_projects, name='shared-projects'), # [Done] for fetching shared project on collaborator side on ResearcherDashboard.jsx
+    path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"), # [Done]
+
+    path('api/create_project/<int:user_id>/', views.create_project, name='create_project'), # [Done] for creating projects on CreateProject.jsx
+    path('api/project/<int:project_id>/', get_project, name='get_project'), # [Done] display project details on ProjectDashboard.jsx 
+    path('api/projects/<int:project_id>/publish/', views.publish_project, name="publish_project"), # [Done] publishing the project on ProjectDashboard.jsx
+    path('api/projects/<int:project_id>/unpublish/', views.unpublish_project, name="unpublish_project"), # [Done] unpublising the project on ProjectDashboard.jsx
+    path('api/search-users-by-email', views.search_users_by_email, name='search_users_by_email'), # [Done] searching people email on ProjectDashboard.jsx
+    path('api/add-collaborator/', views.add_collaborator, name='add_collaborator'), # [Done] adding collaborators on ProjectDashboard.jsx
+    path('api/get-collaborators/<int:project_id>/', views.get_collaborators), # [Done] list of collaborators in the project
+    path('api/delete-collaborator/<int:collaboration_id>/', views.delete_collaborator), # [Done] remove the collaborator in the project
+    
     path("api/update_project/<int:project_id>/", update_project, name="update_project"),
-    path('api/project/<int:project_id>/', get_project, name='get_project'),
-    path("api/delete_project/<int:project_id>/", delete_project, name="delete_project"),
 
     path('api/project/<int:project_id>/save-criteria/', views.create_or_update_criteria, name='create_or_update_criteria'),
     path('api/project/<int:project_id>/get-criteria/', views.get_project_criteria, name='get_project_criteria'),
-
-
 
     path('api/save_criteria_gender/<int:project_id>/', save_critieria_gender, name='save-criteria-gender'),
     path('api/save_criteria_age_group/<int:project_id>/', save_critieria_age_group, name='save-criteria-age-group'),
     path('api/save_criteria_interest/<int:project_id>/', save_critieria_interest, name='save-criteria-interest'),
 
     # sus form related 
-    path('api/projects/<int:project_id>/create-susform/', views.create_susform, name="create_susform"),
+    path('api/projects/<int:project_id>/create-susform/', views.create_susform, name="create_susform"), # creating sus form on CreateForms.jsx
     path('api/projects/<int:project_id>/get-susforms/', views.get_susform, name='get_susforms'),
     path('api/forms/delete-susforms/<int:susform_id>/', views.delete_susform, name='delete_susform'),
     path('api/<int:susform_id>/form-details/', views.susform_detail, name='susform_detail'),
@@ -98,8 +99,8 @@ urlpatterns = [
     path('forms/delete/<int:form_id>/', views.delete_form, name='delete_form'),
 
 
-    # ✅ usability testing 
-    path('projects/<int:project_id>/usability-testing/', views.create_usability_testing, name='create_usability_testing'), # usability testing creation form CreateUsabilityTesting.jsx
+    # usability testing related 
+    path('api/projects/<int:project_id>/create-usability-testing/', views.create_usability_testing, name='create_usability_testing'), # create usability testing on CreateUsabilityTesting.jsx
     path('projects/<int:project_id>/usability-testings/', views.get_usability_testing, name='get_usability_testing'), # get all usability testings list on ProjectDashboard.jsx
     path('usability-testing/<int:usability_testing_id>/', views.usability_testing_detail, name='usability_testing_detail'), # usability testing detail on UsabilityTestingDetail.jsx
     path('usability-testing/delete/<int:usability_testing_id>/', views.delete_usability_testing, name='delete_usability_testing'), # delete usability testing on ProjectDashboard.jsx
@@ -133,9 +134,8 @@ urlpatterns = [
     path("api/projects/<int:project_id>/related_usability_testing/", get_project_usabilitytesting, name="get_project_usabilitytesting"),
     path("api/forms/", get_all_forms, name="get_all_forms"),
 
-    path('api/login/', login, name='login'),
+    
     path('api/user/<int:user_id>/', get_user, name='get_user'),
-    path('api/shared_projects/<int:user_id>/', views.get_shared_projects, name='shared-projects'), # for fetching shared project on collaborator side on ResearcherDashboard.jsx
     path('api/admin/users/', get_all_users, name='get_all_users'),
     path('api/delete_user/<int:user_id>/', delete_user, name='delete_user'),
 
