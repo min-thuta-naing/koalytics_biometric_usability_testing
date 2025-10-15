@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateProjects from "./Project/CreateProjects";
-import { EllipsisVertical,X } from "lucide-react";
+import { EllipsisVertical,X, Trash, Trash2, Trash2Icon, Menu, Pencil } from "lucide-react";
 
 const ResearcherDashboard = () => {
     const API_URL = process.env.REACT_APP_API_URL;
@@ -64,7 +64,7 @@ const ResearcherDashboard = () => {
     // FETCH PROJECTS with user id ////////////////////////////////////////////////
     const fetchProjects = async (userId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/`);
+            const response = await fetch(`${API_URL}/api/user/${userId}/`);
             if (response.ok) {
                 const data = await response.json();
                 setProjects(data.projects);
@@ -77,7 +77,7 @@ const ResearcherDashboard = () => {
     // FETCH PROJECT from collaboration ////////////////////////////////////////////
     const fetchSharedProjects = async (userId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/shared_projects/${userId}/`);
+            const response = await fetch(`${API_URL}/api/shared_projects/${userId}/`);
             if (response.ok) {
                 const data = await response.json();
                 setSharedProjects(data);
@@ -103,7 +103,7 @@ const ResearcherDashboard = () => {
         if (!projectToDelete) return;
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/delete_project/${projectToDelete}/`, {
+            const response = await fetch(`${API_URL}/api/delete_project/${projectToDelete}/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -170,12 +170,51 @@ const ResearcherDashboard = () => {
                             {projects.map((project) => (
                                 <div
                                     key={project.id}
-                                    className="w-80 cursor-pointer transition-transform duration-300 hover:-translate-y-2"
+                                    className="w-80 relative cursor-pointer transition-transform duration-300 hover:-translate-y-2 shadow-xl rounded-3xl overflow-hidden bg-white"
                                     onClick={() => navigate(`/project/${project.id}`)}
                                 >
+                                    <div className="absolute top-2 right-2 z-10">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent navigating to project page
+                                                setShowDropdown(showDropdown === project.id ? null : project.id);
+                                            }}
+                                            className="p-2 rounded-full bg-white border border-gray-500 hover:bg-gray-200"
+                                        >
+                                            <Menu size={22}/>
+                                        </button>
+
+                                        {showDropdown === project.id && (
+                                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden animate-fadeIn z-30">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation(); // Prevent navigating to project page
+                                                        navigate(`/project/${project.id}`);
+                                                        setShowDropdown(null);
+                                                    }}
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left text-gray-700 hover:bg-[#ACA3E3] transition"
+                                                >
+                                                    <Pencil size={18} />
+                                                    <span>Edit project</span>
+                                                </button>
+                                                <div className="h-px bg-gray-200"></div>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation(); // Prevent navigating to project page
+                                                        handleDeleteClick(project.id);
+                                                        setShowDropdown(null);
+                                                    }}
+                                                    className="flex items-center gap-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-200 transition"
+                                                >
+                                                    <Trash2 size={18} />
+                                                    <span>Delete project</span>
+                                                </button>                                                
+                                            </div>
+                                        )}
+                                    </div>
         
                                     <div
-                                        className="h-56 rounded-t-lg shadow-md hover:shadow-lg border border-gray-400 bg-cover bg-center"
+                                        className="h-56 rounded-t-3xl shadow-md hover:shadow-lg border border-gray-400 bg-cover bg-center"
                                         style={{ 
                                             backgroundImage: project.image_path 
                                                 ? `url(${API_URL}${project.image_path})`
@@ -183,7 +222,7 @@ const ResearcherDashboard = () => {
                                         }}
                                     />
 
-                                    <div className="h-14 flex items-center justify-center bg-[#C4BDED] rounded-b-lg border border-t-0 border-gray-400">
+                                    <div className="h-14 flex items-center justify-center bg-[#C4BDED] rounded-b-3xl border border-t-0 border-gray-400">
                                         <h2 className="font-semibold font-funnel text-lg text-black text-center truncate px-3">
                                         {project.name}
                                         </h2>
