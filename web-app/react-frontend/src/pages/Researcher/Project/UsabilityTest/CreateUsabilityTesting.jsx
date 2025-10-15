@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated }) => {
-
+    const API_URL = process.env.REACT_APP_API_URL;
     const [step, setStep] = useState(1); // Track the step in the process
     const [testingType, setTestingType] = useState(""); // Track the selected type (Prototype or Website)
     const [title, setTitle] = useState("");
@@ -20,47 +20,6 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
         return cookie ? cookie.split("=")[1] : "";
     };
 
-    // Handle usability testing submission
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     setError("");
-    //     setSuccess("");
-
-    //     try {
-    //         const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/usability-testing/`, {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 "X-CSRFToken": getCSRFToken(),
-    //             },
-    //             body: JSON.stringify({ 
-    //                 title, 
-    //                 task, 
-    //                 duration,
-    //                 website_link: websiteLink,
-    //                 figma_embed_code: figmaEmbedCode
-    //             }),
-    //         });
-
-    //         const data = await response.json();
-
-    //         if (!response.ok) {
-    //             throw new Error(data.error || "Failed to create usability testing.");
-    //         }
-
-    //         //alert("Usability testing created successfully!");
-    //         setTitle("");
-    //         setTask(""); 
-    //         setDuration(""); 
-    //         setWebsiteLink(""); 
-    //         setFigmaEmbedCode(""); 
-    //         onUsabilityTestingCreated(); 
-    //         onClose(); // Close modal after success
-    //     } catch (err) {
-    //         console.error("Error creating usability testing:", err);
-    //         setError(err.message || "Error creating usability testing.");
-    //     }
-    // };
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -75,7 +34,7 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
                 figma_embed_code: testingType === "prototype" ? figmaEmbedCode : undefined,
             };
 
-            const response = await fetch(`http://127.0.0.1:8000/projects/${projectId}/usability-testing/`, {
+            const response = await fetch(`${API_URL}/api/projects/${projectId}/create-usability-testing/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -133,13 +92,6 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
                     <div className="bg-white w-full p-6 h-[420px] overflow-y-auto">
                         <h3 className="text-lg mt-4 mb-4">What do you perform usability testing on?</h3>
                         <div className="flex gap-4">
-                            {/* <button
-                                onClick={() => setTestingType("prototype")}
-                                className={`border p-4 w-1/2 rounded-lg ${testingType === "prototype" ? "bg-[#C4BDED]" : "hover:bg-[#F3F4F6]"}`}
-                            >
-                                Prototype
-                            </button> */}
-                            {/* Prototype Option */}
                             <div
                                 onClick={() => setTestingType("prototype")}
                                 role="button"
@@ -157,13 +109,6 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
                                 </div>
                             </div>
 
-                            {/* <button
-                                onClick={() => setTestingType("website")}
-                                className={`border p-4 w-1/2 rounded-lg ${testingType === "website" ? "bg-[#C4BDED]" : "hover:bg-[#F3F4F6]"}`}
-                            >
-                                Website
-                            </button> */}
-                             {/* Website Option */}
                             <div
                                 onClick={() => setTestingType("website")}
                                 role="button"
@@ -229,23 +174,6 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
                                 className="w-full p-2 mb-4 rounded border"
                                 required
                             />
-
-                            {/* <label className="block mb-2">Website Link:</label>
-                            <input
-                                type="url"
-                                value={websiteLink}
-                                onChange={(e) => setWebsiteLink(e.target.value)}
-                                className="w-full p-2 mb-4 rounded border"
-                                required
-                            />
-
-                            <label className="block mb-2">Figma Embed Code:</label>
-                            <textarea
-                                value={figmaEmbedCode}
-                                onChange={(e) => setFigmaEmbedCode(e.target.value)}
-                                className="w-full p-2 mb-4 rounded border"
-                                required
-                            /> */}
 
                             {testingType === "website" && (
                                 <>

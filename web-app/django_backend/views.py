@@ -237,7 +237,7 @@ def login(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# fetch the users together with their projects to display on ResearcherDashboard.jsx [Done] 
+# [Done] fetch the users together with their projects to display on ResearcherDashboard.jsx [Done] 
 @csrf_exempt
 def get_user(request, user_id):
     try:
@@ -273,7 +273,34 @@ def get_user(request, user_id):
 #########################################################################################################################################################################################################################################################
 ######################################################################################### PROJECT RELATED MEHTODS (RESEARCHER SIDE) #####################################################################################################################
 
-# for creating projects [Done]
+# [Done] for fetching shared project on collaborator side on ResearcherDashboard.jsx
+@api_view(["GET"])
+def get_shared_projects(request, user_id):
+    collaborations = Collaboration.objects.filter(collaborator_id=user_id)
+    projects = [c.project for c in collaborations]
+    serializer = ProjectSerializer(projects, many=True)
+    return Response(serializer.data)
+
+# [Done] for deleting the projects (when delete the proj, it will detele its related susforms, questions and answers and usability testings)
+@csrf_exempt
+def delete_project(request, project_id):
+    if request.method == "DELETE":
+        project = get_object_or_404(Project, id=project_id)
+
+        # Manually delete related susforms (if no other project uses them)
+        for susform in project.susforms.all():
+            susform.delete()
+
+        # Same for usability_testings, forms, etc.
+        for ut in project.usability_testings.all():
+            ut.delete()
+
+        project.delete()
+        return JsonResponse({"message": "Project and related forms deleted successfully"}, status=200)
+    
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+# [Done] for creating projects 
 @api_view(['POST'])
 def create_project(request, user_id):
     try:
@@ -319,8 +346,30 @@ def create_project(request, user_id):
     except Exception as e:
         print("Error creating project:", str(e))  # Debug log
         return Response({'error': str(e)}, status=500)
+
+# [Done] for viewing each project in the ProjectDashboard.jsx 
+def get_project(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        return JsonResponse({
+            "id": project.id,
+            "name": project.name,
+            "category":project.category,
+            "description": project.description,
+            "organization": project.organization,
+            "max_participants": project.max_participants,
+            "start_date": project.start_date,
+            "end_date": project.end_date,
+            "side_notes": project.side_notes,
+            "image_path": project.image_path,
+            "is_shared" : project.is_shared, 
+            "usability_testings": list(project.usability_testings.values("id", "title", "task")),
+        })
+    except Project.DoesNotExist:
+        return JsonResponse({"error": "Project not found"}, status=404)
+
     
-# ✅ publish the project 
+# [Done] publish the project 
 @api_view(['POST'])
 def publish_project(request, project_id):
     try:
@@ -331,7 +380,7 @@ def publish_project(request, project_id):
     except Project.DoesNotExist:
         return Response({"error": "Project not found."}, status=404)
 
-# ✅ un-publish the project 
+# [Done] un-publish the project 
 @api_view(['POST'])
 def unpublish_project(request, project_id):
     try:
@@ -342,7 +391,7 @@ def unpublish_project(request, project_id):
     except Project.DoesNotExist:
         return Response({"error": "Project not found."}, status=404)
 
-# ✅ searching email function 
+# [Done] searching email function 
 @api_view(['GET'])
 def search_users_by_email(request):
     query = request.GET.get('q', '')
@@ -351,7 +400,7 @@ def search_users_by_email(request):
         return Response(list(users))
     return Response([])
 
-# ✅ adding collaborators to project
+# [Done] adding collaborators to project
 @api_view(['POST'])
 def add_collaborator(request):
     try:
@@ -377,7 +426,7 @@ def add_collaborator(request):
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
-# ✅ display a list of collaborators in the project 
+# [Done] display a list of collaborators in the project 
 @api_view(['GET'])
 def get_collaborators(request, project_id):
     collaborations = Collaboration.objects.filter(project_id=project_id)
@@ -391,7 +440,7 @@ def get_collaborators(request, project_id):
     ]
     return Response(data)
 
-# ✅ remove the collaborators 
+# [Done] remove the collaborators 
 @api_view(['DELETE'])
 def delete_collaborator(request, collaboration_id):
     try:
@@ -402,7 +451,7 @@ def delete_collaborator(request, collaboration_id):
         return Response({"error": "Collaboration not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
-# ✅ editing the project info 
+# [Done] editing the project info 
 @csrf_exempt
 def update_project(request, project_id):
     if request.method == "PATCH":
@@ -515,59 +564,9 @@ def save_critieria_interest (request, project_id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-# ✅ for fetching shared project on collaborator side on ResearcherDashboard.jsx
-@api_view(["GET"])
-def get_shared_projects(request, user_id):
-    collaborations = Collaboration.objects.filter(collaborator_id=user_id)
-    projects = [c.project for c in collaborations]
-    serializer = ProjectSerializer(projects, many=True)
-    return Response(serializer.data)
 
-
-# ✅ for viewing each project in the ProjectDashboard.jsx 
-def get_project(request, project_id):
-    try:
-        project = Project.objects.get(id=project_id)
-        return JsonResponse({
-            "id": project.id,
-            "name": project.name,
-            "category":project.category,
-            "description": project.description,
-            "organization": project.organization,
-            "max_participants": project.max_participants,
-            "start_date": project.start_date,
-            "end_date": project.end_date,
-            "side_notes": project.side_notes,
-            "image_path": project.image_path,
-            "is_shared" : project.is_shared, 
-            "usability_testings": list(project.usability_testings.values("id", "title", "task")),
-        })
-    except Project.DoesNotExist:
-        return JsonResponse({"error": "Project not found"}, status=404)
-    
-    
-# ✅ for deleting the projects (when delete the proj, it will detele its related susforms, questions and answers and usability testings)
-@csrf_exempt
-def delete_project(request, project_id):
-    if request.method == "DELETE":
-        project = get_object_or_404(Project, id=project_id)
-
-        # Manually delete related susforms (if no other project uses them)
-        for susform in project.susforms.all():
-            susform.delete()
-
-        # Same for usability_testings, forms, etc.
-        for ut in project.usability_testings.all():
-            ut.delete()
-
-        project.delete()
-        return JsonResponse({"message": "Project and related forms deleted successfully"}, status=200)
-    
-    return JsonResponse({"error": "Method not allowed"}, status=405)
-
-
-# FORM RELATED METHODS (RESEARCER SIDE) ##########################################################
-# ✅ creating sus form 
+# SUS FORM RELATED METHODS (RESEARCER SIDE) ##########################################################
+# [Done] creating sus form 
 @api_view(['POST'])
 def create_susform(request, project_id):
         try:
@@ -919,7 +918,7 @@ def get_form_answers(request, form_id):
 
 
 # USABILITY TESTING RELATED METHODS (RESEARCER SIDE) ##########################################################
-# ✅ for creating usability testings
+# [Done] for creating usability testings
 @api_view(['POST'])
 def create_usability_testing(request, project_id):
     try:
@@ -1287,35 +1286,6 @@ def get_all_forms(request):
         forms = list(Form.objects.values("id", "title"))
         return JsonResponse(forms, safe=False)
     return JsonResponse({"error": "Invalid request method."}, status=405)
-
-# ✅ Get user by ID to display in MyAccount page
-# @csrf_exempt
-# def get_user(request, user_id):
-#     try:
-#         user = User.objects.get(id=user_id)
-#         user_data = {
-#             "first_name": user.first_name,
-#             "last_name": user.last_name,
-#             "email": user.email,
-#             "birthday": user.birthday,
-#             "gender": user.gender,
-#             "marital_status": user.marital_status,
-#             "country": user.country,
-#             "zip_code": user.zip_code,
-#             "hobbies": list(user.hobbies.values("id", "name")), 
-#             "employmentStatuses" : list(user.employmentStatuses.values("id", "employmentStatuses")),
-#             "profession" : list(user.profession.values("id", "profession")),
-#             "position" : list(user.position.values("id", "position")),
-#             "industry" : list(user.industry.values("id", "industry")),
-
-#             "projects": list(user.projects.values(
-#                 "id", "name", "description", "organization", 
-#                 "max_participants", "start_date", "end_date", "side_notes"
-#             )),
-#         }
-#         return JsonResponse(user_data, status=200)
-#     except User.DoesNotExist:
-#         return JsonResponse({"error": "User not found"}, status=404)
 
     
     

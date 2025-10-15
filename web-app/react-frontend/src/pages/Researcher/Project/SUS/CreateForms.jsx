@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 
 
 const CreateSurveyForms = ({ onClose, projectId, onFormCreated }) => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const [sustitle, setSUSTitle] = useState("");
     const [susdescription, setSUSDescription] = useState(""); 
     const [error, setError] = useState("");
@@ -42,11 +43,11 @@ const CreateSurveyForms = ({ onClose, projectId, onFormCreated }) => {
         setSuccess("");
 
         if (!validateFields()) {
-            return; // Don't proceed if validation fails
+            return; 
         }
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/projects/${projectId}/create-susform/`, {
+            const response = await fetch(`${API_URL}/api/projects/${projectId}/create-susform/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -95,9 +96,6 @@ const CreateSurveyForms = ({ onClose, projectId, onFormCreated }) => {
                 <div className="w-full h-[1px] bg-gray-300"></div>
 
                 <div className="bg-white p-8 w-full h-[400px] overflow-y-auto">
-
-                    {/* {error && <p className="text-red-500 mb-4">{error}</p>}
-                    {success && <p className="text-green-500 mb-4">{success}</p>} */}
 
                     <form onSubmit={handleSubmit}>
                         <label className="block mb-2">Form Title:</label>

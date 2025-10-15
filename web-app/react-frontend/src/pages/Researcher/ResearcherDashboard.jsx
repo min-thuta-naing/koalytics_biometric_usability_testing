@@ -239,13 +239,35 @@ const ResearcherDashboard = () => {
                         <p className="font-funnel">Here are the projects shared by other researchers with you ...</p>
                         <div className="relative z-0 grid grid-cols-3 gap-6 mt-6">
                             {sharedProjects.map((project) => (
-                                <div key={project.id} className="relative z-0 p-6 bg-white border rounded-lg shadow-md">
-                                    <div onClick={() => navigate(`/project/${project.id}`)} className="cursor-pointer">
+                                <div 
+                                    key={project.id} 
+                                    className="w-80 relative cursor-pointer transition-transform duration-300 hover:-translate-y-2 shadow-xl rounded-3xl overflow-hidden bg-white"
+                                    onClick={() => navigate(`/project/${project.id}`)}
+                                >
+                                    {/* <div  className="cursor-pointer">
                                         <h2 className="text-xl font-semibold">{project.name}</h2>
                                         <p className="text-gray-600 mt-2">{project.description}</p>
+                                    </div> */}
+                                    <div
+                                        className="h-56 rounded-t-3xl shadow-md hover:shadow-lg border border-gray-400 bg-cover bg-center"
+                                        style={{ 
+                                            backgroundImage: project.image_path 
+                                                ? `url(${API_URL}${project.image_path})`
+                                                : "url('/static/images/projectbg.png')"
+                                        }}
+                                    />
+
+                                    <div className="h-14 flex items-center justify-center bg-[#C4BDED] rounded-b-3xl border border-t-0 border-gray-400">
+                                        <h2 className="font-semibold font-funnel text-lg text-black text-center truncate px-3">
+                                        {project.name}
+                                        </h2>
                                     </div>
-                                    <div className="mt-2 text-sm text-gray-500 italic">Shared by another researcher</div>
+                                    <div className="h-10 flex items-center justify-center bg-white rounded-b-3xl border border-t-0 border-gray-400">
+                                        <div className="mt-2 text-sm text-gray-500 text-center italic">Shared by another researcher</div>
+                                    </div>
+                                    
                                 </div>
+
                             ))}
                         </div>
                     </>
