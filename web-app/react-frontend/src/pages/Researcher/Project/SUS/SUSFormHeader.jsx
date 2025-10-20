@@ -5,6 +5,7 @@ import ViewResults from "./ViewResults";
 import SUSQuesionPreview from "./SUSQuestionPreview";
 
 const FormDetail = () => {
+  const API_URL = process.env.REACT_APP_API_URL;
   const {formId } = useParams(); // Get form ID from URL
   const [form, setForm] = useState(null);
   const [error, setError] = useState("");
@@ -16,7 +17,7 @@ const FormDetail = () => {
   useEffect(() => {
     const fetchFormDetails = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/${formId}/form-details/`);
+        const response = await fetch(`${API_URL}/api/${formId}/form-details/`);
         if (!response.ok) {
           throw new Error("Failed to fetch form details.");
         }
@@ -30,74 +31,6 @@ const FormDetail = () => {
     fetchFormDetails();
   }, [formId]);
 
-
-  // const handleShareForm = async () => {
-  //   try {
-  //     const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/share/`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  
-  //     if (!response.ok) {
-  //       throw new Error('Failed to share form.');
-  //     }
-  
-  //     alert('Form shared successfully!');
-  //   } catch (error) {
-  //     alert('Error sharing form: ' + error.message);
-  //   }
-  // };
-
-  // Fetch questions for the form
-  // useEffect(() => {
-  //   const fetchQuestions = async () => {
-  //     try {
-  //       const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/list/`);
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch questions.");
-  //       }
-  //       const data = await response.json();
-  //       setQuestions(data);
-  //     } catch (err) {
-  //       setError(err.message);
-  //     }
-  //   };
-
-  //   fetchQuestions();
-  // }, [formId]);
-
-
-  // Send a single question to backend
-  // const handleAddQuestion = async () => {
-  //   if (!questionText.trim()) return alert("Question text cannot be empty!");
-
-  //   try {
-  //     const response = await fetch(`http://127.0.0.1:8000/forms/${formId}/questions/`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         question_text: questionText,
-  //         question_type: questionType,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorMessage = await response.json();
-  //       throw new Error(errorMessage.error || "Failed to save question.");
-  //     }
-
-  //     const newQuestion = await response.json();
-  //     setQuestions((prevQuestions) => [...prevQuestions, newQuestion]); // Append new question
-  //     setQuestionText(""); // Clear input
-
-  //   } catch (err) {
-  //     setError(err.message);
-  //   }
-  // };
 
   if (!form) {
     return (

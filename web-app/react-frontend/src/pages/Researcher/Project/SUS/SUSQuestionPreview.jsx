@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const SUSQuestionPreview = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const { formId } = useParams();
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -9,7 +10,7 @@ const SUSQuestionPreview = () => {
 
     // Fetch questions list
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/${formId}/sus-questions/list/`)
+        fetch(`${API_URL}/api/${formId}/sus-questions/list/`)
         .then((response) => response.json())
         .then((data) => {
             setQuestions(data);
