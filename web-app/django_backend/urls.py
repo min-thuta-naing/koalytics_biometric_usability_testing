@@ -101,15 +101,16 @@ urlpatterns = [
 
     # usability testing related 
     path('api/projects/<int:project_id>/create-usability-testing/', views.create_usability_testing, name='create_usability_testing'), # create usability testing on CreateUsabilityTesting.jsx
+    path('usability-testing/<int:usability_testing_id>/', views.usability_testing_detail, name='usability_testing_detail'), # usability testing detail on UsabilityTestingHeader.jsx
+    path('usability-testing/<int:usability_testing_id>/recordings/', views.get_recordings_for_usability_testing, name='get_recordings_for_usability_testing'), # usability testing recording on TestingResults.jsx
+
     path('projects/<int:project_id>/usability-testings/', views.get_usability_testing, name='get_usability_testing'), # get all usability testings list on ProjectDashboard.jsx
-    path('usability-testing/<int:usability_testing_id>/', views.usability_testing_detail, name='usability_testing_detail'), # usability testing detail on UsabilityTestingDetail.jsx
     path('usability-testing/delete/<int:usability_testing_id>/', views.delete_usability_testing, name='delete_usability_testing'), # delete usability testing on ProjectDashboard.jsx
     path("api/save-recording/check/<int:usability_testing_id>/", views.check_recording, name="check-recording"), # ❌
     path('api/validate-frame/', views.validate_camera_frame, name='validate-camera-frame'), # camera callibration
     path("api/save-recording/", views.save_recording, name="save-recording"), # start and save recording on TestCalibration.jsx
     path('emotion-detection/', views.emotion_detection, name='emotion_detection'), # emotion detection from BrowserinBrowser.jsx
     path('api/usability-testing/<int:usability_testing_id>/emotion-data/', views.emotion_data_list, name='emotion-data-list'), # emotion data list from DetailedEmotion.jsx and TestingResults.jsx
-    path('usability-testing/<int:usability_testing_id>/recordings/', views.get_recordings_for_usability_testing, name='get_recordings_for_usability_testing'), # usability testing recording on TestingResults.jsx
     path('video/<str:video_name>/', lambda request, video_name: print(f"Video requested: {video_name}") or views.video_view(request, video_name), name='video-view'), # usability testing recording on TestingResults.jsx
 
     path('usability-testing/<int:usability_testing_id>/create-or-update-testingconsent/', views.create_or_update_testingconsent, name="create_or_update_testingconsent"),

@@ -939,6 +939,40 @@ def create_usability_testing(request, project_id):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# [Done] for retrieving usability testind details
+@api_view(['GET'])
+def usability_testing_detail(request, usability_testing_id):
+    try:
+        usability_testing = UsabilityTesting.objects.get(id=usability_testing_id)
+    except UsabilityTesting.DoesNotExist:
+        return Response({'error': 'Usability testing not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UsabilityTestingSerializer(usability_testing)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+# [Done] fetch the screen recording 
+@api_view(['GET'])
+def get_recordings_for_usability_testing(request, usability_testing_id):
+    """Retrieve all recordings for a specific usability testing."""
+    usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
+    recordings = UsabilityTestRecordingV4.objects.filter(usability_testing=usability_testing)
+    
+    # Serialize the data and return it
+    serializer = UsabilityTestRecordingV4Serializer(recordings, many=True)
+    return Response(serializer.data)
+
+def video_view(request, video_name):
+    print(f"Requested video: {video_name}")  # Debugging log
+    video_path = os.path.join(settings.MEDIA_ROOT, 'recordings', video_name)
+    print(f"Video path: {video_path}")  # Debugging log
+
+    if os.path.exists(video_path):
+        with open(video_path, 'rb') as f:
+            return HttpResponse(f.read(), content_type='video/webm')
+    else:
+        print(f"Video not found: {video_path}")  # Debugging log
+        return HttpResponse("Video not found", status=404)
+    
 
 #f ✅ or retrieving usability testing list in ProjectDashboard page 
 @api_view(['GET'])
@@ -952,16 +986,7 @@ def get_usability_testing(request, project_id):
     serializer = UsabilityTestingSerializer(usability_testings, many=True)
     return Response({'usability_testings': serializer.data}, status=status.HTTP_200_OK)
 
-# ✅ for retrieving usability testind details
-@api_view(['GET'])
-def usability_testing_detail(request, usability_testing_id):
-    try:
-        usability_testing = UsabilityTesting.objects.get(id=usability_testing_id)
-    except UsabilityTesting.DoesNotExist:
-        return Response({'error': 'Usability testing not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = UsabilityTestingSerializer(usability_testing)
-    return Response(serializer.data, status=status.HTTP_200_OK)
 
 # ✅ for deleting the usability testing
 @api_view(['DELETE'])
@@ -1100,28 +1125,7 @@ def save_recording(request):
 
     return Response(UsabilityTestRecordingV4Serializer(recording).data, status=201)
 
-# ✅ fetch the screen recording 
-@api_view(['GET'])
-def get_recordings_for_usability_testing(request, usability_testing_id):
-    """Retrieve all recordings for a specific usability testing."""
-    usability_testing = get_object_or_404(UsabilityTesting, id=usability_testing_id)
-    recordings = UsabilityTestRecordingV4.objects.filter(usability_testing=usability_testing)
-    
-    # Serialize the data and return it
-    serializer = UsabilityTestRecordingV4Serializer(recordings, many=True)
-    return Response(serializer.data)
 
-def video_view(request, video_name):
-    print(f"Requested video: {video_name}")  # Debugging log
-    video_path = os.path.join(settings.MEDIA_ROOT, 'recordings', video_name)
-    print(f"Video path: {video_path}")  # Debugging log
-
-    if os.path.exists(video_path):
-        with open(video_path, 'rb') as f:
-            return HttpResponse(f.read(), content_type='video/webm')
-    else:
-        print(f"Video not found: {video_path}")  # Debugging log
-        return HttpResponse("Video not found", status=404)
     
 
 import logging

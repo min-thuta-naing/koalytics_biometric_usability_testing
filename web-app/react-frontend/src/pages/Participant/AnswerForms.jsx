@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 const AnswerForm = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const { formId, projectId } = useParams();
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -25,7 +26,7 @@ const AnswerForm = () => {
 
     // Fetch questions list
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/${formId}/sus-questions/list/`)
+        fetch(`${API_URL}/api/${formId}/sus-questions/list/`)
         .then((response) => response.json())
         .then((data) => {
             setQuestions(data);
@@ -60,7 +61,7 @@ const AnswerForm = () => {
 
             try {
                 const response = await fetch(
-                `http://127.0.0.1:8000/api/questions/${questionId}/answers/`,
+                `${API_URL}/api/questions/${questionId}/answers/`,
                 {
                     method: "POST",
                     headers: {
