@@ -136,15 +136,20 @@ const DetailedEmotion = () => {
     }));
 
     return (
-        <div className="p-8">
-            <h1 className="text-2xl font-bold mb-4">Emotion Details</h1>
-            <h2 className="text-xl mb-2">Test: {testingName}</h2>
-            <h3 className="text-lg mb-6">Participant: {participantEmail}</h3>
-            {totalTimeTaken && (
-                <h3 className="text-lg mb-6">
-                    Total Time Taken: {totalTimeTaken}
-                </h3>
-            )}
+        <div className="bg-[#F0EEED] p-8 font-funnel min-h-screen">
+            <div className="mt-20 flex items-center justify-center p-5">
+                <h1 className="text-2xl font-bold mb-4">Emotion Details</h1>
+            </div>
+            <div className="mb-4 bg-white p-4 rounded-lg shadow-lg">
+                <h2 className="text-xl mb-2">Test: {testingName}</h2>
+                <h3 className="text-lg mb-6">Participant: {participantEmail}</h3>
+                {totalTimeTaken && (
+                    <h3 className="text-lg mb-6">
+                        Total Time Taken: {totalTimeTaken}
+                    </h3>
+                )}
+            </div>
+            
 
             {/* Line Chart for Emotions */}
             <div className="mb-4 bg-white p-4 rounded-lg shadow-lg">
@@ -157,17 +162,20 @@ const DetailedEmotion = () => {
                 />
             </div>
 
-            {/* CSV Download Button */}
-            <button
-                onClick={downloadGraphCSV}
-                className="mb-4 px-4 py-2 bg-[#C4BDED] text-black rounded-lg shadow-md hover:bg-[#ACA3E3]"
-                style={{ position: 'relative', left: 0 }}
-            >
-                Download Graph CSV
-            </button>
+            
 
             {/* Table */}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto mb-20 bg-white p-4 rounded-lg shadow-lg">
+                <div className="flex justify-left">
+                    {/* CSV Download Button */}
+                    <button
+                        onClick={downloadGraphCSV}
+                        className="mb-4 px-4 py-2 bg-[#C4BDED] text-black rounded-lg shadow-md hover:bg-[#ACA3E3]"
+                        style={{ position: 'relative', left: 0 }}
+                    >
+                        Download Graph CSV
+                    </button>
+                </div>
                 <table className="min-w-full border-collapse">
                     <thead>
                         <tr className="bg-[#ACA3E3]">

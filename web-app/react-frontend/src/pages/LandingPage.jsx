@@ -67,7 +67,7 @@ const LandingPage = () => {
             </header>
 
             <main className="flex-1 overflow-y-auto">
-                <div className="flex flex-row items-center py-3 px-12 gap-10">
+                <div className="bg-white flex flex-row items-center py-3 px-12 gap-10">
                     <div className="w-1/2">
                         <h1 className="font-funnel font-bold text-6xl mt-2">{headline1}</h1>
                         <h1 className="font-funnel font-bold text-6xl mt-2">{headline2}</h1>
@@ -84,7 +84,7 @@ const LandingPage = () => {
                     </div>
                 </div>
 
-                <div className="py-3 px-6 bg-gradient-to-b from-violet-100 via-white to-transparent">
+                <div className="py-3 px-6 bg-gradient-to-b from-violet-100 via-white to-white">
                     <div className="h-10"></div>
                     <div className="flex flex-row items-center py-3 px-6 gap-10">
                         <div className="w-1/6 flex justify-center">
@@ -113,7 +113,7 @@ const LandingPage = () => {
                 </div>
             </main>
 
-            <footer className="text-black text-center py-6 bg-gradient-to-t from-violet-200 via-white to-transparent">
+            <footer className="text-black text-center py-6 bg-gradient-to-t from-violet-200 via-white to-white">
                 <p>&copy; 2025 Koalytics</p>
             </footer>
         </div>

@@ -252,16 +252,16 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
                             <div className="columns-2 sm:columns-3 md:columns-4 gap-4 space-y-4">
                                 {images.map((src, index) => (
                                     <div
-                                    key={index}
-                                    onClick={() => setImagePath(src)} // Set selected image path here
-                                    className={`break-inside-avoid overflow-hidden rounded-lg shadow-md cursor-pointer border-4 transition 
-                                        ${imagePath === src ? "border-[#ACA3E3]" : "border-transparent"}`}
+                                        key={index}
+                                        onClick={() => setImagePath(src)} // Set selected image path here
+                                        className={`break-inside-avoid overflow-hidden rounded-lg shadow-md cursor-pointer border-4 transition 
+                                            ${imagePath === src ? "border-[#ACA3E3]" : "border-transparent"}`}
                                     >
-                                    <img
-                                        src={src}
-                                        alt={`Image ${index + 1}`}
-                                        className="w-full object-cover rounded-md"
-                                    />
+                                        <img
+                                            src={src}
+                                            alt={`Image ${index + 1}`}
+                                            className="w-full object-cover rounded-md"
+                                        />
                                     </div>
                                 ))}
                             </div>
