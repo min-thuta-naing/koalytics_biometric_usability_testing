@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const BrowserInBrowser = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const location = useLocation();
     const urlParams = new URLSearchParams(location.search);
     const url = urlParams.get('url'); // Get the URL from query parameters
@@ -54,7 +55,7 @@ const BrowserInBrowser = () => {
         if (!id) return;
         const fetchUsabilityTest = async () => {
             try {
-                const res = await fetch(`http://127.0.0.1:8000/usability-testing/${id}/`);
+                const res = await fetch(`${API_URL}/usability-testing/${id}/`);
                 const data = await res.json();
                 setUsabilityTesting(data);
                 setTask(data.task);
@@ -136,7 +137,7 @@ const BrowserInBrowser = () => {
 
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/emotion-detection/', {
+            const response = await fetch(`${API_URL}/emotion-detection/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -181,46 +182,31 @@ const BrowserInBrowser = () => {
         ctx.fillText(emotion, box.x + box.width / 2, box.y - 10);
     };
 
-    // useEffect(() => {
-    //     console.log("🔥 Calling captureAndSendFrame directly:");
-    //     const interval = setInterval(captureAndSendFrame, 1000);
-    //     return () => clearInterval(interval);
-    // }, []);
-    // useEffect(() => {
-    //     if (videoRef.current) {
-    //         videoRef.current.onloadedmetadata = () => {
-    //             console.log("📽️ Video metadata loaded, starting capture interval.");
-    //             const interval = setInterval(captureAndSendFrame, 1000);
-    //             // Store interval in state if you need to clear it later
-    //             return () => clearInterval(interval);
-    //         };
-    //     }
-    // }, []);
     const intervalRef = useRef(null);
 
-useEffect(() => {
-    const startCapture = () => {
-        if (intervalRef.current) return; // Prevent multiple intervals
+    useEffect(() => {
+        const startCapture = () => {
+            if (intervalRef.current) return; // Prevent multiple intervals
 
-        console.log("📽️ Video metadata loaded, starting capture interval.");
-        intervalRef.current = setInterval(captureAndSendFrame, 1000);
-    };
+            console.log("📽️ Video metadata loaded, starting capture interval.");
+            intervalRef.current = setInterval(captureAndSendFrame, 1000);
+        };
 
-    if (videoRef.current) {
-        if (videoRef.current.readyState >= 1) {
-            startCapture();
-        } else {
-            videoRef.current.onloadedmetadata = startCapture;
+        if (videoRef.current) {
+            if (videoRef.current.readyState >= 1) {
+                startCapture();
+            } else {
+                videoRef.current.onloadedmetadata = startCapture;
+            }
         }
-    }
 
-    return () => {
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
-    };
-}, [userEmail]); // Make sure email is available before starting
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
+    }, [userEmail]); // Make sure email is available before starting
 
     
 

@@ -24,8 +24,9 @@ import DetailedEmotion from "./pages/Researcher/Project/UsabilityTest/DetailedEm
 import AnswerForm from "./pages/Participant/AnswerForms";
 import ChooseTest from "./pages/Participant/ChooseTest";
 import UsabilityTestingDetail from "./pages/Researcher/Project/UsabilityTest/UsabilityTestingHeader";
-import TestInfo from "./pages/Participant/TestInfo";
-import CalibrationPopUp from "./pages/Participant/UsabilityTestingCallibration/CalibrationPopUp";
+//import TestInfo from "./pages/Participant/TestInfo";
+import PreUsabilityTestingPage from "./pages/Participant/UsabilityTesting/PreUsabilityTestingPage";
+import CalibrationPopUp from "./pages/Participant/UsabilityTesting/UsabilityTestingCallibration/CalibrationPopUp";
 import TempoFacial from "./pages/Participant/TempoFacial";
 import BrowserInBrowser from "./pages/Participant/BrowserInBrowser";
 
@@ -53,7 +54,7 @@ function App() {
         <Route path="/usability_testing/:usabilityTestingId" element={<UsabilityTestingDetail />} />
         <Route path="/all-project/:projectId" element={<ChooseTest />} />
         <Route path="/related-form/:formId/:projectId" element={<AnswerForm />} />
-        <Route path="/related-usability-testing/:usabilityTestingId" element={<TestInfo/>}/>
+        <Route path="/related-usability-testing/:usabilityTestingId" element={<PreUsabilityTestingPage/>}/>
         <Route path="/calibration-pop-up" element={<CalibrationPopUp/>}/> 
         <Route path="/usability-testing/:usabilityTestingId/emotion-details" element={<DetailedEmotion />} />
         <Route path="/question1" element={<Question1 />} />

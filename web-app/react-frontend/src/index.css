@@ -48,6 +48,13 @@
   scrollbar-width: none; /* Firefox */
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #000; /* or match your dim overlay */
+}
+
 
 
 body {

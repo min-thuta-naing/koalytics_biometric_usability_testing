@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 
 const ChooseTest = () => {
+    const API_URL = process.env.REACT_APP_API_URL;
     const { projectId } = useParams(); // Get project ID from URL
     const [forms, setForms] = useState([]);
     const [usabilityTestings, setUsabilityTestings] = useState([]);
@@ -13,7 +14,7 @@ const ChooseTest = () => {
 
     // fetch the consent form from the project
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/projects/${projectId}/details/`)
+        fetch(`${API_URL}/api/projects/${projectId}/details/`)
             .then(response => {
                 if (!response.ok) throw new Error("Failed to fetch project details");
                 return response.json();
@@ -27,7 +28,7 @@ const ChooseTest = () => {
 
     // Fetch forms when the page loads
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/projects/${projectId}/related_forms/`)
+        fetch(`${API_URL}/api/projects/${projectId}/related_forms/`)
             .then(response => {
                 if (!response.ok) throw new Error("Failed to fetch forms");
                 return response.json();
@@ -39,7 +40,7 @@ const ChooseTest = () => {
 
     // Fetch usability testings when the page loads
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/projects/${projectId}/related_usability_testing/`)
+        fetch(`${API_URL}/api/projects/${projectId}/related_usability_testing/`)
             .then(response => {
                 if (!response.ok) throw new Error("Failed to fetch usability testing");
                 return response.json();
@@ -166,11 +167,6 @@ const ChooseTest = () => {
                             forms.map((form) => (
                                 <div 
                                     key={form.id} 
-                                    //className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400"
-                                    // className="w-80 h-56 relative bg-cover bg-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400"
-                                    // style={{ 
-                                    //     backgroundImage: "url('/static/images/sus_pic.png')",
-                                    // }}
                                     className="p-10 relative bg-cover bg-center rounded-lg shadow-md hover:shadow-lg cursor-pointer text-center border border-gray-400 flex items-center justify-center"
                                     style={{ backgroundImage: "url('/static/images/choosetest/susform.png')" }}
                                     onClick={() => navigate(`/related-form/${form.id}/${projectId}`)}
