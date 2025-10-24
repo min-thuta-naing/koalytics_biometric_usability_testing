@@ -140,16 +140,34 @@ const DetailedEmotion = () => {
             <div className="mt-20 flex items-center justify-center p-5">
                 <h1 className="text-2xl font-bold mb-4">Emotion Details</h1>
             </div>
-            <div className="mb-4 bg-white p-4 rounded-lg shadow-lg">
-                <h2 className="text-xl mb-2">Test: {testingName}</h2>
-                <h3 className="text-lg mb-6">Participant: {participantEmail}</h3>
-                {totalTimeTaken && (
-                    <h3 className="text-lg mb-6">
-                        Total Time Taken: {totalTimeTaken}
-                    </h3>
-                )}
+            <div className="mb-4 bg-white p-7 rounded-lg shadow-lg"> 
+                <div className="col-span-1 sm:col-span-2 mb-4"> 
+                    <p className="text-sm text-gray-500 mb-1">
+                        Usability Testing Name
+                    </p>
+                    <p className="text-lg font-medium text-gray-800"> 
+                        {testingName}
+                    </p>
+                </div>
+                <div className="col-span-1 sm:col-span-2 mb-4"> 
+                    <p className="text-sm text-gray-500 mb-1">
+                        Participant Email
+                    </p>
+                    <p className="text-lg font-medium text-gray-800"> 
+                        {participantEmail}
+                    </p>
+                </div>
+                <div className="col-span-1 sm:col-span-2 mb-4"> 
+                    <p className="text-sm text-gray-500 mb-1">
+                        Total Time Taken by Participant to Complete Test
+                    </p>
+                    <p className="text-lg font-medium text-gray-800"> 
+                        {totalTimeTaken}
+                    </p>
+                </div>
             </div>
             
+
 
             {/* Line Chart for Emotions */}
             <div className="mb-4 bg-white p-4 rounded-lg shadow-lg">
