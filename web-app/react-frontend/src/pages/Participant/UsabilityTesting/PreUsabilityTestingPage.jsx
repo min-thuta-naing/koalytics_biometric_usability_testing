@@ -44,7 +44,23 @@ const PreUsabilityTestingPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <Detail label="Test title" value={usabilityTesting.title} />
           <Detail label="Complete the task within" value={`${usabilityTesting.duration} minutes`} />
-          <Detail label="Task to perform during the test" value={usabilityTesting.task} full />
+          {/* <Detail label="Task to perform during the test" value={usabilityTesting.task} full /> */}
+          <Detail
+            label="Task steps to perform during the test"
+            value={
+              Array.isArray(usabilityTesting.task) ? (
+                <ol className="list-decimal list-inside space-y-1">
+                  {usabilityTesting.task.map((step, index) => (
+                    <li key={index} className="text-gray-800">{step}</li>
+                  ))}
+                </ol>
+              ) : (
+                <p className="text-gray-800">{usabilityTesting.task}</p>
+              )
+            }
+            full
+          />
+
           
           {usabilityTesting.website_link && (
             <Detail 
