@@ -35,7 +35,7 @@ const BrowserInBrowser = () => {
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => {
-                console.log("✅ Webcam stream started");
+                console.log("Webcam stream started");
                 if (videoRef.current) {
                     videoRef.current.srcObject = stream;
                 }
@@ -236,9 +236,17 @@ const BrowserInBrowser = () => {
 
                 {/* Display task and countdown */}
                 <div className="mt-6 w-full text-center">
-                    <h3 className="text-md font-semibold text-gray-700">Task</h3>
+                    <h3 className="text-md font-semibold text-gray-700 mb-2">Task</h3>
+                    {Array.isArray(task) ? (
+                    <ol className="list-decimal list-inside text-sm text-gray-600 space-y-1 text-left">
+                        {task.map((step, index) => (
+                        <li key={index}>{step}</li>
+                        ))}
+                    </ol>
+                    ) : (
                     <p className="text-sm text-gray-600">{task}</p>
-                    
+                    )}
+
                     <div className="mt-2">
                         <h3 className="text-md font-semibold text-gray-700">Time Left</h3>
                         <p className="text-sm text-red-500">
