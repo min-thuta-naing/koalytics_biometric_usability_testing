@@ -4,7 +4,6 @@ import CameraCalibration from "./UsabilityTestingCallibration/CameraCalibration"
 import ScreenShareInstruction from "./UsabilityTestingCallibration/ScreenShareInstruction";
 import { createPortal } from "react-dom";
 
-
 const UsabilityTestingCalibrationPopUp = ({ usabilityTesting, usabilityTestingId, onClose }) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const [step, setStep] = useState(1);

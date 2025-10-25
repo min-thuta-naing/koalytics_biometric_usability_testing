@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { X } from "lucide-react";
+import { X, TableProperties, Play} from "lucide-react";
 import createPlotlyComponent from 'react-plotly.js/factory';
 import Plotly from 'plotly.js/lib/core';
 import box from 'plotly.js/lib/box';
@@ -75,10 +75,18 @@ const TestingResults = () => {
         fetchEmotions();
     }, [usabilityTestingId]);
 
+    // const openVideoModal = (videoUrl) => {
+    //     setSelectedVideo(videoUrl);
+    //     setIsVideoModalOpen(true);
+    // };
     const openVideoModal = (videoUrl) => {
-        setSelectedVideo(videoUrl);
+        const fullUrl = videoUrl.startsWith("http")
+            ? videoUrl
+            : `${API_URL}${videoUrl.startsWith("/") ? "" : "/"}${videoUrl}`;
+        setSelectedVideo(fullUrl);
         setIsVideoModalOpen(true);
     };
+
 
     const closeVideoModal = () => {
         setIsVideoModalOpen(false);
@@ -288,19 +296,21 @@ const TestingResults = () => {
                                                 <td className="border px-4 py-2">{recording.participant_email}</td>
                                                 <td className="border px-4 py-2 text-center">
                                                     <button
-                                                        className="text-black bg-[#C4BDED] hover:bg-[#B3AAE6] px-6 py-2 rounded-lg shadow-md transition-colors"
+                                                        className="flex justify-center items-center gap-2 text-black bg-[#C4BDED] hover:bg-[#B3AAE6] px-6 py-2 rounded-lg shadow-md transition-colors mx-auto"
                                                         onClick={() => openVideoModal(recording.video)}
                                                     >
-                                                        View Recording
+                                                        <Play size={18} />
+                                                        Play Recording
                                                     </button>
                                                 </td>
                                                 <td className="border px-4 py-2 text-center">
                                                     <div className="flex flex-col items-center justify-center gap-2">
                                                         <button
-                                                            className="text-black bg-[#C4BDED] hover:bg-[#B3AAE6] px-6 py-2 rounded-lg shadow-md transition-colors"
+                                                            className="flex justify-center items-center gap-2 text-black bg-[#C4BDED] hover:bg-[#B3AAE6] px-6 py-2 rounded-lg shadow-md transition-colors"
                                                             onClick={() => handleEmotionDetailClick(recording.participant_email)}
                                                         >
-                                                            Emotion Details
+                                                            <TableProperties size={18} />
+                                                            Emotion Details Table
                                                         </button>
                                                         {emotionData && (
                                                             <span className="text-sm text-gray-600 italic">
