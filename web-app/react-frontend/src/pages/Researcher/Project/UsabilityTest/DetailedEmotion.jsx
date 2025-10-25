@@ -322,10 +322,10 @@ const DetailedEmotion = () => {
                         <button
                             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages}
-                            className="flex items-center px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                            className="flex items-center gap-2 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
                         >
-                            <ChevronRight size={16} />
                             <span>Next</span>
+                            <ChevronRight size={16} />
                         </button>
                     </div>
                 </div>
