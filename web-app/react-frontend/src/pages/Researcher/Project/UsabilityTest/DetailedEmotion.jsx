@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Download, ChevronLeft, ChevronRight } from 'lucide-react';
 
-
-// import Plot from "react-plotly.js"; // Import Plotly
+// import Plot from "react-plotly.js"; 
 import createPlotlyComponent from 'react-plotly.js/factory';
 import Plotly from 'plotly.js/lib/core';
 
 // Import only what you need
 import box from 'plotly.js/lib/box';
-import scatter from 'plotly.js/lib/scatter'; // scatter = line charts
+import scatter from 'plotly.js/lib/scatter'; 
 
 // Register them with Plotly
 Plotly.register([box, scatter]);
@@ -75,11 +75,11 @@ const DetailedEmotion = () => {
     if (error) return <div className="text-red-500">Error: {error}</div>;
     if (!emotionData.length) return <div>No emotion data found for this participant.</div>;
 
-    // ✅ Prepare data for the line chart
+    // Prepare data for the line chart
     const timestamps = emotionData.map((d) => new Date(d.timestamp).toLocaleTimeString());
     const emotions = ['happy', 'sad', 'angry', 'surprise', 'neutral', 'fear', 'disgust'];
 
-    // ✅ Prepare CSV data for the graph
+    // Prepare CSV data for the graph
     const graphCsvData = emotionData.map((emotion) => [
         new Date(emotion.timestamp).toLocaleString(),
         emotion.dominant,
@@ -95,7 +95,7 @@ const DetailedEmotion = () => {
     const downloadGraphCSV = () => {
         const headers = ['Timestamp', 'Dominant', 'Happy', 'Sad', 'Angry', 'Surprise', 'Neutral', 'Fear', 'Disgust'];
         const csvRows = [
-            headers.join(','), // CSV Header
+            headers.join(','), 
             ...graphCsvData.map(row => row.join(','))
         ];
         const csvString = csvRows.join('\n');
@@ -105,17 +105,17 @@ const DetailedEmotion = () => {
         const blob = new Blob([csvString], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         link.href = url;
-        link.download = 'graph_emotion_data.csv'; // Name of the file
-        link.click(); // Trigger download
+        link.download = 'graph_emotion_data.csv'; 
+        link.click(); 
     };
 
     const layout = {
         xaxis: {
             title: 'Timestamp',
-            tickangle: -60, // Slant the labels to the left (negative value)
+            tickangle: -60, 
             tickmode: 'array',
-            tickvals: timestamps, // Make sure this uses the actual timestamps as ticks
-            ticktext: timestamps, // Display actual timestamp values
+            tickvals: timestamps, 
+            ticktext: timestamps, 
             showgrid: true,
             gridwidth: 1,
         },
@@ -190,8 +190,6 @@ const DetailedEmotion = () => {
                 />
             </div>
 
-            
-
             {/* Table */}
             {/* <div className="overflow-x-auto mb-20 bg-white p-4 rounded-lg shadow-lg">
                 <div className="flex justify-left">
@@ -239,97 +237,99 @@ const DetailedEmotion = () => {
             </div> */}
 
             {/* Table with Pagination */}
-<div className="overflow-x-auto mb-20 bg-white p-4 rounded-lg shadow-lg">
-    <div className="flex flex-wrap justify-between items-center mb-4">
-        {/* CSV Download Button */}
-        <button
-            onClick={downloadGraphCSV}
-            className="px-4 py-2 bg-[#C4BDED] text-black rounded-lg shadow-md hover:bg-[#ACA3E3]"
-        >
-            Download Graph CSV
-        </button>
+            <div className="overflow-x-auto mb-20 bg-white p-4 rounded-lg shadow-lg">
+                <div className="flex flex-wrap justify-between items-center mb-4">
+                    {/* CSV Download Button */}
+                    <button
+                        onClick={downloadGraphCSV}
+                        className="flex items-center gap-2 px-4 py-2 bg-[#C4BDED] text-black rounded-lg shadow-md hover:bg-[#ACA3E3] transition"
+                    >
+                        <Download size={18} />
+                        <span>Download Graph CSV</span>
+                    </button>
 
-        {/* Rows per page selector */}
-        <div className="flex items-center space-x-2">
-            <label htmlFor="rowsPerPage" className="text-sm text-gray-700">
-                Rows per page:
-            </label>
-            <select
-                id="rowsPerPage"
-                className="border border-gray-300 rounded px-2 py-1 text-sm"
-                value={rowsPerPage}
-                onChange={(e) => {
-                    setRowsPerPage(Number(e.target.value));
-                    setCurrentPage(1); // reset to first page
-                }}
-            >
-                {[5, 10, 20, 50].map((size) => (
-                    <option key={size} value={size}>
-                        {size}
-                    </option>
-                ))}
-            </select>
-        </div>
-    </div>
+                    {/* Rows per page selector */}
+                    <div className="flex items-center space-x-2">
+                        <label htmlFor="rowsPerPage" className="text-sm text-gray-700">
+                            Rows per page:
+                        </label>
+                        <select
+                            id="rowsPerPage"
+                            className="border border-gray-300 rounded px-2 py-1 text-sm"
+                            value={rowsPerPage}
+                            onChange={(e) => {
+                                setRowsPerPage(Number(e.target.value));
+                                setCurrentPage(1); // reset to first page
+                            }}
+                        >
+                            {[5, 10, 20, 50].map((size) => (
+                                <option key={size} value={size}>
+                                    {size}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
 
-    {/* Emotion Data Table */}
-    <table className="min-w-full border-collapse">
-        <thead>
-            <tr className="bg-[#ACA3E3]">
-                <th className="border px-4 py-2">Timestamp</th>
-                <th className="border px-4 py-2">Dominant</th>
-                <th className="border px-4 py-2">Happy</th>
-                <th className="border px-4 py-2">Sad</th>
-                <th className="border px-4 py-2">Angry</th>
-                <th className="border px-4 py-2">Surprise</th>
-                <th className="border px-4 py-2">Neutral</th>
-                <th className="border px-4 py-2">Fear</th>
-                <th className="border px-4 py-2">Disgust</th>
-            </tr>
-        </thead>
-        <tbody>
-            {currentRows.map((emotion) => (
-                <tr key={emotion.id}>
-                    <td className="border px-4 py-2">
-                        {new Date(emotion.timestamp).toLocaleString()}
-                    </td>
-                    <td className="border px-4 py-2">{emotion.dominant}</td>
-                    <td className="border px-4 py-2">{emotion.happy?.toFixed(2) ?? 'N/A'}</td>
-                    <td className="border px-4 py-2">{emotion.sad?.toFixed(2) ?? 'N/A'}</td>
-                    <td className="border px-4 py-2">{emotion.angry?.toFixed(2) ?? 'N/A'}</td>
-                    <td className="border px-4 py-2">{emotion.surprise?.toFixed(2) ?? 'N/A'}</td>
-                    <td className="border px-4 py-2">{emotion.neutral?.toFixed(2) ?? 'N/A'}</td>
-                    <td className="border px-4 py-2">{emotion.fear?.toFixed(2) ?? 'N/A'}</td>
-                    <td className="border px-4 py-2">{emotion.disgust?.toFixed(2) ?? 'N/A'}</td>
-                </tr>
-            ))}
-        </tbody>
-    </table>
+                {/* Emotion Data Table */}
+                <table className="min-w-full border-collapse">
+                    <thead>
+                        <tr className="bg-[#ACA3E3]">
+                            <th className="border px-4 py-2">Timestamp</th>
+                            <th className="border px-4 py-2">Dominant</th>
+                            <th className="border px-4 py-2">Happy</th>
+                            <th className="border px-4 py-2">Sad</th>
+                            <th className="border px-4 py-2">Angry</th>
+                            <th className="border px-4 py-2">Surprise</th>
+                            <th className="border px-4 py-2">Neutral</th>
+                            <th className="border px-4 py-2">Fear</th>
+                            <th className="border px-4 py-2">Disgust</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {currentRows.map((emotion) => (
+                            <tr key={emotion.id}>
+                                <td className="border px-4 py-2">
+                                    {new Date(emotion.timestamp).toLocaleString()}
+                                </td>
+                                <td className="border px-4 py-2">{emotion.dominant}</td>
+                                <td className="border px-4 py-2">{emotion.happy?.toFixed(2) ?? 'N/A'}</td>
+                                <td className="border px-4 py-2">{emotion.sad?.toFixed(2) ?? 'N/A'}</td>
+                                <td className="border px-4 py-2">{emotion.angry?.toFixed(2) ?? 'N/A'}</td>
+                                <td className="border px-4 py-2">{emotion.surprise?.toFixed(2) ?? 'N/A'}</td>
+                                <td className="border px-4 py-2">{emotion.neutral?.toFixed(2) ?? 'N/A'}</td>
+                                <td className="border px-4 py-2">{emotion.fear?.toFixed(2) ?? 'N/A'}</td>
+                                <td className="border px-4 py-2">{emotion.disgust?.toFixed(2) ?? 'N/A'}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
 
-    {/* Pagination Controls */}
-    <div className="flex justify-between items-center mt-4">
-        <p className="text-sm text-gray-600">
-            Page {currentPage} of {totalPages}
-        </p>
-        <div className="flex space-x-2">
-            <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-            >
-                Prev
-            </button>
-            <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-            >
-                Next
-            </button>
-        </div>
-    </div>
-</div>
-
+                {/* Pagination Controls */}
+                <div className="flex justify-between items-center mt-4">
+                    <p className="text-sm text-gray-600">
+                        Page {currentPage} of {totalPages}
+                    </p>
+                    <div className="flex space-x-2">
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="flex items-center gap-2 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                        >
+                            <ChevronLeft size={16} />
+                            <span>Prev</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="flex items-center px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                        >
+                            <ChevronRight size={16} />
+                            <span>Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
