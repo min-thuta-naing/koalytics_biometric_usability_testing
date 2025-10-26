@@ -157,7 +157,8 @@ urlpatterns = [
 
 # Static files URL handling
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0]) # only for development
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) #  only for production
 
 
 # Catch-all route should be placed at the end of urlpatterns
