@@ -16,20 +16,14 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-$y)%w$j261!zy@&l-y_6+zm+1t#hafsj00wk-cd%ixggzq_p=v"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True # for development
+DEBUG = False # for production
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-
-
-# Application definition
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'koala-analytics.uk', 'www.koala-analytics.uk']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -58,6 +52,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "django_backend.urls"
 
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = ['https://koala-analytics.uk', 'https://www.koala-analytics.uk']
 
 TEMPLATES = [
     {
@@ -139,7 +134,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # STATIC_URL = "static/"
 # STATICFILES_DIRS = []
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"] # only for development 
+# STATICFILES_DIRS = [BASE_DIR / "static"] # only for development 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 #only for production 'npm run build'
