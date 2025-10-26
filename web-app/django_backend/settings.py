@@ -24,6 +24,11 @@ SECRET_KEY = "django-insecure-$y)%w$j261!zy@&l-y_6+zm+1t#hafsj00wk-cd%ixggzq_p=v
 DEBUG = False # for production
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'koala-analytics.uk', 'www.koala-analytics.uk']
+CSRF_TRUSTED_ORIGINS = [
+    'https://koala-analytics.uk', 'https://www.koala-analytics.uk',
+    'http://koala-analytics.uk', 'http://www.koala-analytics.uk'
+]
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -52,7 +57,6 @@ MIDDLEWARE = [
 ROOT_URLCONF = "django_backend.urls"
 
 CORS_ALLOW_ALL_ORIGINS = True
-CSRF_TRUSTED_ORIGINS = ['https://koala-analytics.uk', 'https://www.koala-analytics.uk']
 
 TEMPLATES = [
     {
