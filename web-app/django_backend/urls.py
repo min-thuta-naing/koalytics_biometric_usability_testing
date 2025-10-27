@@ -45,14 +45,14 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index, name='index'),
-    path('login/', login, name='login'), # [Done] 
-    path('signup/', signup, name='signup'), # [Done]
-    path('save-hobbies/<int:user_id>/', save_hobbies, name='save-hobbies'), # [Done] 
-    path('save_employment_status/<int:user_id>/', save_employment_status, name='save-employment-status'), # [Done] 
-    path('save_profession/<int:user_id>/', save_profession, name='save-profession'), # [Done] 
-    path('save_position/<int:user_id>/', save_position, name='save_position'), # [Done] 
-    path('save_industry/<int:user_id>/', save_industry, name='save_industry'), # [Done] 
-    path('user/<int:user_id>/', get_user, name='get_user'), # My account page [Done] 
+    path('api/login/', login, name='login'), # [Done] 
+    path('api/signup/', signup, name='signup'), # [Done]
+    path('api/save-hobbies/<int:user_id>/', save_hobbies, name='save-hobbies'), # [Done] 
+    path('api/save_employment_status/<int:user_id>/', save_employment_status, name='save-employment-status'), # [Done] 
+    path('api/save_profession/<int:user_id>/', save_profession, name='save-profession'), # [Done] 
+    path('api/save_position/<int:user_id>/', save_position, name='save_position'), # [Done] 
+    path('api/save_industry/<int:user_id>/', save_industry, name='save_industry'), # [Done] 
+    path('api/user/<int:user_id>/', get_user, name='get_user'), # My account page [Done] 
     
     # project related 
     path('api/shared_projects/<int:user_id>/', views.get_shared_projects, name='shared-projects'), # [Done] for fetching shared project on collaborator side on ResearcherDashboard.jsx
