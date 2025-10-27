@@ -61,8 +61,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        #"DIRS": [os.path.join(BASE_DIR, 'react-frontend/build')], # only for production 'npm run build'
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'react-frontend/build')], # only for production 'npm run build'
+        # "DIRS": [], # for development
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
