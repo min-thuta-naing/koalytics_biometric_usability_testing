@@ -29,7 +29,7 @@ const MyAccount = () => {
                 }
 
                 // Fetch user data from API
-                const response = await fetch(`${API_URL}/api/user/${userId}/`);
+                const response = await fetch(`${API_URL}user/${userId}/`);
                 
                 if (!response.ok) {
                     throw new Error(`Failed to fetch user data: ${response.status}`);

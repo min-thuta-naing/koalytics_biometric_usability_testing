@@ -62,7 +62,7 @@ export default function EmploymentStatusQuestion() {
         return;
       }
 
-      const response = await fetch(`${API_URL}/api/save_employment_status/${userId}/`, {
+      const response = await fetch(`${API_URL}save_employment_status/${userId}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ employmentStatuses: selectedStatus  }),

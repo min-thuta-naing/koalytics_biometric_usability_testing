@@ -34,7 +34,7 @@ export default function SignUpLayout() {
     try {
       const csrftoken = document.cookie.split("; ").find((row) => row.startsWith("csrftoken="))?.split("=")[1];
 
-      const response = await fetch(`${API_URL}/api/signup/`, {
+      const response = await fetch(`${API_URL}signup/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

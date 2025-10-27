@@ -63,7 +63,7 @@ export default function HobbyQuestion() {
         return;
       }
 
-      const response = await fetch(`${API_URL}/api/save-hobbies/${userId}/`, {
+      const response = await fetch(`${API_URL}save-hobbies/${userId}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ hobbies: selectedHobbies }),

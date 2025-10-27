@@ -68,7 +68,7 @@ export default function ProfessionQuestion() {
         return;
       }
 
-      const response = await fetch(`${API_URL}/api/save_profession/${userId}/`, {
+      const response = await fetch(`${API_URL}save_profession/${userId}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ profession: selectedProfession }),
