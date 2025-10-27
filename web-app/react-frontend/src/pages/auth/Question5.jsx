@@ -76,7 +76,7 @@ export default function IndustryQuestion() {
         return;
       }
 
-      const response = await fetch(`${API_URL}/api/save_industry/${userId}/`, {
+      const response = await fetch(`${API_URL}save_industry/${userId}/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ industry: selectedIndustry }),
