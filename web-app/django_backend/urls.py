@@ -162,9 +162,9 @@ urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) #
 
 
 # Catch-all route should be placed at the end of urlpatterns
-# urlpatterns += [
-#     re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
-# ]
+urlpatterns += [
+    re_path(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
+]
 
 #only for the production build 'npm run build'
 # if not settings.DEBUG:
