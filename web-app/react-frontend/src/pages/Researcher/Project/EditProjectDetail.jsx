@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {X} from "lucide-react"; 
 
 const EditProjectDetail = ({onCancel, projectId, onProjectEdited, project, setShowEditModal}) => {
-
+    const API_URL = process.env.REACT_APP_API_URL;
     const [projectName, setProjectName] = useState("");
     const [projectCategory, setProjectCategory] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -46,7 +46,7 @@ const EditProjectDetail = ({onCancel, projectId, onProjectEdited, project, setSh
         setSuccess("");
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/update_project/${projectId}/`, { //update_project from view.py 
+            const response = await fetch(`${API_URL}update_project/${projectId}/`, { //update_project from view.py 
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

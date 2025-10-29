@@ -66,7 +66,7 @@ const ProjectDashboard = () => {
 ////////////////////////////////////////////// PUBLISH or UN-PUBLISH PROJECT FUNCTIONS //////////////////////////////////////////////
     const handlePublishProject = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/projects/${projectId}/publish/`, {
+            const response = await fetch(`${API_URL}projects/${projectId}/publish/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ const ProjectDashboard = () => {
 
     const handleUnpublishProject = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/projects/${projectId}/unpublish/`, {
+            const response = await fetch(`${API_URL}projects/${projectId}/unpublish/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ const ProjectDashboard = () => {
         }
 
         const delayDebounce = setTimeout(() => {
-            fetch(`${API_URL}/api/search-users-by-email?q=${encodeURIComponent(searchQuery)}`)
+            fetch(`${API_URL}search-users-by-email?q=${encodeURIComponent(searchQuery)}`)
                 .then(res => res.json())
                 .then(data => {
                     setResults(data);
@@ -180,7 +180,7 @@ const ProjectDashboard = () => {
         }
 
         try {
-            const res = await fetch(`${API_URL}/api/add-collaborator/`, {
+            const res = await fetch(`${API_URL}add-collaborator/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -213,7 +213,7 @@ const ProjectDashboard = () => {
     //fetch the collaborators 
     const fetchCollaborators = async () => {
         try {
-            const res = await fetch(`${API_URL}/api/get-collaborators/${projectId}/`);
+            const res = await fetch(`${API_URL}get-collaborators/${projectId}/`);
             const data = await res.json();
             setCollaborators(data);
         } catch (err) {
@@ -231,7 +231,7 @@ const ProjectDashboard = () => {
     //delete the collaborator 
     const handleRemoveCollaborator = async (collabId) => {
         try {
-            await fetch(`${API_URL}/api/delete-collaborator/${collabId}/`, {
+            await fetch(`${API_URL}delete-collaborator/${collabId}/`, {
                 method: "DELETE"
             });
             fetchCollaborators(); // Refresh list after deletion
@@ -257,7 +257,7 @@ const ProjectDashboard = () => {
         setShowAddCriteriaModal(false); // close modal
     
         try {
-            const response = await fetch(`${API_URL}/api/project/${projectId}/save-criteria/`, {
+            const response = await fetch(`${API_URL}project/${projectId}/save-criteria/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -285,7 +285,7 @@ const ProjectDashboard = () => {
     
     const fetchProjectCriteria = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/project/${projectId}/get-criteria/`);
+            const response = await fetch(`${API_URL}project/${projectId}/get-criteria/`);
             if (response.ok) {
                 const data = await response.json();
                 setSelectedCriteria({
@@ -309,7 +309,7 @@ const ProjectDashboard = () => {
 
     const fetchSUSForms = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/projects/${projectId}/get-susforms/`);
+            const response = await fetch(`${API_URL}projects/${projectId}/get-susforms/`);
             if (response.ok) {
                 const data = await response.json();
                 setSUSForms(data.susforms);
@@ -328,7 +328,7 @@ const ProjectDashboard = () => {
 
     const fetchUsabilityTesting = async () => {
         try {
-            const response = await fetch(`${API_URL}/projects/${projectId}/usability-testings/`);
+            const response = await fetch(`${API_URL}projects/${projectId}/usability-testings/`);
             if (response.ok) {
                 const data = await response.json();
                 setUsabilityTestings(data.usability_testings);
@@ -344,7 +344,7 @@ const ProjectDashboard = () => {
     // fetch project with fetchProject function and display the project in the project detail page with useEffect
     const fetchProject = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/project/${projectId}/`);
+            const response = await fetch(`${API_URL}project/${projectId}/`);
             if (response.ok) {
                 const data = await response.json();
                 console.log("Fetched project:", data); // 👈 check here
@@ -406,7 +406,7 @@ const ProjectDashboard = () => {
         if (!formToDelete) return;
 
         try {
-            const response = await fetch(`${API_URL}/api/forms/delete-susforms/${formToDelete}/`, {
+            const response = await fetch(`${API_URL}forms/delete-susforms/${formToDelete}/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -441,7 +441,7 @@ const ProjectDashboard = () => {
         if (!usabilityTestingsToDelete) return;
 
         try {
-            const response = await fetch(`${API_URL}/usability-testing/delete/${usabilityTestingsToDelete}/`, {
+            const response = await fetch(`${API_URL}usability-testing/delete/${usabilityTestingsToDelete}/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -505,7 +505,7 @@ const ProjectDashboard = () => {
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
                 {/* <img src={`${API_URL}/${project.image_path}`} alt="Project Image" /> */}
                 <img
-                    src={project.image_path ? `${API_URL}/${project.image_path}` : "/static/images/projectbg.png"}
+                    src={project.image_path ? `${API_URL}${project.image_path}` : "/static/images/projectbg.png"}
                     alt="Project Image"
                 />
             </div>

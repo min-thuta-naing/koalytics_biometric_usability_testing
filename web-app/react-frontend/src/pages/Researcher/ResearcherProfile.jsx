@@ -28,7 +28,7 @@ const ResearcherProfile = () => {
                 }
 
                 // Fetch user data from API
-                const response = await fetch(`${API_URL}/api/user/${userId}/`);
+                const response = await fetch(`${API_URL}user/${userId}/`);
                 
                 if (!response.ok) {
                     throw new Error(`Failed to fetch user data: ${response.status}`);
@@ -60,7 +60,14 @@ const ResearcherProfile = () => {
     }, []);
 
     if (loading) {
-        return <p>Loading user information...</p>;
+        return (
+            <div className="flex justify-center items-center h-screen bg-gray-100">
+                <div className="text-center">
+                <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
+                    <p className="mt-4 text-xl font-funnel font-semibold text-gray-700">Loading, please wait ...</p>
+                </div>
+            </div>
+        );
     }
 
     if (error) {
