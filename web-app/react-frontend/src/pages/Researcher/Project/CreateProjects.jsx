@@ -413,7 +413,7 @@ const CreateProjects = ({ onCancel, userId, onProjectCreated }) => {
         console.log("Submitting with consent:", consentContent);
 
         try {
-            const response = await fetch(`${API_URL}/api/create_project/${userId}/`, {
+            const response = await fetch(`${API_URL}create_project/${userId}/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

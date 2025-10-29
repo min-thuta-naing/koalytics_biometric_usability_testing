@@ -64,7 +64,7 @@ const ResearcherDashboard = () => {
     // FETCH PROJECTS with user id ////////////////////////////////////////////////
     const fetchProjects = async (userId) => {
         try {
-            const response = await fetch(`${API_URL}/api/user/${userId}/`);
+            const response = await fetch(`${API_URL}user/${userId}/`);
             if (response.ok) {
                 const data = await response.json();
                 setProjects(data.projects);
@@ -77,7 +77,7 @@ const ResearcherDashboard = () => {
     // FETCH PROJECT from collaboration ////////////////////////////////////////////
     const fetchSharedProjects = async (userId) => {
         try {
-            const response = await fetch(`${API_URL}/api/shared_projects/${userId}/`);
+            const response = await fetch(`${API_URL}shared_projects/${userId}/`);
             if (response.ok) {
                 const data = await response.json();
                 setSharedProjects(data);
@@ -103,7 +103,7 @@ const ResearcherDashboard = () => {
         if (!projectToDelete) return;
 
         try {
-            const response = await fetch(`${API_URL}/api/delete_project/${projectToDelete}/`, {
+            const response = await fetch(`${API_URL}delete_project/${projectToDelete}/`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

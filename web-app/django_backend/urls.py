@@ -67,7 +67,7 @@ urlpatterns = [
     path('api/get-collaborators/<int:project_id>/', views.get_collaborators), # [Done] list of collaborators in the project
     path('api/delete-collaborator/<int:collaboration_id>/', views.delete_collaborator), # [Done] remove the collaborator in the project
     
-    path("api/update_project/<int:project_id>/", update_project, name="update_project"),
+    path("api/update_project/<int:project_id>/", update_project, name="update_project"), # [Done] for updating project on EditProjectDetail.jsx
 
     path('api/project/<int:project_id>/save-criteria/', views.create_or_update_criteria, name='create_or_update_criteria'),
     path('api/project/<int:project_id>/get-criteria/', views.get_project_criteria, name='get_project_criteria'),
@@ -97,7 +97,7 @@ urlpatterns = [
     path('projects/<int:project_id>/forms/', views.get_form, name='get_forms'),
     path('forms/<int:form_id>/', views.form_detail, name='form_detail'),
     path('forms/update/<int:form_id>/', views.update_form, name='update_form'),
-    path('forms/delete/<int:form_id>/', views.delete_form, name='delete_form'),
+    path('api/forms/delete/<int:form_id>/', views.delete_form, name='delete_form'),
 
 
     # usability testing related 
@@ -105,8 +105,8 @@ urlpatterns = [
     path('usability-testing/<int:usability_testing_id>/', views.usability_testing_detail, name='usability_testing_detail'), # usability testing detail on UsabilityTestingHeader.jsx
     path('usability-testing/<int:usability_testing_id>/recordings/', views.get_recordings_for_usability_testing, name='get_recordings_for_usability_testing'), # usability testing recording on TestingResults.jsx
 
-    path('projects/<int:project_id>/usability-testings/', views.get_usability_testing, name='get_usability_testing'), # get all usability testings list on ProjectDashboard.jsx
-    path('usability-testing/delete/<int:usability_testing_id>/', views.delete_usability_testing, name='delete_usability_testing'), # delete usability testing on ProjectDashboard.jsx
+    path('api/projects/<int:project_id>/usability-testings/', views.get_usability_testing, name='get_usability_testing'), # get all usability testings list on ProjectDashboard.jsx
+    path('api/usability-testing/delete/<int:usability_testing_id>/', views.delete_usability_testing, name='delete_usability_testing'), # delete usability testing on ProjectDashboard.jsx
     path("api/save-recording/check/<int:usability_testing_id>/", views.check_recording, name="check-recording"), # ❌
     path('api/validate-frame/', views.validate_camera_frame, name='validate-camera-frame'), # camera callibration
     path("api/save-recording/", views.save_recording, name="save-recording"), # start and save recording on TestCalibration.jsx
