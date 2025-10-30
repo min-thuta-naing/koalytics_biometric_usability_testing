@@ -22,7 +22,17 @@ const SUSQuestionPreview = () => {
         });
     }, [formId]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen bg-gray-100">
+                <div className="text-center">
+                <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
+                    <p className="mt-4 text-xl font-funnel font-semibold text-gray-700">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
     if (error) return <div>Error loading questions!</div>;
 
     return (

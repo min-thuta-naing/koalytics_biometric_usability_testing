@@ -21,6 +21,7 @@ const TestingResults = () => {
     const [error, setError] = useState("");
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
     const [selectedVideo, setSelectedVideo] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [summary, setSummary] = useState({ totalFrames: 0, dominantCounts: {} });
 
     useEffect(() => {
@@ -178,8 +179,28 @@ const TestingResults = () => {
         }
     };
 
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen bg-gray-100">
+                <div className="text-center">
+                <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
+                    <p className="mt-4 text-xl font-funnel font-semibold text-gray-700">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
     if (error) return <p className="text-red-500">{error}</p>;
-    if (!usabilityTesting) return <p>Loading...</p>;
+    if (!usabilityTesting) {
+        return (
+            <div className="font-funnel fixed inset-0 flex justify-center items-center">
+                <div className="text-center p-8 max-w-lg">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">No responses yet</h2>
+                <p className="text-gray-600">Please wait for participants to take the usability testing.</p>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="flex h-screen overflow-hidden">
