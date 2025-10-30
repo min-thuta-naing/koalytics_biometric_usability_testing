@@ -68,6 +68,8 @@ const TestingResults = () => {
                 });
             } catch (err) {
                 setError(err.message);
+            } finally{
+                setLoading(false);
             }
         };
 
@@ -179,28 +181,31 @@ const TestingResults = () => {
         }
     };
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-screen bg-gray-100">
-                <div className="text-center">
-                <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
-                    <p className="mt-4 text-xl font-funnel font-semibold text-gray-700">Loading...</p>
+            if (loading) {
+            return (
+                <div className="flex justify-center items-center h-screen bg-gray-100">
+                    <div className="text-center">
+                        <div className="animate-spin border-t-4 border-[#ACA3E3] border-solid rounded-full w-16 h-16 mx-auto"></div>
+                        <p className="mt-4 text-xl font-funnel font-semibold text-gray-700">Loading...</p>
+                    </div>
                 </div>
-            </div>
-        );
-    }
+            );
+        }
 
-    if (error) return <p className="text-red-500">{error}</p>;
-    if (!usabilityTesting) {
-        return (
-            <div className="font-funnel fixed inset-0 flex justify-center items-center">
-                <div className="text-center p-8 max-w-lg">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">No responses yet</h2>
-                <p className="text-gray-600">Please wait for participants to take the usability testing.</p>
+        if (error) return <p className="text-red-500">{error}</p>;
+
+        if ((!recordings || recordings.length === 0) && (!emotion || emotion.length === 0)) {
+            return (
+                <div className="font-funnel fixed inset-0 flex justify-center items-center bg-gray-50">
+                    <div className="text-center p-8 max-w-lg">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-4">No results to display</h2>
+                        <p className="text-gray-600">
+                            There are currently no recordings or emotion data available for this usability test.
+                        </p>
+                    </div>
                 </div>
-            </div>
-        )
-    }
+            );
+        }
 
     return (
         <div className="flex h-screen overflow-hidden">
