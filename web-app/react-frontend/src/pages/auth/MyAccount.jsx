@@ -294,7 +294,7 @@ const MyAccount = () => {
         <section className="bg-white rounded-lg p-5 shadow">
           <h3 className="text-lg font-semibold">{userData.first_name} {userData.last_name}</h3>
           <p className="text-gray-600">{userData.country || "No country"}</p>
-          <p className="text-gray-600 text-sm">User ID: {userData.id}</p>
+         {/* <p className="text-gray-600 text-sm">User ID: {userData.id}</p> */}
         </section>
 
         {/* Personal Info */}

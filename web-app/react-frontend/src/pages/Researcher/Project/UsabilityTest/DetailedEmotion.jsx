@@ -9,6 +9,7 @@ import Plotly from 'plotly.js/lib/core';
 // Import only what you need
 import box from 'plotly.js/lib/box';
 import scatter from 'plotly.js/lib/scatter'; 
+import HeaderBar from "../components/HeaderBar";
 
 // Register them with Plotly
 Plotly.register([box, scatter]);
@@ -31,6 +32,17 @@ const DetailedEmotion = () => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     const currentRows = emotionData.slice(startIndex, endIndex);
+
+    const TestingResults = () => {
+    return (
+        <div className="min-h-screen bg-gray-100">
+        <HeaderBar /> 
+        <main className="pt-20 px-4">
+            {/* Page content */}
+        </main>
+        </div>
+    );
+    };
 
     // Calculate total time
     let totalTimeTaken = null;
