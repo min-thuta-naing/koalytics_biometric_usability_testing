@@ -85,7 +85,8 @@ const TestingResults = () => {
     const openVideoModal = (videoUrl) => {
         const fullUrl = videoUrl.startsWith("http")
             ? videoUrl
-            : `${API_URL}${videoUrl.startsWith("/") ? "" : "/"}${videoUrl}`;
+            // : `${API_URL}${videoUrl.startsWith("/") ? "" : "/"}${videoUrl}`; // for development
+            : `${videoUrl.startsWith("/") ? "" : "/"}${videoUrl}`; //for deployment
         setSelectedVideo(fullUrl);
         setIsVideoModalOpen(true);
     };
