@@ -47,7 +47,7 @@ const CreateSurveyForms = ({ onClose, projectId, onFormCreated }) => {
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/projects/${projectId}/create-susform/`, {
+            const response = await fetch(`${API_URL}projects/${projectId}/create-susform/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

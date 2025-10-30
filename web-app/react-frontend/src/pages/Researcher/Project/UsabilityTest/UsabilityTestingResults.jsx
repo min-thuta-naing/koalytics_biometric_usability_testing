@@ -26,7 +26,7 @@ const TestingResults = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const response = await fetch(`${API_URL}/usability-testing/${usabilityTestingId}/`);
+                const response = await fetch(`${API_URL}usability-testing/${usabilityTestingId}/`);
                 if (!response.ok) throw new Error("Failed to fetch usability testing details.");
                 const data = await response.json();
                 setUsabilityTesting(data);
@@ -37,7 +37,7 @@ const TestingResults = () => {
 
         const fetchRecordings = async () => {
             try {
-                const response = await fetch(`${API_URL}/usability-testing/${usabilityTestingId}/recordings/`);
+                const response = await fetch(`${API_URL}usability-testing/${usabilityTestingId}/recordings/`);
                 if (!response.ok) throw new Error("Failed to fetch recordings.");
                 const data = await response.json();
                 setRecordings(data);
@@ -48,7 +48,7 @@ const TestingResults = () => {
 
         const fetchEmotions = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/usability-testing/${usabilityTestingId}/emotion-data/`);
+                const response = await fetch(`${API_URL}usability-testing/${usabilityTestingId}/emotion-data/`);
                 if (!response.ok) throw new Error("Failed to fetch emotion data.");
                 const data = await response.json();
                 setEmotions(data);

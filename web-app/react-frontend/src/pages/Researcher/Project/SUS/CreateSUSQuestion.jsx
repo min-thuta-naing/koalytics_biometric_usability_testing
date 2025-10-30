@@ -27,7 +27,7 @@ const CreateSUSQuestion = ({ form, formId }) => {
 
     const handleSubmit = async () => {
         try {
-        const response = await fetch(`${API_URL}/api/${formId}/sus-questions/`, {
+        const response = await fetch(`${API_URL}${formId}/sus-questions/`, {
             method: "POST",
             headers: {
             "Content-Type": "application/json",

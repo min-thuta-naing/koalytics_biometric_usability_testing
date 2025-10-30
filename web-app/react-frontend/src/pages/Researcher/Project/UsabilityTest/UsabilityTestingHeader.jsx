@@ -15,7 +15,7 @@ const UsabilityTestingDetail = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const response = await fetch(`${API_URL}/usability-testing/${usabilityTestingId}/`);
+                const response = await fetch(`${API_URL}usability-testing/${usabilityTestingId}/`);
                 if (!response.ok) throw new Error("Failed to fetch usability testing details.");
                 const data = await response.json();
                 setUsabilityTesting(data);

@@ -56,7 +56,7 @@ const DetailedEmotion = () => {
         const fetchEmotionData = async () => {
             try {
                 const response = await fetch(
-                    `${API_URL}/api/usability-testing/${usabilityTestingId}/emotion-data/?participant=${participantEmail}`
+                    `${API_URL}usability-testing/${usabilityTestingId}/emotion-data/?participant=${participantEmail}`
                 );
                 if (!response.ok) throw new Error("Failed to fetch emotion data.");
                 const data = await response.json();

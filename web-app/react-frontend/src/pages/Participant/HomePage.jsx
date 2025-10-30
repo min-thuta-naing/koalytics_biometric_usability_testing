@@ -35,7 +35,7 @@ const HomePage = () => {
  
     //feching all projects 
     useEffect(() => {
-        fetch(`${API_URL}/api/all-published-projects/`)
+        fetch(`${API_URL}all-published-projects/`)
             .then(response => response.json())
             .then(data => setProjects(data))
             .catch(error => console.error("Error fetching projects:", error)); 
@@ -182,7 +182,8 @@ const HomePage = () => {
                                     onClick={() => navigate(`/all-project/${project.id}`)}
                                     style={{ 
                                         backgroundImage: project.image_path 
-                                            ? `url(${API_URL}${project.image_path})`
+                                            // ? `url(${API_URL}${project.image_path})` //for development
+                                            ? `url(${project.image_path})` //for deployment
                                             : "url('/static/images/projectbg.png')"
                                     }}
                                 >
