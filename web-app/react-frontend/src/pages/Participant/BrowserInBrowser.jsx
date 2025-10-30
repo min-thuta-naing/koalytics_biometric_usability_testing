@@ -55,7 +55,7 @@ const BrowserInBrowser = () => {
         if (!id) return;
         const fetchUsabilityTest = async () => {
             try {
-                const res = await fetch(`${API_URL}/usability-testing/${id}/`);
+                const res = await fetch(`${API_URL}usability-testing/${id}/`);
                 const data = await res.json();
                 setUsabilityTesting(data);
                 setTask(data.task);
@@ -98,12 +98,12 @@ const BrowserInBrowser = () => {
     // Function to capture a frame and send it to the backend
     const captureAndSendFrame = async () => {
         if (!videoRef.current || !canvasRef.current || !userEmail) {
-            console.error("❌ videoRef or canvasRef is not available");
+            console.error("videoRef or canvasRef is not available");
             return;
         }
 
         // Log the video dimensions
-        console.log("📏 Video dimensions:", videoRef.current.videoWidth, videoRef.current.videoHeight);
+        console.log("Video dimensions:", videoRef.current.videoWidth, videoRef.current.videoHeight);
 
         console.log("Submitting answers for user:", userEmail);
 
@@ -137,7 +137,7 @@ const BrowserInBrowser = () => {
 
 
         try {
-            const response = await fetch(`${API_URL}/emotion-detection/`, {
+            const response = await fetch(`${API_URL}emotion-detection/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 

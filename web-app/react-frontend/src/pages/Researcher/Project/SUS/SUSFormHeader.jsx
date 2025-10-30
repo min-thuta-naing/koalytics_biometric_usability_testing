@@ -17,7 +17,7 @@ const FormDetail = () => {
   useEffect(() => {
     const fetchFormDetails = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/${formId}/form-details/`);
+        const response = await fetch(`${API_URL}${formId}/form-details/`);
         if (!response.ok) {
           throw new Error("Failed to fetch form details.");
         }

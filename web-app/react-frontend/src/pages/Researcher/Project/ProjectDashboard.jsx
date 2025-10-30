@@ -505,7 +505,8 @@ const ProjectDashboard = () => {
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
                 {/* <img src={`${API_URL}/${project.image_path}`} alt="Project Image" /> */}
                 <img
-                    src={project.image_path ? `${API_URL}/${project.image_path}` : "/static/images/projectbg.png"}
+                    // src={project.image_path ? `${API_URL}/${project.image_path}` : "/static/images/projectbg.png"} //for development 
+                    src={project.image_path ? `${project.image_path}` : "/static/images/projectbg.png"} //for deployment
                     alt="Project Image"
                 />
             </div>

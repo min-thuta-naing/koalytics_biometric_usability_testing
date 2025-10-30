@@ -218,7 +218,8 @@ const ResearcherDashboard = () => {
                                         style={{ 
                                             backgroundImage: project.image_path 
                                                 ? `url(${project.image_path})`
-                                                : `url(${API_URL}/static/images/projectbg.png)`
+                                                // ? `url(${API_URL}/${project.image_path})` //for development  
+                                                : `url(${API_URL}/static/images/projectbg.png)` //for deployment
                                         }}
                                     />
 

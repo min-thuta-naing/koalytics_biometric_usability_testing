@@ -14,7 +14,7 @@ const ChooseTest = () => {
 
     // fetch the consent form from the project
     useEffect(() => {
-        fetch(`${API_URL}/api/projects/${projectId}/details/`)
+        fetch(`${API_URL}projects/${projectId}/details/`)
             .then(response => {
                 if (!response.ok) throw new Error("Failed to fetch project details");
                 return response.json();
@@ -28,7 +28,7 @@ const ChooseTest = () => {
 
     // Fetch forms when the page loads
     useEffect(() => {
-        fetch(`${API_URL}/api/projects/${projectId}/related_forms/`)
+        fetch(`${API_URL}projects/${projectId}/related_forms/`)
             .then(response => {
                 if (!response.ok) throw new Error("Failed to fetch forms");
                 return response.json();
@@ -40,7 +40,7 @@ const ChooseTest = () => {
 
     // Fetch usability testings when the page loads
     useEffect(() => {
-        fetch(`${API_URL}/api/projects/${projectId}/related_usability_testing/`)
+        fetch(`${API_URL}projects/${projectId}/related_usability_testing/`)
             .then(response => {
                 if (!response.ok) throw new Error("Failed to fetch usability testing");
                 return response.json();

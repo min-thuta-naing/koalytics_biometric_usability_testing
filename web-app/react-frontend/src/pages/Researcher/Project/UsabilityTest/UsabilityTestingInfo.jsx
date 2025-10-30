@@ -65,7 +65,7 @@ const TestingInfo = ({ usabilityTesting, usabilityTestingId }) => {
                         {/* No data fallback */}
                         {!usabilityTesting.website_link && !usabilityTesting.figma_embed_code && (
                             <p className="text-red-500 font-medium">
-                                ⚠️ No website link or prototype embed code available.
+                                No website link or prototype embed code available.
                             </p>
                         )}
                     </div>

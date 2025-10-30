@@ -10,7 +10,7 @@ const SUSQuestionPreview = () => {
 
     // Fetch questions list
     useEffect(() => {
-        fetch(`${API_URL}/api/${formId}/sus-questions/list/`)
+        fetch(`${API_URL}${formId}/sus-questions/list/`)
         .then((response) => response.json())
         .then((data) => {
             setQuestions(data);

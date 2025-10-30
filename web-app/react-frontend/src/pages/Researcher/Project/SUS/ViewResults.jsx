@@ -25,13 +25,13 @@ const ViewResults = () => {
 
     useEffect(() => {
         //Fetch questions for the form
-        fetch(`${API_URL}/api/${formId}/sus-questions/list/`)
+        fetch(`${API_URL}${formId}/sus-questions/list/`)
             .then(response => response.json())
             .then(data => setQuestions(data))
             .catch(error => console.error("Error fetching questions:", error));
 
         //fetch answers corresponding with each question
-        fetch(`${API_URL}/api/${formId}/sus-answers/results/`)
+        fetch(`${API_URL}${formId}/sus-answers/results/`)
             .then((response) => response.json())
             .then((data) => {
                 setAnswers(data);

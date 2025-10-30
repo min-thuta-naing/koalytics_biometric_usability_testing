@@ -38,7 +38,7 @@ const UsabilityTestingCalibrationPopUp = ({ usabilityTesting, usabilityTestingId
             const userEmail = JSON.parse(userData).email;
             formData.append("participant_email", userEmail);
 
-            await fetch(`${API_URL}/api/save-recording/`, { method: "POST", body: formData });
+            await fetch(`${API_URL}save-recording/`, { method: "POST", body: formData });
         };
 
         mediaRecorder.start();

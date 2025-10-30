@@ -35,7 +35,7 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
                 figma_embed_code: testingType === "prototype" ? figmaEmbedCode : undefined,
             };
 
-            const response = await fetch(`${API_URL}/api/projects/${projectId}/create-usability-testing/`, {
+            const response = await fetch(`${API_URL}projects/${projectId}/create-usability-testing/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

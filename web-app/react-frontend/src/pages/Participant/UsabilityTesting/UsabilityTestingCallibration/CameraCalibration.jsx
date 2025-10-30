@@ -72,7 +72,7 @@ const Camera = forwardRef(({ onValidationChange }, ref) => {
 
         const dataUrl = canvas.toDataURL('image/jpeg');
 
-        const response = await fetch(`${API_URL}/api/validate-frame/`, {
+        const response = await fetch(`${API_URL}validate-frame/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image: dataUrl }),
