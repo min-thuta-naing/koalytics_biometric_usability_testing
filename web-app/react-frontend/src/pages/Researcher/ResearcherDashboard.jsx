@@ -253,7 +253,8 @@ const ResearcherDashboard = () => {
                                         className="h-56 rounded-t-3xl shadow-md hover:shadow-lg border border-gray-400 bg-cover bg-center"
                                         style={{ 
                                             backgroundImage: project.image_path 
-                                                ? `url(${API_URL}${project.image_path})`
+                                                // ? `url(${API_URL}${project.image_path})` //for developmet 
+                                                ? `url(${project.image_path})` //for deploymnet
                                                 : `url(${API_URL}/static/images/projectbg.png)`
                                         }}
                                     />
