@@ -9,7 +9,7 @@ import Plotly from 'plotly.js/lib/core';
 // Import only what you need
 import box from 'plotly.js/lib/box';
 import scatter from 'plotly.js/lib/scatter'; 
-import HeaderBar from "../components/HeaderBar";
+import HeaderBar from "../../../../components/HeaderBar";
 
 // Register them with Plotly
 Plotly.register([box, scatter]);
