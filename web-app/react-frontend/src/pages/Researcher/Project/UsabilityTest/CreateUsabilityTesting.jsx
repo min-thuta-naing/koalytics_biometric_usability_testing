@@ -194,7 +194,7 @@ const CreateUsabilityTesting = ({ onClose, projectId, onUsabilityTestingCreated 
                                 + Add Step
                             </button>
 
-                            <label className="block mb-2">Duration of the test:</label>
+                            <label className="block mb-2">Duration of the test (in minutes):</label>
                             <input
                                 type="number"
                                 value={duration}
