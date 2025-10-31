@@ -209,13 +209,44 @@ const BrowserInBrowser = () => {
     }, [userEmail]); // Make sure email is available before starting
 
     
-
     return (
         <div className="flex h-screen">
             {/* Left Side (Camera & Emotion Display) */}
-            <div className="w-1/5 p-4 bg-gray-100 flex flex-col items-center">
-                <h2 className="text-xl font-bold">Instructions</h2>
-                <p className="mb-2 text-center">Your facial emotions will be detected in real-time.</p>
+            <div className="w-1/5 p-4 bg-gray-200 flex flex-col items-center font-funnel">
+                {/* Header */}
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-1">Instructions</h2>
+                </div>
+
+                {/* Display task and countdown */}
+                <div className="w-full bg-white rounded-xl shadow-md p-4 text-center border border-gray-200">
+                    <h3 className="text-lg font-semibold text-black mb-2">Task</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                    Please follow the steps below to complete your task.
+                    </p>
+                    {Array.isArray(task) ? (
+                    <ol className="list-decimal list-inside text-sm text-black space-y-1 text-left">
+                        {task.map((step, index) => (
+                        <li key={index}>{step}</li>
+                        ))}
+                    </ol>
+                    ) : (
+                    <p className="text-sm text-black">{task}</p>
+                    )}
+
+                    <div className="mt-4 bg-gray-50 py-2 rounded-lg border border-gray-100">
+                        <h3 className="text-md font-semibold text-gray-700">⏱ Time Left</h3>
+                        <p className="text-sm text-red-500">
+                            {/* {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')} */}
+                            {Math.floor(timeLeft / 60 / 1000)}:{((timeLeft / 1000) % 60).toString().padStart(2, '0')}
+                        </p>
+                    </div>
+                </div>
+
+                
+                <div className="mt-10 text-center text-sm text-gray-700">
+                    <p>Your facial emotions are being detected in real-time.</p>
+                </div>
 
                 <div className="relative w-full bg-black rounded-lg overflow-hidden flex justify-center">
                     {/* Webcam Video */}
@@ -234,27 +265,7 @@ const BrowserInBrowser = () => {
                     ))}
                 </div>
 
-                {/* Display task and countdown */}
-                <div className="mt-6 w-full text-center">
-                    <h3 className="text-md font-semibold text-gray-700 mb-2">Task</h3>
-                    {Array.isArray(task) ? (
-                    <ol className="list-decimal list-inside text-sm text-gray-600 space-y-1 text-left">
-                        {task.map((step, index) => (
-                        <li key={index}>{step}</li>
-                        ))}
-                    </ol>
-                    ) : (
-                    <p className="text-sm text-gray-600">{task}</p>
-                    )}
-
-                    <div className="mt-2">
-                        <h3 className="text-md font-semibold text-gray-700">Time Left</h3>
-                        <p className="text-sm text-red-500">
-                            {/* {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')} */}
-                            {Math.floor(timeLeft / 60 / 1000)}:{((timeLeft / 1000) % 60).toString().padStart(2, '0')}
-                        </p>
-                    </div>
-                </div>
+                
             </div>
 
             {/* Right Side (Iframe Section) */}
@@ -279,6 +290,7 @@ const BrowserInBrowser = () => {
             </div>
         </div>
     );
+
 };
 
 export default BrowserInBrowser;
