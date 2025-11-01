@@ -31,21 +31,37 @@ const UsabilityTestingCalibrationPopUp = ({ usabilityTesting, usabilityTestingId
 
             const userData = localStorage.getItem("user");
             if (!userData) {
-            alert("Error: You are not logged in.");
-            return;
+                alert("Error: You are not logged in.");
+                return;
             }
 
             const userEmail = JSON.parse(userData).email;
             formData.append("participant_email", userEmail);
 
             await fetch(`${API_URL}save-recording/`, { method: "POST", body: formData });
+
+            // Stop screen tracks
+            stream.getTracks().forEach((track) => track.stop());
         };
 
         mediaRecorder.start();
         setTimeout(() => mediaRecorder.stop(), usabilityTesting.duration * 60 * 1000);
+
+        // Listen for stop command from child window
+        window.addEventListener("message", (event) => {
+            if (event.data === "STOP_RECORDING") {
+                console.log("🛑 Stop signal received from BrowserInBrowser");
+                mediaRecorder.stop();
+            }
+        });
+
+        // Automatically stop after duration
+        setTimeout(() => mediaRecorder.stop(), usabilityTesting.duration * 60 * 1000);
+
         window.open(`/browser-in-browser?url=${encodeURIComponent(usabilityTesting.website_link)}&id=${usabilityTestingId}`, "_blank");
+        
         } catch (error) {
-        console.error("Screen recording error:", error);
+            console.error("Screen recording error:", error);
         }
     };
 
