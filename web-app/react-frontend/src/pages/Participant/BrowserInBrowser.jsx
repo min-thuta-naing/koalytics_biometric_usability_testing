@@ -215,12 +215,12 @@ const BrowserInBrowser = () => {
             <div className="w-1/5 p-4 bg-gray-200 flex flex-col items-center font-funnel">
                 {/* Header */}
                 <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-1">Instructions</h2>
+                    <h2 className="text-xl font-bold text-gray-800 mb-1">Task Instructions</h2>
                 </div>
 
                 {/* Display task and countdown */}
                 <div className="w-full bg-white rounded-xl shadow-md p-4 text-center border border-gray-200">
-                    <h3 className="text-lg font-semibold text-black mb-2">Task</h3>
+                    {/* <h3 className="text-lg font-semibold text-black mb-2">Task</h3> */}
                     <p className="text-sm text-gray-600 mb-4">
                     Please follow the steps below to complete your task.
                     </p>
@@ -241,6 +241,43 @@ const BrowserInBrowser = () => {
                             {Math.floor(timeLeft / 60 / 1000)}:{((timeLeft / 1000) % 60).toString().padStart(2, '0')}
                         </p>
                     </div>
+
+                    {/* Quit button */}
+                    {/* <div className="mt-4">
+                        <button
+                            onClick={() => {
+                                stopWebcam();
+                                if (window.opener) {
+                                    window.opener.postMessage("STOP_RECORDING", "*"); // send message to parent
+                                    console.log("📩 Sent STOP_RECORDING to parent window");
+                                }
+                                window.close();
+                            }}
+                            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                        >
+                            Finish Testing
+                        </button>
+                    </div> */}
+                    <div className="mt-4">
+                        <button
+                            onClick={() => {
+                                const confirmQuit = window.confirm("Are you sure you want to quit this testing?");
+                                if (!confirmQuit) return;
+
+                                stopWebcam(); // Stop webcam
+                                if (window.opener) {
+                                    window.opener.postMessage("STOP_RECORDING", "*"); // Tell parent to stop recording
+                                    console.log("📩 Sent STOP_RECORDING to parent window");
+                                }
+                                window.close(); // Close tab
+                            }}
+                            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                        >
+                            Finish Testing
+                        </button>
+                    </div>
+
+
                 </div>
 
                 
