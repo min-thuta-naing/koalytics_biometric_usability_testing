@@ -13,6 +13,8 @@ const HomePage = () => {
     const [showSwitchPopup, setShowSwitchPopup] = useState(false);
     const [showLogoutPopup, setShowLogoutPopup] = useState(false);
     const [showBrowserBanner, setShowBrowserBanner] = useState(false);
+    const [showSystemNotice, setShowSystemNotice] = useState(true);
+
     
 
     useEffect(() => {
@@ -103,10 +105,31 @@ const HomePage = () => {
                             </button>
                         </div>
                     )}
+                    {/* System update notice banner */}
+                    {showSystemNotice && (
+                        <div 
+                            className="bg-[#9ECFD4] text-[#016B61] px-6 flex justify-between items-center"
+                            style={{ height: "80px" }}
+                        >
+                            <span>
+                                Our system is currently updating features and improving authentication. 
+                                There may be errors while using the system. We apologize for any inconvenience.
+                            </span>
+                            <button 
+                                className="p-1 rounded hover:bg-[#FFEEBA]"
+                                onClick={() => setShowSystemNotice(false)}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                    )}
+
                     
                     {/* Header bar */}
                     <header className="fixed bg-[#DCD6F7] py-3 px-6 top-0 left-0 w-full z-10 flex justify-between items-center shadow-md"
-                        style={{ top: showBrowserBanner ? '5rem' : '0' }}
+                        //style={{ top: showBrowserBanner ? '5rem' : '0' }}
+                        style={{ top: (showBrowserBanner || showSystemNotice) ? '5rem' : '0' }}
+
                     >
                         <div className="flex items-center gap-3">
                             <img src="/static/images/logo.png" alt="Logo" className="h-7 w-auto" />
